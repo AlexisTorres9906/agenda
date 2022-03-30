@@ -14,8 +14,8 @@
     position: fixed;
     width: 300px;
     height: 100%;
-    background: $blue;
-    border-left: 1px solid $blue;
+    background: $primario;
+    border-left: 1px solid $primario;
     transition: 0.5s;
     overflow: hidden;
   }
@@ -59,7 +59,7 @@
   }
   .navigation ul li:hover a,
   .navigation ul li.hovered a {
-    color: $blue;
+    color: $primario;
   }
   .navigation ul li a .icon {
     position: relative;

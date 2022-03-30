@@ -1,17 +1,21 @@
 import { Formik, Form, Field } from "formik";
+import { useDispatch } from "react-redux";
+import { startLogin } from "../../actions/auth";
 import "../../styles/Login.scss";
+import { startLoading, stopLoading } from '../../actions/ui';
 //interface of the form
 interface FormValues {
   usuario: string;
   contrasena: string;
 }
 export const Login = () => {
+  const dispatch = useDispatch();
   const validaciones = (datos: FormValues) => {
     let errores: any = {};
     //validar el nombre
-    if (!datos.usuario) errores.nombre = "El nombre es obligatorio";
+    if (!datos.usuario) errores.usuario = "El nombre es obligatorio";
     //validar el email
-    if (!datos.contrasena) errores.correo = "El email es obligatorio";
+    if (!datos.contrasena) errores.contrasena = "Escribe la contraseña";
     return errores;
   };
 
@@ -20,18 +24,23 @@ export const Login = () => {
     contrasena: "",
   };
 
+  const onSubmit = async({usuario,contrasena}: FormValues, resetForm: any) => {
+    dispatch(startLoading());
+    await dispatch(startLogin(usuario, contrasena));
+    dispatch(stopLoading());
+    resetForm();
+  };
+
   return (
     <div className="login">
       <Formik
         onSubmit={(datos, { resetForm }) => {
-          console.log("Form submitted");
-          console.log(datos);
-          resetForm();
+          onSubmit(datos, resetForm);
         }}
         validate={validaciones}
         initialValues={initialValues}
       >
-        {({ errors }) => (
+        {({ errors,touched }) => (
           <div className="login-container">
             <div className="container-login100">
               <div className="wrap-login100 p-t-50 p-b-90 p-1-50 p-r-50">
@@ -52,6 +61,11 @@ export const Login = () => {
                     />
                     <span className="focus-input100"></span>
                   </div>
+                  {errors.usuario && touched.usuario && (
+                    <div className="alert alert-danger alerta" role="alert">
+                    {errors.usuario}
+                    </div>
+                  )}
                   <div className="wrap-input100 m-b-16">
                     <Field
                       className="input100"
@@ -63,6 +77,13 @@ export const Login = () => {
                     />
                     <span className="focus-input100"></span>
                   </div>
+                  {
+                    errors.contrasena && touched.contrasena && (
+                      <div className="alert alert-danger alerta" role="alert">
+                      {errors.contrasena}
+                      </div>
+                    )
+                  }
                   <div className="container-login100-form-btn m-t-17">
                     <div className="w-full beforeNone text-center">
                       <input

@@ -12,13 +12,13 @@ export const Topbar = () => {
         {/*Search*/ }
         <div className="search">
           <label>
-            <input type="text" placeholder="Search..." />
+            <input type="text" placeholder="Buscar..." />
             <AiOutlineSearch style={{position:'absolute',top:13,left:'10px',fontSize:'1.2em'}}/>
           </label>
         </div>
         {/*UserImg*/ }
         <div className="user">
-            <img src={`${process.env.PUBLIC_URL}/assets/img/profile2.jpeg`}  alt="aqui va la foto" />
+            <img src={`${process.env.PUBLIC_URL}/assets/img/user.png`}  alt="aqui va la foto" />
             </div>
       </div>
     </div>

@@ -93,7 +93,7 @@
   }
   .login100-form-title i:hover {
     background-color: #fff;
-    color: 0#00b665;
+    color: #00b665;
     border-color: #fff;
   }
   .wrap-input100 {
@@ -187,5 +187,17 @@
   }
   .m-auto {
     margin: auto;
+  }
+  .alerta{
+    display: flex;
+    height: fit-content;
+    padding: 10px 10px 10px 10px;
+    //center the alert
+    width: auto;
+    //center the alert
+    margin-top: 10px;
+    margin-bottom: 10px;
+    justify-content: center;
+    //center content
   }
 }

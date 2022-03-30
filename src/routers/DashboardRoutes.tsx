@@ -1,4 +1,4 @@
-import {  Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import { Sidebar } from "../components/sidebar/Sidebar";
 import { Topbar } from "../components/topbar/Topbar";
 import { UseDashboard } from "../hooks/UseDashboard";
@@ -13,10 +13,10 @@ export const DashboardRoutes = () => {
         <div className="main">
           <Topbar />
           <div className="content">
-              <Routes>
-                <Route path="/home" element={<Home />} />
-                <Route path="/*" element={<Home />} />
-              </Routes>
+            <Routes>
+              <Route path="/home" element={<Home />} />
+              <Route path="/*" element={<Home />} />
+            </Routes>
           </div>
         </div>
       </div>

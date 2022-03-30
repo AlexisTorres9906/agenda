@@ -9,8 +9,14 @@ import {
 import { IconContext } from "react-icons";
 import { useEffect } from "react";
 import { NavLink } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { starChecking, startLogout } from "../../actions/auth";
 
 export const Sidebar = () => {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(starChecking());
+  }, [dispatch]);
   useEffect(() => {
     let list = document.querySelectorAll(".navigation li");
     function activeLink(this: any) {
@@ -22,7 +28,9 @@ export const Sidebar = () => {
       list.forEach((item) => item.removeEventListener("mouseover", activeLink));
     };
   }, []);
-
+  const handleLogOut = () => {
+    dispatch(startLogout());
+  };
   return (
     <div className="sidebar">
       <IconContext.Provider value={{ className: "shared-class" }}>
@@ -37,11 +45,11 @@ export const Sidebar = () => {
               </NavLink>
             </li>
             <li>
-              <NavLink  to={"/agenda/home"}>
+              <NavLink to={"/agenda/home"}>
                 <span className="icon">
                   <AiOutlineHome />
                 </span>
-                <span className="title">Dashboard</span>
+                <span className="title">Home</span>
               </NavLink>
             </li>
             <li>
@@ -61,7 +69,7 @@ export const Sidebar = () => {
               </NavLink>
             </li>
             <li>
-              <NavLink to={"/"}>
+              <NavLink to={"/agenda"} onClick={handleLogOut}>
                 <span className="icon">
                   <AiOutlineLogout />
                 </span>
