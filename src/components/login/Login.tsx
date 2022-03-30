@@ -46,7 +46,7 @@ export const Login = () => {
               <div className="wrap-login100 p-t-50 p-b-90 p-1-50 p-r-50">
                 <Form className="login100-form flex-sb flex-w">
                   <span className="login100-form-title">
-                    <a href="" target="">
+                    <a href="/">
                       <i className="fas fa-user"></i>
                     </a>
                   </span>

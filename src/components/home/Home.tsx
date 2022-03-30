@@ -13,7 +13,7 @@ export const Home = () => {
         </div>
       </div>
 
-      <a href="#" className="btn-flotante">
+      <a href="/agenda/home" className="btn-flotante">
         <span>
           <i className="fas fa-plus"></i>
         </span>
