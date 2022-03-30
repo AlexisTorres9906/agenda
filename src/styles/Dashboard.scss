@@ -1,0 +1,30 @@
+@import 'base.scss';
+
+.dashboard{
+  .containerP {
+    position: relative;
+    width: 100%;
+  }
+  .main
+  {
+    position: absolute;
+    width: calc(100% - 300px);
+    left: 300px;
+    min-height: 100vh;
+    background: $white;
+    transition: 0.5s;
+  }
+  .main.active
+  {
+    width: calc(100% - 72px);
+    left: 72px;
+  }
+  .content{
+    position: relative;
+    width: calc(100% - 20px);
+    height: calc(100vh - 60px);
+    left: 10px;
+    
+  }
+}
+
