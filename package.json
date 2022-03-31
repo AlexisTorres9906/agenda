@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@syncfusion/ej2-base": "^19.4.52",
+    "@syncfusion/ej2-react-base": "^19.4.56",
     "@syncfusion/ej2-react-grids": "^19.4.56",
     "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/react": "^12.1.3",

@@ -2,11 +2,12 @@ import { createStore, applyMiddleware, compose } from "redux";
 import thunk from "redux-thunk";
 import { rootReducer } from "../reducers/rootReducers";
 
-const composeEnhancers =
-  (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
+
+
+  const composeEnhancers = process.env.NODE_ENV === 'development' ? (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
     trace: true,
     traceLimit: 25,
-  }) || compose;
+  }) : (null || compose);
 
 export const store = createStore(
   rootReducer,
