@@ -10,7 +10,7 @@ import { useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { starChecking, startLogout } from "../../actions/auth";
-import nayarit from "./../../assets/nayarit.svg"
+import nayarit from "../../assets/nayarit.svg"
 
 export const Sidebar = () => {
   const dispatch = useDispatch();
