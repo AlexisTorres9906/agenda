@@ -9,9 +9,7 @@ export const Head = () => {
               <span className="count-name">Locales</span>
             </div>
           </div>
-  
-          
-  
+
           <div className="col-md">
             <div className="card-counter success">
               <i className="fa fa-building-columns"></i>

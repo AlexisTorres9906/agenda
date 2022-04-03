@@ -9,6 +9,8 @@ import { rootReducer } from "../reducers/rootReducers";
     traceLimit: 25,
   }) : (null || compose);
 
+  //const composeEnhancers = null || compose;
+
 export const store = createStore(
   rootReducer,
   composeEnhancers(applyMiddleware(thunk))

@@ -1,6 +1,5 @@
 import "../../styles/Sidebar.scss";
 import {
-  AiFillApple,
   AiOutlineHome,
   AiOutlineDatabase,
   AiOutlineUser,
@@ -11,6 +10,7 @@ import { useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { starChecking, startLogout } from "../../actions/auth";
+import nayarit from "./../../assets/nayarit.svg"
 
 export const Sidebar = () => {
   const dispatch = useDispatch();
@@ -39,9 +39,9 @@ export const Sidebar = () => {
             <li>
               <NavLink to={"/home"}>
                 <span className="icon">
-                  <AiFillApple />
+                  <img src={nayarit} width="35px" alt="nayarit" />
                 </span>
-                <span>Brand Name</span>
+                <span>Gobierno de Nayarit</span>
               </NavLink>
             </li>
             <li>
