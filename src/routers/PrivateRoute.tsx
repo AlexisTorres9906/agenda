@@ -7,5 +7,6 @@ export const PrivateRoute = (props:any) => {
 
     const {uid} = useSelector( (state:RootState) => state.auth );
     //if user is logged in, redirect to home
+    
     return uid ? props.children : <Navigate to="/" />;
 }

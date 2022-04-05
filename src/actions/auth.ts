@@ -52,11 +52,25 @@ export const starChecking = () => {
           })
         );
       })
-      .catch((err) => {
+      .catch(async(err) => {
+        dispatch(startLogout());
         dispatch(checkingFinish());
       });
   };
 };
+
+
+export const tokenIsValid = () =>{
+  return async (dispatch: any) => {
+    await reqInsConToken
+      .get("/auth/renew")
+      .then((res) => {return})
+      .catch(async(err) => {
+        dispatch(startLogout());
+        dispatch(checkingFinish());
+      });
+  };
+}
 
 const checkingFinish = ():types => ({
     type: "[auth] Finish checking",

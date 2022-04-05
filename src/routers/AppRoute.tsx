@@ -14,6 +14,7 @@ export const AppRoute = () => {
   useEffect(() => {
     dispatch(starChecking());
   }, [dispatch]);
+
   const { checking } = useSelector((state: RootState) => state.auth);
   if (checking) {
     return <LoadingAuth/>;
