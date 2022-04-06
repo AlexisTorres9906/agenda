@@ -5,6 +5,7 @@ const initialState: Auth = {
   checking: true,
   uid: null,
   name: null,
+  area: null,
 };
 
 export const authReducer = (state = initialState, action: types): Auth => {
@@ -25,6 +26,7 @@ export const authReducer = (state = initialState, action: types): Auth => {
         ...state,
         uid: null,
         name: null,
+        area: null,
       };
     default:
       return state;

@@ -20,6 +20,7 @@ export const startLogin = (userName: string, password: string) => {
           login({
             uid: res.data.uid,
             name: res.data.name,
+            area: res.data.area,
           })
         );
       })
@@ -49,6 +50,7 @@ export const starChecking = () => {
           login({
             uid: res.data.uid,
             name: res.data.name,
+            area: res.data.area,
           })
         );
       })

@@ -38,7 +38,7 @@ export const Sidebar = () => {
         <div className="navigation">
           <ul>
             <li >
-              <NavLink to={"/home"}>
+              <NavLink to={"/"}>
                 <span className="icon">
                   <img src={nayaritC} width="35px" alt="nayarit" />
                 </span>
@@ -46,7 +46,7 @@ export const Sidebar = () => {
               </NavLink>
             </li>
             <li>
-              <NavLink className="hovered" to={"/agenda/home"}>
+              <NavLink className="hovered" to={"/agenda/"}>
                 <span className="icon">
                   <AiOutlineHome />
                 </span>

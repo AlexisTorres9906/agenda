@@ -40,9 +40,9 @@ export const DashboardRoutes = () => {
           <Topbar />
           <div className="content">
             <Routes>
-              <Route path="/home" element={<Home />} />
-              <Route path="/*" element={<Home />} />
+              <Route path="/" element={<Home />} />
               <Route path="/FAcuerdos" element={<Form/>} />
+              <Route path="/*" element={<Home />} />
             </Routes>
           </div>
         </div>

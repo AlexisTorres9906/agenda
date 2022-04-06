@@ -1,15 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { AiOutlineMenu} from "react-icons/ai";
 import "../../styles/Topbar.scss";
 export const Topbar = () => {
   //make event click on toggle
   const inputRef = React.useRef<HTMLDivElement>(null);
   //click when is renderd
-  React.useEffect(() => {
+  useEffect(() => {
     //click after 1s
     setTimeout(() => {
       inputRef.current?.click();
-    }, 1000);
+    }, 1500);
   }, []);
 
   return (
