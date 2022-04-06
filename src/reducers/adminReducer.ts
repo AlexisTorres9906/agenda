@@ -4,6 +4,7 @@ import { types } from '../types/types';
 
 const initialState:Admin = {
     Users: [],
+    Areas: [],
 }
 
 export const adminReducer = (state = initialState, action:types):Admin => {
@@ -13,6 +14,11 @@ export const adminReducer = (state = initialState, action:types):Admin => {
             return {
                 ...state,
                 Users: action.payload
+            }
+        case "[Admin] getAreas":
+            return {
+                ...state,
+                Areas: action.payload
             }
         default:
            return state

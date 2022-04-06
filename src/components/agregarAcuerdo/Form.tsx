@@ -35,7 +35,7 @@ export const Form = () => {
 
   return (
     <section className="acuerdos-form">
-      <form method="post">
+      <form>
         <div>
           <h2 className="text-center">Acuerdos</h2>
         </div>
