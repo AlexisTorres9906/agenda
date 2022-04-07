@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { BrowserRouter, HashRouter, Navigate, Route, Routes } from "react-router-dom";
 import { starChecking, tokenIsValid } from "../actions/auth";
 import { Login } from "../components/login/Login";
 import { RootState } from "../store/store";
@@ -39,7 +39,7 @@ export const AppRoute = () => {
     return <LoadingAuth />;
   }                    
   return (
-    <BrowserRouter>
+    <HashRouter>
       <Routes>
         <Route
           path="/*"
@@ -66,6 +66,6 @@ export const AppRoute = () => {
           }
         />
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   );
 };
