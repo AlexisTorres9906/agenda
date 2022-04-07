@@ -1,16 +1,16 @@
 {
   "files": {
     "main.css": "/agenda/static/css/main.73d914a3.css",
-    "main.js": "/agenda/static/js/main.6b1d7856.js",
+    "main.js": "/agenda/static/js/main.e2e914ad.js",
     "static/js/787.5be0b290.chunk.js": "/agenda/static/js/787.5be0b290.chunk.js",
     "static/media/nayaritC.svg": "/agenda/static/media/nayaritC.39513b46fdfa8ba4b994aa879f344e7e.svg",
     "index.html": "/agenda/index.html",
     "main.73d914a3.css.map": "/agenda/static/css/main.73d914a3.css.map",
-    "main.6b1d7856.js.map": "/agenda/static/js/main.6b1d7856.js.map",
+    "main.e2e914ad.js.map": "/agenda/static/js/main.e2e914ad.js.map",
     "787.5be0b290.chunk.js.map": "/agenda/static/js/787.5be0b290.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.73d914a3.css",
-    "static/js/main.6b1d7856.js"
+    "static/js/main.e2e914ad.js"
   ]
 }
