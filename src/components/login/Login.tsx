@@ -25,10 +25,11 @@ export const Login = () => {
   };
 
   const onSubmit = async({usuario,contrasena}: FormValues, resetForm: any) => {
+    resetForm();
     dispatch(startLoading());
     await dispatch(startLogin(usuario, contrasena));
     dispatch(stopLoading());
-    resetForm();
+    
   };
 
   return (

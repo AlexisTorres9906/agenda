@@ -20,6 +20,7 @@ export const startLogin = (userName: string, password: string) => {
           login({
             uid: res.data.uid,
             name: res.data.name,
+            area: res.data.area,
           })
         );
       })
@@ -49,14 +50,29 @@ export const starChecking = () => {
           login({
             uid: res.data.uid,
             name: res.data.name,
+            area: res.data.area,
           })
         );
       })
-      .catch((err) => {
+      .catch(async(err) => {
+        dispatch(startLogout());
         dispatch(checkingFinish());
       });
   };
 };
+
+
+export const tokenIsValid = () =>{
+  return async (dispatch: any) => {
+    await reqInsConToken
+      .get("/auth/renew")
+      .then((res) => {return})
+      .catch(async(err) => {
+        dispatch(startLogout());
+        dispatch(checkingFinish());
+      });
+  };
+}
 
 const checkingFinish = ():types => ({
     type: "[auth] Finish checking",

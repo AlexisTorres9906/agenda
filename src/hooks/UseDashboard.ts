@@ -2,7 +2,6 @@ import { useEffect } from "react";
 
 
 // Hook
-
 const UseDashboard = () => {
     return useEffect(() => {
         let toogle = document.querySelector(".toggle");

@@ -1,22 +1,20 @@
 import "../../styles/Sidebar.scss";
 import {
   AiOutlineHome,
-  AiOutlineDatabase,
   AiOutlineUser,
   AiOutlineLogout,
+  AiOutlineFileAdd,
 } from "react-icons/ai";
 import { IconContext } from "react-icons";
 import { useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { starChecking, startLogout } from "../../actions/auth";
-import nayarit from "../../assets/nayarit.svg"
+import { startLogout } from "../../actions/auth";
+import nayaritC from "../../assets/nayaritC.svg"
 
 export const Sidebar = () => {
   const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(starChecking());
-  }, [dispatch]);
+  //efecto para la sidebar de seleccion de opciones
   useEffect(() => {
     let list = document.querySelectorAll(".navigation li");
     function activeLink(this: any) {
@@ -28,24 +26,27 @@ export const Sidebar = () => {
       list.forEach((item) => item.removeEventListener("mouseover", activeLink));
     };
   }, []);
+
+
   const handleLogOut = () => {
     dispatch(startLogout());
   };
+
   return (
     <div className="sidebar">
       <IconContext.Provider value={{ className: "shared-class" }}>
         <div className="navigation">
           <ul>
-            <li>
-              <NavLink to={"/home"}>
+            <li >
+              <NavLink to={"/"}>
                 <span className="icon">
-                  <img src={nayarit} width="35px" alt="nayarit" />
+                  <img src={nayaritC} width="35px" alt="nayarit" />
                 </span>
                 <span>Gobierno de Nayarit</span>
               </NavLink>
             </li>
             <li>
-              <NavLink to={"/agenda/home"}>
+              <NavLink className="hovered" to={"/agenda/"}>
                 <span className="icon">
                   <AiOutlineHome />
                 </span>
@@ -53,11 +54,11 @@ export const Sidebar = () => {
               </NavLink>
             </li>
             <li>
-              <NavLink to={"/agenda/home"}>
+              <NavLink to={"/agenda/FAcuerdos"}>
                 <span className="icon">
-                  <AiOutlineDatabase />
+                  <AiOutlineFileAdd />
                 </span>
-                <span className="title">Ejemplo1</span>
+                <span className="title">Agregar Actividad</span>
               </NavLink>
             </li>
             <li>
