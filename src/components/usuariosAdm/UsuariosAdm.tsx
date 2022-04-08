@@ -101,8 +101,10 @@ export const UsuariosAdm = () => {
 
   const handleClick = (params: any) => {
     setOpenModal(true);
+    let id = params.row.id;
     delete params.row.id;
     dispatch(setActiveUser(params.row));
+    params.row.id = id;
   };
   const handleAdd = () => {
     setOpenModal(true);
