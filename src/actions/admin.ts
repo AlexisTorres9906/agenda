@@ -93,3 +93,8 @@ export const changeUserResOk = (resOk: boolean): types => ({
   type: "[Admin] changeUserResOk",
   payload: resOk,
 });
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+export const clearAdmin = (): types => ({
+  type: "[Admin] clearAdmin",
+});

@@ -63,6 +63,11 @@ export const adminReducer = (state = initialState, action:types):Admin => {
                     ActiveUser: null
                 }
             }
+        case "[Admin] clearAdmin" :
+            return {
+                ...initialState,
+            }
+                
         default:
            return state
     }

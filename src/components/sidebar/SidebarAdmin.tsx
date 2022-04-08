@@ -3,6 +3,7 @@ import { IconContext } from 'react-icons';
 import { AiOutlineLogout, AiOutlineUser } from 'react-icons/ai';
 import { useDispatch } from 'react-redux';
 import { NavLink } from 'react-router-dom';
+import { clearAdmin } from '../../actions/admin';
 import { startLogout } from '../../actions/auth';
 import nayaritC from "../../assets/nayaritC.svg"
 
@@ -24,6 +25,7 @@ export const SidebarAdmin = () => {
   
     const handleLogOut = () => {
       dispatch(startLogout());
+      dispatch(clearAdmin())
     };
   
     return (

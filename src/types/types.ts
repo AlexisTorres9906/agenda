@@ -8,6 +8,7 @@ export type types =
   | { type: "[Admin] changeUserResOk"; payload: boolean }
   | { type: "[Admin] setActiveUser"; payload: User }
   | { type: "[Admin] cleanActiveUser" }
+  | { type: "[Admin] clearAdmin" }
   | { type: "[auth] Checking login state" }
   | { type: "[auth] Finish checking" }
   | { type: "[auth] Start login" }
