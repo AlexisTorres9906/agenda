@@ -21,7 +21,7 @@ export const reqInsConToken: AxiosInstance = axios.create({
     "Content-Type": "application/json",
   },
   validateStatus: function (status: any) {
-    return status >= 200 && status < 400;
+    return status >= 200 && status < 500;
   },
 });
 

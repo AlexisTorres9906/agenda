@@ -48,6 +48,14 @@ export const SidebarAdmin = () => {
                 </NavLink>
               </li>
               <li>
+                <NavLink className="hovered" to={"/agenda/admin/prueba"}>
+                  <span className="icon">
+                    <AiOutlineUser />
+                  </span>
+                  <span className="title">Prueba</span>
+                </NavLink>
+              </li>
+              <li>
                 <NavLink to={"/agenda"} onClick={handleLogOut}>
                   <span className="icon">
                     <AiOutlineLogout />

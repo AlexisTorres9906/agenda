@@ -3,8 +3,12 @@ import { types } from '../types/types';
 
 
 const initialState:Admin = {
+    UserTab:{
     Users: [],
     Areas: [],
+    ResponseOk: false,
+    ActiveUser: null 
+    }
 }
 
 export const adminReducer = (state = initialState, action:types):Admin => {
@@ -13,12 +17,51 @@ export const adminReducer = (state = initialState, action:types):Admin => {
         case "[Admin] getUsers":
             return {
                 ...state,
-                Users: action.payload
+                UserTab: {
+                    ...state.UserTab,
+                    Users: action.payload
+                }
             }
         case "[Admin] getAreas":
             return {
                 ...state,
+                UserTab: {
+                    ...state.UserTab,
                 Areas: action.payload
+                }
+            }
+        case "[Admin] addUser":
+            return {
+                ...state,
+                UserTab: {
+                    ...state.UserTab,
+                    Users: [...state.UserTab.Users, action.payload],
+                    ResponseOk: true
+                }
+            }
+        case "[Admin] changeUserResOk":
+            return {
+                ...state,
+                UserTab:{
+                    ...state.UserTab,
+                    ResponseOk: action.payload
+                }
+            }
+        case "[Admin] setActiveUser" :
+            return {
+                ...state,
+                UserTab:{
+                    ...state.UserTab,
+                    ActiveUser: action.payload
+                }
+            }
+        case "[Admin] cleanActiveUser" :
+            return {
+                ...state,
+                UserTab:{
+                    ...state.UserTab,
+                    ActiveUser: null
+                }
             }
         default:
            return state

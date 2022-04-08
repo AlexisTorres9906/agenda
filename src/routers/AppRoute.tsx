@@ -17,6 +17,7 @@ export const AppRoute = () => {
   const MINUTE_MS = 40000; 
   const {uid} = useSelector( (state:RootState) => state.auth );
 
+
   //revisar si el usuario esta logueado cada cierto tiempo
   useEffect(() => {
     const interval = setInterval(() => {
@@ -39,7 +40,9 @@ export const AppRoute = () => {
     return <LoadingAuth />;
   }                    
   return (
+    
     <HashRouter>
+      {/* <HashRouter> o <BrowserRouter> revisar el servidor y hacer cambios pertinentes*/}
       <Routes>
         <Route
           path="/*"
