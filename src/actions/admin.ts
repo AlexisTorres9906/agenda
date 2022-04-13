@@ -1,9 +1,8 @@
-import { reqInsConToken, reqInsSinToken } from "../helpers/axios";
+import { reqInsConToken } from "../helpers/axios";
 import { startLogout } from "./auth";
 import { User } from "../interface/User";
 import { types } from "../types/types";
 import { Area } from "../interface/Areas";
-import Swal from "sweetalert2";
 import { ErrorSwall, toastMixin, LoadingSwall } from "../helpers/swalls";
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -24,6 +23,47 @@ const getUsers = (users: User[]): types => ({
   type: "[Admin] getUsers",
   payload: users,
 });
+//////////////////////////////////////////////////////////////////////////////////////////////////
+export const startUpdateUser = (user:object) => {
+  return async (dispatch: any) => {
+    let error = false;
+    LoadingSwall.fire();
+    await reqInsConToken
+      .put("/admin/usuario", user)
+      .then((res) => {
+        if(res.data.ok){
+        dispatch(updateUser(res.data.user));
+        dispatch(changeUserResOk(true));
+        }
+        else{
+          error = true;
+        }
+      })
+      .catch((err) => {
+      });
+    LoadingSwall.close();
+    if(error){
+      ErrorSwall.fire({
+        text: "No se pudo actualizar el usuario",
+      });
+    }
+    else{
+      toastMixin.fire({
+        title: "Exito",
+        text: "Usuario actualizado",
+        icon: "success",
+        timer: 2000,
+      });
+    }
+  };
+};
+
+const updateUser = (user: object): types => ({
+  type: "[Admin] updateUser",
+  payload: user,
+});
+
+
 //////////////////////////////////////////////////////////////////////////////////////////////////
 export const startGetAreas = () => {
   return async (dispatch: any) => {
@@ -68,6 +108,14 @@ export const startAddUser = (user: any) => {
         icon: "error",
         title: "Error al crear el usuario",
         text: `Razon: ${errorMsg}`,
+      });
+    }
+    else{
+      toastMixin.fire({
+        title: "Exito",
+        text: "Usuario creado",
+        icon: "success",
+        timer: 2000,
       });
     }
   };

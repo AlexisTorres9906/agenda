@@ -62,6 +62,31 @@ export const starChecking = () => {
 };
 
 
+export const startRenew = () => {
+  return async (dispatch: any) => {
+    await reqInsConToken
+      .get("/auth/renew")
+      .then((res) => {
+        localStorage.setItem("token", res.data.token);
+        localStorage.setItem(
+          "token-init-date",
+          new Date().getTime().toString()
+        );
+        dispatch(
+          login({
+            uid: res.data.uid,
+            name: res.data.name,
+            area: res.data.area,
+          })
+        );
+      })
+      .catch(async(err) => {
+        dispatch(startLogout());
+      });
+  };
+};
+
+
 export const tokenIsValid = () =>{
   return async (dispatch: any) => {
     await reqInsConToken

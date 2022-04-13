@@ -19,7 +19,7 @@
          align-items: center;
 
     }
-}
+
 
 .btn-flotante {
     font-size: 1.5rem; /* Cambiar el tamaño de la tipografia */
@@ -52,6 +52,10 @@
       right: 0px;
     }
   }
-  .swal2-container {
-    z-index: 20000 !important;
+  button{
+    font-size: 0.5rem;
   }
+}
+.swal2-container {
+  z-index: 20000 !important;
+}

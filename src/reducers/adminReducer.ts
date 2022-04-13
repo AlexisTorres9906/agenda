@@ -1,5 +1,6 @@
 import { Admin } from '../interface/Admin';
 import { types } from '../types/types';
+import { User } from '../interface/User';
 
 
 const initialState:Admin = {
@@ -67,7 +68,19 @@ export const adminReducer = (state = initialState, action:types):Admin => {
             return {
                 ...initialState,
             }
-                
+        case "[Admin] updateUser":
+            return {
+                ...state,
+                UserTab:{
+                    ...state.UserTab,
+                    Users: state.UserTab.Users.map((user:User) => {
+                        if (user.uid === action.payload.uid) {
+                            return action.payload;
+                        }
+                        return user;
+                    })
+                }
+            }   
         default:
            return state
     }

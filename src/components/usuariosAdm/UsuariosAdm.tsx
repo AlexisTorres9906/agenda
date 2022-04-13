@@ -24,6 +24,9 @@ import {
 } from "formik";
 import * as Yup from "yup";
 import { styleModal } from "../../helpers/stylesModal";
+import React from "react";
+import { startUpdateUser } from '../../actions/admin';
+import {  startRenew } from '../../actions/auth';
 
 const columns = [
   { field: "id", headerName: "ID", width: 250 },
@@ -35,6 +38,7 @@ const columns = [
 const style = styleModal;
 
 export const UsuariosAdm = () => {
+
   const [users, setUsers] = useState([] as User[]);
   const [openModal, setOpenModal] = useState(false);
   const { Users, Areas, ResponseOk, ActiveUser } = useSelector(
@@ -54,31 +58,52 @@ export const UsuariosAdm = () => {
         area: Areas[0] ? Areas[0]._id : "",
       };
 
-  const FormikProps: FormikConfig<FormikValues> = {
+  const validationSchema = ActiveUser ? Yup.object({
+    name: Yup.string().required("El nombre es requerido"),
+    userName: Yup.string().required("El username es requerido"),
+    area: Yup.string().required("El area es requerido"),
+  }) : Yup.object({
+    name: Yup.string().required("El nombre es requerido"),
+    userName: Yup.string().required("El username es requerido"),
+    //password more than 6 characters and at least one number and no active user
+    password: Yup.string().min(6, "La contraseña debe tener al menos 6 caracteres"),
+    area: Yup.string().required("El area es requerido"),
+  });
+
+
+  const FormikProps: FormikConfig<FormikValues> =  {
     initialValues: initialValues,
-    validationSchema: Yup.object({
-      name: Yup.string().required("El nombre es requerido"),
-      userName: Yup.string().required("El username es requerido"),
-      //password more than 6 characters and at least one number
-      password: Yup.string()
-        .min(6, "La contraseña debe tener al menos 6 caracteres")
-        .required("La contraseña es requerida"),
-      //area: Yup.string().required("El area es requerida"),
-    }),
+    validationSchema: validationSchema,
     onSubmit: (values) => {
-      dispatch(startAddUser(values as User));
+      if (!ActiveUser) {
+        //en caso de crear
+        dispatch(startAddUser(values as User));
+        dispatch(startRenew());
+      }
+      else{
+        //en caso de editar
+        dispatch(startUpdateUser({
+          uid: ActiveUser.uid,
+          area: values.area,
+          userName: values.userName,
+          name: values.name,
+        }))
+        dispatch(startRenew());
+      }
     },
   };
 
-
+  //ver si las consultas son correctas
   useEffect(() => {
-    if(ResponseOk){
+    if (ResponseOk) {
+      //si se creo una consulta y fue correcta cierra el modal y regresa a estado inicial
       setOpenModal(false);
+      dispatch(cleanActiveUser());
       dispatch(changeUserResOk(false));
     }
-  }, [ResponseOk]);
-  
+  }, [ResponseOk,dispatch]);
 
+    //hacer loading de cosas necesarias de la pagina
   useEffect(() => {
     dispatch(startLoading());
     dispatch(startGetUsers());
@@ -86,6 +111,8 @@ export const UsuariosAdm = () => {
     dispatch(stopLoading());
   }, [dispatch]);
 
+
+  //ve los usuarios y mapeo para usarlos en el data grid
   useEffect(() => {
     const user = Users.map((user: User) => {
       const nombreArea = user.area.nombre;
@@ -114,6 +141,41 @@ export const UsuariosAdm = () => {
     dispatch(cleanActiveUser());
   };
 
+  //modal child para cambiar contraseña
+  const ChildModal=()=> {
+    const [open, setOpen] = React.useState(false);
+    const handleOpen = () => {
+      setOpen(true);
+    };
+    const handleClose = () => {
+      setOpen(false);
+    };
+
+    return (
+      <>
+        <div hidden={ActiveUser ? false : true}>
+          <button className="btn btn-warning botonM" onClick={handleOpen}>
+            <i className="fas fa-lock-open"></i>
+          </button>
+        </div>
+        <Modal
+          hideBackdrop
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="child-modal-title"
+          aria-describedby="child-modal-description"
+        >
+          <Box sx={style}>
+            <h2 id="child-modal-title">Text in a child modal</h2>
+            <p id="child-modal-description">
+              Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+            </p>
+          </Box>
+        </Modal>
+      </>
+    );
+  }
+
   return (
     <div className="UserTable">
       <DataGrid
@@ -126,7 +188,6 @@ export const UsuariosAdm = () => {
         columns={columns}
         rows={users as []}
         onRowClick={(p) => handleClick(p)}
-        autoHeight={true}
         rowsPerPageOptions={[100, 50, 25, 10]}
       />
 
@@ -140,11 +201,11 @@ export const UsuariosAdm = () => {
           <Formik {...FormikProps}>
             {(form) => (
               <Form>
-                <Typography variant="h6" id="modal-modal-title">
-                  Usuario
+                <Typography variant="h5" id="modal-modal-title">
+                  {ActiveUser ? "Editar Usuario" : "Agregar Usuario"}
                 </Typography>
 
-                <div className="mb-3">
+                <div className="mb-3 mt-3">
                   <label className="form-label">
                     <i className="fas fa-user"></i> Nombre
                   </label>
@@ -226,10 +287,16 @@ export const UsuariosAdm = () => {
                   </div>
                 </div>
 
-                <div className="d-flex justify-content-center align-items-center mb-3">
+                <div className="d-flex justify-content-around mb-3">
+                  <ChildModal/>
                   <button className="btn btn-primary" type="submit">
-                    {ActiveUser ?  "Editar Usuario":"Crear Usuario"  }
+                    {ActiveUser ? "Editar Usuario" : "Crear Usuario"}
                   </button>
+                  <div hidden={ActiveUser ? false : true}>
+                    <button className="btn btn-danger">
+                      <i className="fas fa-trash-alt"></i>
+                    </button>
+                  </div>
                 </div>
               </Form>
             )}

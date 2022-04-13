@@ -6,7 +6,7 @@ import "../styles/Dashboard.scss";
 import { Home } from "../components/home/Home";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { starChecking, tokenIsValid } from '../actions/auth';
+import { startRenew, tokenIsValid } from '../actions/auth';
 import { RootState } from "../store/store";
 import { Form } from "../components/agregarAcuerdo/Form";
 export const DashboardRoutes = () => {
@@ -29,7 +29,7 @@ export const DashboardRoutes = () => {
   const location = useLocation();
 
   useEffect(() => {
-    dispatch(starChecking());
+    dispatch(startRenew());
   }, [location,dispatch]);
   
   return (

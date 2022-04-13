@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { useDispatch } from 'react-redux';
 import { useLocation, Routes, Route } from 'react-router-dom';
-import { starChecking } from '../actions/auth';
+import { startRenew } from '../actions/auth';
 import { Topbar } from '../components/topbar/Topbar';
 import { UsuariosAdm } from '../components/usuariosAdm/UsuariosAdm';
 import { SidebarAdmin } from '../components/sidebar/SidebarAdmin';
@@ -17,7 +17,7 @@ export const AdminDashboardRoutes = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(starChecking());
+    dispatch(startRenew());
   }, [location,dispatch]);
   
   return (

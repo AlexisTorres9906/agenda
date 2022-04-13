@@ -5,6 +5,7 @@ export type types =
   | { type: "[Admin] getUsers"; payload: User[] }
   | { type: "[Admin] getAreas"; payload: Area[] }
   | { type: "[Admin] addUser"; payload: User }
+  | { type: "[Admin] updateUser"; payload: any }
   | { type: "[Admin] changeUserResOk"; payload: boolean }
   | { type: "[Admin] setActiveUser"; payload: User }
   | { type: "[Admin] cleanActiveUser" }
