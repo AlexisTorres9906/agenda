@@ -16,6 +16,8 @@ import {
   startGetAreas,
   setActiveArea,
   cleanActiveArea,
+  changeResponseOK,
+  startDeleteArea
 } from "../../actions/admin";
 import { startRenew } from "../../actions/auth";
 import { startLoading, stopLoading } from "../../actions/ui";
@@ -24,6 +26,7 @@ import { Area } from "../../interface/Areas";
 import { RootState } from "../../store/store";
 import * as Yup from "yup";
 import { BiRename } from "react-icons/bi";
+import { startAddArea, startUpdateArea } from '../../actions/admin';
 
 const columns = [
   { field: "id", headerName: "ID", width: 250 },
@@ -35,7 +38,7 @@ const style = styleModal;
 export const AreasAdm = () => {
   //valores y llamadas de inicio de la aplicacion
   const dispatch = useDispatch();
-  const { Areas, ActiveArea } = useSelector(
+  const { Areas, ActiveArea,ResponseOk } = useSelector(
     (state: RootState) => state.admin.admInformation
   );
   const [areas, setAreas] = useState([] as Area[]);
@@ -101,11 +104,32 @@ export const AreasAdm = () => {
   const FormikProps: FormikConfig<FormikValues> = {
     initialValues: initialValues,
     validationSchema: validationSchema,
-    onSubmit: async (values) => {},
+    onSubmit: async (values) => {
+      if(!ActiveArea){
+        dispatch(startAddArea(values));
+        dispatch(startRenew());
+      }else{
+        dispatch(startUpdateArea(ActiveArea._id,values));
+        dispatch(startRenew());
+      } 
+    },
   };
 
+   //ver si las consultas son correctas
+   useEffect(() => {
+    if (ResponseOk) {
+      //si se creo una consulta y fue correcta cierra el modal y regresa a estado inicial
+      setOpenModal(false);
+      dispatch(cleanActiveArea());
+      dispatch(changeResponseOK(false));
+    }
+  }, [ResponseOk, dispatch]);
+
   //boton de eliminar area
-  const handleEliminarArea = () => {};
+  const handleEliminarArea = () => {
+    dispatch(startDeleteArea(ActiveArea!._id));
+    dispatch(startRenew());
+  };
 
   return (
     <>

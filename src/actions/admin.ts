@@ -39,7 +39,7 @@ export const startAddUser = (user: any) => {
           delete res.data.ok;
           delete res.data.token;
           dispatch(addUser(res.data));
-          dispatch(changeUserResOk(true));
+          dispatch(changeResponseOK(true));
         }
       })
       .catch((err) => {
@@ -67,22 +67,26 @@ export const startAddUser = (user: any) => {
 export const startUpdateUser = (user: object) => {
   return async (dispatch: any) => {
     let error = false;
+    let errorMsg = "";
     LoadingSwall.fire();
     await reqInsConToken
       .put("/admin/usuario", user)
       .then((res) => {
         if (res.data.ok) {
           dispatch(updateUser(res.data.user));
-          dispatch(changeUserResOk(true));
+          dispatch(changeResponseOK(true));
         } else {
           error = true;
+          errorMsg = res.data.msg;
         }
       })
       .catch((err) => {});
     LoadingSwall.close();
     if (error) {
       ErrorSwall.fire({
-        text: "No se pudo actualizar el usuario",
+        text: `No se pudo actualizar el usuario,
+        Causa: ${errorMsg}`,
+        timer: 3000,
       });
     } else {
       toastMixin.fire({
@@ -127,7 +131,7 @@ export const startDeleteUser = () => {
       .then((res) => {
         if (res.data.ok) {
           dispatch(deleteUser(uid));
-          dispatch(changeUserResOk(true));
+          dispatch(changeResponseOK(true));
         } else {
           error = true;
         }
@@ -171,6 +175,128 @@ const getAreas = (areas: Area[]): types => ({
   payload: areas,
 });
 //////////////////////////////////////////////////////////////////////////////////////////////////
+export const startAddArea = (area: any) => {
+  return async (dispatch: any) => {
+    let error = false;
+    let errorMsg = "";
+    LoadingSwall.fire();
+    await reqInsConToken
+      .post("/admin/area", area)
+      .then((res) => {
+        if (!res.data.ok) {
+          error = true;
+          errorMsg = res.data.msg;
+        } else {
+          delete res.data.ok;
+          dispatch(addArea(res.data.area));
+          dispatch(changeResponseOK(true));
+        }
+      })
+      .catch((err) => {
+        ErrorSwall.fire();
+      });
+    LoadingSwall.close();
+    if (error) {
+      toastMixin.fire({
+        icon: "error",
+        title: "Error al crear el area",
+        text: `Razon: ${errorMsg}`,
+      });
+    } else {
+      toastMixin.fire({
+        title: "Exito",
+        text: "Area creada",
+        icon: "success",
+        timer: 2000,
+      });
+    }
+  };
+};
+const addArea = (area: Area): types => ({
+  type: "[Admin] addArea",
+  payload: area,
+});
+//////////////////////////////////////////////////////////////////////////////////////////////////
+export const startUpdateArea = (id:string, area: object) => {
+  return async (dispatch: any) => {
+    let error = false;
+    let errorMsg = "";
+    LoadingSwall.fire();
+    await reqInsConToken
+      .put('/admin/area/',area,{params:{id:id}})
+      .then((res) => {
+        if (res.data.ok) {
+          console.log(res.data.area);
+          dispatch(updateArea(res.data.area));
+          dispatch(changeResponseOK(true));
+        } else {
+          error = true;
+          errorMsg = res.data.msg;
+        }
+      })
+      .catch((err) => {});
+    LoadingSwall.close();
+    if (error) {
+      ErrorSwall.fire({
+        text: `No se pudo actualizar el area,
+        Causa: ${errorMsg}`,
+        timer: 3000,
+      });
+    } else {
+      toastMixin.fire({
+        title: "Exito",
+        text: "Area actualizada",
+        icon: "success",
+        timer: 2000,
+      });
+    }
+  };
+};
+
+const updateArea = (area: Area): types => ({
+  type: "[Admin] updateArea",
+  payload: area,
+});
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+export const startDeleteArea = (id: string) => {
+  return async (dispatch: any) => {
+    let error = false;
+    let errorMsg = "";
+    LoadingSwall.fire();
+    await reqInsConToken
+      .delete(`/admin/area/`, { params: { id: id } })
+      .then((res) => {
+        if (res.data.ok) {
+          dispatch(deleteArea(id));
+          dispatch(changeResponseOK(true));
+        } else {
+          error = true;
+        }
+      })
+      .catch((err) => {});
+    LoadingSwall.close();
+    if (error) {
+      ErrorSwall.fire({
+        text: "No se pudo eliminar el area",
+      });
+    } else {
+      toastMixin.fire({
+        title: "Exito",
+        text: "Area eliminada",
+        icon: "success",
+        timer: 2000,
+      });
+    }
+  };
+};
+
+const deleteArea = (id: string): types => ({
+  type: "[Admin] deleteArea",
+  payload: id,
+});
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
 export const setActiveArea = (area: Area): types => ({
   type: "[Admin] setActiveArea",
   payload: area,
@@ -182,10 +308,11 @@ export const cleanActiveArea = (): types => ({
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-export const changeUserResOk = (resOk: boolean): types => ({
-  type: "[Admin] changeUserResOk",
+export const changeResponseOK = (resOk: boolean): types => ({
+  type: "[Admin] changeResponseOK",
   payload: resOk,
 });
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 export const clearAdmin = (): types => ({

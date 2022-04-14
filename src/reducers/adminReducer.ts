@@ -40,7 +40,7 @@ export const adminReducer = (state = initialState, action:types):Admin => {
                     ResponseOk: true
                 }
             }
-        case "[Admin] changeUserResOk":
+        case "[Admin] changeResponseOK":
             return {
                 ...state,
                 admInformation:{
@@ -103,6 +103,36 @@ export const adminReducer = (state = initialState, action:types):Admin => {
                 admInformation:{
                     ...state.admInformation,
                     ActiveArea: null as any
+                }
+            }
+        case "[Admin] addArea":
+            return {
+                ...state,
+                admInformation:{
+                    ...state.admInformation,
+                    Areas: [...state.admInformation.Areas, action.payload],
+                    ResponseOk: true
+                }
+            }
+        case "[Admin] updateArea":
+            return {
+                ...state,
+                admInformation:{
+                    ...state.admInformation,
+                    Areas: state.admInformation.Areas.map((area:any) => {
+                        if (area._id === action.payload._id) {
+                            return action.payload;
+                        }
+                        return area;
+                    })
+                }
+            }
+        case "[Admin] deleteArea":
+            return {
+                ...state,
+                admInformation:{
+                    ...state.admInformation,
+                    Areas: state.admInformation.Areas.filter((area:any) => area._id !== action.payload)
                 }
             }
         default:

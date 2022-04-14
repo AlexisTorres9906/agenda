@@ -9,8 +9,8 @@ import {
   startAddUser,
   setActiveUser,
   cleanActiveUser,
-  changeUserResOk,
   startDeleteUser,
+  changeResponseOK,
 } from "../../actions/admin";
 import { RootState } from "../../store/store";
 import Modal from "@mui/material/Modal";
@@ -100,6 +100,7 @@ export const UsuariosAdm = () => {
         dispatch(startAddUser(values as User));
         dispatch(startRenew());
       } else {
+        //en caso de actualizar
         dispatch(
           startUpdateUser({
             uid: ActiveUser.uid,
@@ -153,7 +154,7 @@ export const UsuariosAdm = () => {
       //si se creo una consulta y fue correcta cierra el modal y regresa a estado inicial
       setOpenModal(false);
       dispatch(cleanActiveUser());
-      dispatch(changeUserResOk(false));
+      dispatch(changeResponseOK(false));
     }
   }, [ResponseOk, dispatch]);
 
@@ -369,7 +370,7 @@ export const UsuariosAdm = () => {
                   </label>
                   <Field
                     as="select"
-                    name="areas"
+                    name="area"
                     className="form-select"
                     style={
                       form.touched.area &&
