@@ -7,7 +7,7 @@ import { UsuariosAdm } from '../components/usuariosAdm/UsuariosAdm';
 import { SidebarAdmin } from '../components/sidebar/SidebarAdmin';
 import { UseDashboard } from '../hooks/UseDashboard';
 import '../styles/admin.scss'
-import { Form } from '../components/agregarAcuerdo/Form';
+import { AreasAdm } from '../components/usuariosAdm/AreasAdm';
 
 export const AdminDashboardRoutes = () => {
   //logica necesaria para el dashboard
@@ -29,8 +29,8 @@ export const AdminDashboardRoutes = () => {
           <div className="content">
             <Routes>
               <Route path="/" element={<UsuariosAdm />} />
+              <Route path= "/areas" element={<AreasAdm />} />
               <Route path="/*" element={<UsuariosAdm />} />
-              <Route path= "/prueba" element={<Form />} />
             </Routes>
           </div>
         </div>

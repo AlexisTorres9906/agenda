@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React from "react";
 
 import "../../styles/agregarAcuerdo.scss";
@@ -49,7 +50,6 @@ export const Form = () => {
                 data-bs-toggle="tab"
                 onClick={handleChangeTab}
                 ref={anchorTabcon}
-                href="#/"
               >
                 Contenido
               </a>
@@ -61,7 +61,6 @@ export const Form = () => {
                 data-bs-toggle="tab"
                 onClick={handleChangeTab}
                 ref={anchorTabinv}
-                href="#/"
               >
                 Involucrados
               </a>

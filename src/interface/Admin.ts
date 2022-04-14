@@ -2,10 +2,11 @@ import { Area } from "./Areas";
 import { User } from "./User";
 
 export interface Admin{
-     UserTab:{
+     admInformation:{
           Users: User[];
           Areas: Area[];
           ResponseOk: boolean;
-          ActiveUser: any
+          ActiveUser: any;
+          ActiveArea?: Area ;
      };
 }

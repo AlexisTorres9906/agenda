@@ -4,7 +4,7 @@ import { User } from '../interface/User';
 
 
 const initialState:Admin = {
-    UserTab:{
+    admInformation:{
     Users: [],
     Areas: [],
     ResponseOk: false,
@@ -18,49 +18,49 @@ export const adminReducer = (state = initialState, action:types):Admin => {
         case "[Admin] getUsers":
             return {
                 ...state,
-                UserTab: {
-                    ...state.UserTab,
+                admInformation: {
+                    ...state.admInformation,
                     Users: action.payload
                 }
             }
         case "[Admin] getAreas":
             return {
                 ...state,
-                UserTab: {
-                    ...state.UserTab,
+                admInformation: {
+                    ...state.admInformation,
                 Areas: action.payload
                 }
             }
         case "[Admin] addUser":
             return {
                 ...state,
-                UserTab: {
-                    ...state.UserTab,
-                    Users: [...state.UserTab.Users, action.payload],
+                admInformation: {
+                    ...state.admInformation,
+                    Users: [...state.admInformation.Users, action.payload],
                     ResponseOk: true
                 }
             }
         case "[Admin] changeUserResOk":
             return {
                 ...state,
-                UserTab:{
-                    ...state.UserTab,
+                admInformation:{
+                    ...state.admInformation,
                     ResponseOk: action.payload
                 }
             }
         case "[Admin] setActiveUser" :
             return {
                 ...state,
-                UserTab:{
-                    ...state.UserTab,
+                admInformation:{
+                    ...state.admInformation,
                     ActiveUser: action.payload
                 }
             }
         case "[Admin] cleanActiveUser" :
             return {
                 ...state,
-                UserTab:{
-                    ...state.UserTab,
+                admInformation:{
+                    ...state.admInformation,
                     ActiveUser: null
                 }
             }
@@ -71,16 +71,40 @@ export const adminReducer = (state = initialState, action:types):Admin => {
         case "[Admin] updateUser":
             return {
                 ...state,
-                UserTab:{
-                    ...state.UserTab,
-                    Users: state.UserTab.Users.map((user:User) => {
+                admInformation:{
+                    ...state.admInformation,
+                    Users: state.admInformation.Users.map((user:User) => {
                         if (user.uid === action.payload.uid) {
                             return action.payload;
                         }
                         return user;
                     })
                 }
-            }   
+            }
+        case "[Admin] deleteUser":
+            return {
+                ...state,
+                admInformation:{
+                    ...state.admInformation,
+                    Users: state.admInformation.Users.filter((user:User) => user.uid !== action.payload)
+                }
+            }
+        case "[Admin] setActiveArea":
+            return {
+                ...state,
+                admInformation:{
+                    ...state.admInformation,
+                    ActiveArea: action.payload
+                }
+            }
+        case "[Admin] cleanActiveArea":
+            return {
+                ...state,
+                admInformation:{
+                    ...state.admInformation,
+                    ActiveArea: null as any
+                }
+            }
         default:
            return state
     }

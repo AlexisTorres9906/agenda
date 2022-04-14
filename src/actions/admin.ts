@@ -24,63 +24,6 @@ const getUsers = (users: User[]): types => ({
   payload: users,
 });
 //////////////////////////////////////////////////////////////////////////////////////////////////
-export const startUpdateUser = (user:object) => {
-  return async (dispatch: any) => {
-    let error = false;
-    LoadingSwall.fire();
-    await reqInsConToken
-      .put("/admin/usuario", user)
-      .then((res) => {
-        if(res.data.ok){
-        dispatch(updateUser(res.data.user));
-        dispatch(changeUserResOk(true));
-        }
-        else{
-          error = true;
-        }
-      })
-      .catch((err) => {
-      });
-    LoadingSwall.close();
-    if(error){
-      ErrorSwall.fire({
-        text: "No se pudo actualizar el usuario",
-      });
-    }
-    else{
-      toastMixin.fire({
-        title: "Exito",
-        text: "Usuario actualizado",
-        icon: "success",
-        timer: 2000,
-      });
-    }
-  };
-};
-
-const updateUser = (user: object): types => ({
-  type: "[Admin] updateUser",
-  payload: user,
-});
-
-
-//////////////////////////////////////////////////////////////////////////////////////////////////
-export const startGetAreas = () => {
-  return async (dispatch: any) => {
-    await reqInsConToken
-      .get("/admin/area")
-      .then((res) => {
-        dispatch(getAreas(res.data.areas));
-      })
-      .catch((err) => {});
-  };
-};
-
-const getAreas = (areas: Area[]): types => ({
-  type: "[Admin] getAreas",
-  payload: areas,
-});
-//////////////////////////////////////////////////////////////////////////////////////////////////
 export const startAddUser = (user: any) => {
   return async (dispatch: any) => {
     let error = false;
@@ -109,8 +52,7 @@ export const startAddUser = (user: any) => {
         title: "Error al crear el usuario",
         text: `Razon: ${errorMsg}`,
       });
-    }
-    else{
+    } else {
       toastMixin.fire({
         title: "Exito",
         text: "Usuario creado",
@@ -120,6 +62,45 @@ export const startAddUser = (user: any) => {
     }
   };
 };
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+export const startUpdateUser = (user: object) => {
+  return async (dispatch: any) => {
+    let error = false;
+    LoadingSwall.fire();
+    await reqInsConToken
+      .put("/admin/usuario", user)
+      .then((res) => {
+        if (res.data.ok) {
+          dispatch(updateUser(res.data.user));
+          dispatch(changeUserResOk(true));
+        } else {
+          error = true;
+        }
+      })
+      .catch((err) => {});
+    LoadingSwall.close();
+    if (error) {
+      ErrorSwall.fire({
+        text: "No se pudo actualizar el usuario",
+      });
+    } else {
+      toastMixin.fire({
+        title: "Exito",
+        text: "Usuario actualizado",
+        icon: "success",
+        timer: 2000,
+      });
+    }
+  };
+};
+
+const updateUser = (user: object): types => ({
+  type: "[Admin] updateUser",
+  payload: user,
+});
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
 
 export const addUser = (user: User): types => ({
   type: "[Admin] addUser",
@@ -133,6 +114,70 @@ export const setActiveUser = (user: User): types => ({
 
 export const cleanActiveUser = (): types => ({
   type: "[Admin] cleanActiveUser",
+});
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+export const startDeleteUser = () => {
+  return async (dispatch: any,getState:any) => {
+    let error = false;
+    const {uid} = getState().admin.admInformation.ActiveUser;
+    LoadingSwall.fire();
+    await reqInsConToken
+      .delete(`/admin/usuario/`, { params: { uid: uid } })
+      .then((res) => {
+        if (res.data.ok) {
+          dispatch(deleteUser(uid));
+          dispatch(changeUserResOk(true));
+        } else {
+          error = true;
+        }
+      })
+      .catch((err) => {});
+    LoadingSwall.close();
+    if (error) {
+      ErrorSwall.fire({
+        text: "No se pudo eliminar el usuario",
+      });
+    } else {
+      toastMixin.fire({
+        title: "Exito",
+        text: "Usuario eliminado",
+        icon: "success",
+        timer: 2000,
+      });
+    }
+  };
+};
+
+const deleteUser = (uid: string): types => ({
+  type: "[Admin] deleteUser",
+  payload: uid,
+});
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+export const startGetAreas = () => {
+  return async (dispatch: any) => {
+    await reqInsConToken
+      .get("/admin/area")
+      .then((res) => {
+        dispatch(getAreas(res.data.areas));
+      })
+      .catch((err) => {});
+  };
+};
+
+const getAreas = (areas: Area[]): types => ({
+  type: "[Admin] getAreas",
+  payload: areas,
+});
+//////////////////////////////////////////////////////////////////////////////////////////////////
+export const setActiveArea = (area: Area): types => ({
+  type: "[Admin] setActiveArea",
+  payload: area,
+});
+
+export const cleanActiveArea = (): types => ({
+  type: "[Admin] cleanActiveArea",
 });
 
 //////////////////////////////////////////////////////////////////////////////////////////////////

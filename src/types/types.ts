@@ -10,6 +10,9 @@ export type types =
   | { type: "[Admin] setActiveUser"; payload: User }
   | { type: "[Admin] cleanActiveUser" }
   | { type: "[Admin] clearAdmin" }
+  | { type: "[Admin] deleteUser"; payload: String }
+  | { type: "[Admin] setActiveArea"; payload: Area }
+  | { type: "[Admin] cleanActiveArea"}
   | { type: "[auth] Checking login state" }
   | { type: "[auth] Finish checking" }
   | { type: "[auth] Start login" }

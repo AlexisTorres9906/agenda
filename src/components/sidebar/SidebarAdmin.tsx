@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { IconContext } from 'react-icons';
-import { AiOutlineLogout, AiOutlineUser } from 'react-icons/ai';
+import { AiOutlineApartment, AiOutlineLogout, AiOutlineUser } from 'react-icons/ai';
 import { useDispatch } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import { clearAdmin } from '../../actions/admin';
@@ -50,11 +50,11 @@ export const SidebarAdmin = () => {
                 </NavLink>
               </li>
               <li>
-                <NavLink className="hovered" to={"/agenda/admin/prueba"}>
+                <NavLink className="hovered" to={"/agenda/admin/areas"}>
                   <span className="icon">
-                    <AiOutlineUser />
+                    <AiOutlineApartment />
                   </span>
-                  <span className="title">Prueba</span>
+                  <span className="title">Areas</span>
                 </NavLink>
               </li>
               <li>

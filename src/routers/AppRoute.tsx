@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { BrowserRouter, HashRouter, Navigate, Route, Routes } from "react-router-dom";
+import {  HashRouter, Navigate, Route, Routes } from "react-router-dom";
 import { starChecking, tokenIsValid } from "../actions/auth";
 import { Login } from "../components/login/Login";
 import { RootState } from "../store/store";

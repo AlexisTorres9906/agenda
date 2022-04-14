@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import { DataGrid, esES } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -9,6 +10,7 @@ import {
   setActiveUser,
   cleanActiveUser,
   changeUserResOk,
+  startDeleteUser,
 } from "../../actions/admin";
 import { RootState } from "../../store/store";
 import Modal from "@mui/material/Modal";
@@ -23,10 +25,11 @@ import {
   FormikValues,
 } from "formik";
 import * as Yup from "yup";
-import { styleModal } from "../../helpers/stylesModal";
-import React from "react";
-import { startUpdateUser } from '../../actions/admin';
-import {  startRenew } from '../../actions/auth';
+import { styleModal, styleModalChildren } from "../../helpers/stylesModal";
+import { startUpdateUser } from "../../actions/admin";
+import { startRenew } from "../../actions/auth";
+import { updatePassword } from "../../Api/updatePassword";
+import { ErrorSwall, toastMixin, QuestionSwall } from "../../helpers/swalls";
 
 const columns = [
   { field: "id", headerName: "ID", width: 250 },
@@ -36,15 +39,29 @@ const columns = [
 ];
 
 const style = styleModal;
+const styleChildren = styleModalChildren;
 
 export const UsuariosAdm = () => {
 
+  //valores y llamadas de inicio de la aplicacion
   const [users, setUsers] = useState([] as User[]);
   const [openModal, setOpenModal] = useState(false);
+  const [openChildren, setOpenChildren] = useState(false);
   const { Users, Areas, ResponseOk, ActiveUser } = useSelector(
-    (state: RootState) => state.admin.UserTab
+    (state: RootState) => state.admin.admInformation
   );
   const dispatch = useDispatch();
+    //hacer loading de cosas necesarias de la pagina
+    //memorize el dispatch para no tener que hacerlo cada vez
+    useEffect(() => {
+      dispatch(startLoading());
+      dispatch(startGetUsers());
+      dispatch(startGetAreas());
+      dispatch(stopLoading());
+    }, [dispatch]);
+
+
+
   let initialValues = ActiveUser
     ? {
         name: ActiveUser.name,
@@ -58,37 +75,74 @@ export const UsuariosAdm = () => {
         area: Areas[0] ? Areas[0]._id : "",
       };
 
-  const validationSchema = ActiveUser ? Yup.object({
-    name: Yup.string().required("El nombre es requerido"),
-    userName: Yup.string().required("El username es requerido"),
-    area: Yup.string().required("El area es requerido"),
-  }) : Yup.object({
-    name: Yup.string().required("El nombre es requerido"),
-    userName: Yup.string().required("El username es requerido"),
-    //password more than 6 characters and at least one number and no active user
-    password: Yup.string().min(6, "La contraseña debe tener al menos 6 caracteres"),
-    area: Yup.string().required("El area es requerido"),
-  });
+  const validationSchema = ActiveUser
+    ? Yup.object({
+        name: Yup.string().required("El nombre es requerido"),
+        userName: Yup.string().required("El username es requerido"),
+        area: Yup.string().required("El area es requerido"),
+      })
+    : Yup.object({
+        name: Yup.string().required("El nombre es requerido"),
+        userName: Yup.string().required("El username es requerido"),
+        //password is required and more than 6 characters
+        password: Yup.string()
+          .required("El password es requerido")
+          .min(6, "Minimo 6 caracteres"),
+        area: Yup.string().required("El area es requerido"),
+      });
 
-
-  const FormikProps: FormikConfig<FormikValues> =  {
+  const FormikProps: FormikConfig<FormikValues> = {
     initialValues: initialValues,
     validationSchema: validationSchema,
-    onSubmit: (values) => {
+    onSubmit: async (values) => {
       if (!ActiveUser) {
         //en caso de crear
         dispatch(startAddUser(values as User));
         dispatch(startRenew());
-      }
-      else{
-        //en caso de editar
-        dispatch(startUpdateUser({
-          uid: ActiveUser.uid,
-          area: values.area,
-          userName: values.userName,
-          name: values.name,
-        }))
+      } else {
+        dispatch(
+          startUpdateUser({
+            uid: ActiveUser.uid,
+            area: values.area,
+            userName: values.userName,
+            name: values.name,
+          })
+        );
         dispatch(startRenew());
+      }
+    },
+  };
+
+  //formikprops children
+  const FormikPropsChildren: FormikConfig<FormikValues> = {
+    initialValues: {
+      passwordC: "",
+    },
+    validationSchema: Yup.object({
+      passwordC: Yup.string()
+        .required("El password es requerido")
+        .min(6, "Minimo 6 caracteres"),
+    }),
+    onSubmit: async (values) => {
+      let error = false;
+      try {
+        await updatePassword({
+          uid: ActiveUser.uid,
+          password: values.passwordC,
+        });
+      } catch (err) {
+        error = true;
+      }
+      dispatch(startRenew());
+      if (error) {
+        ErrorSwall.fire({
+          timer: 2000,
+        });
+      } else {
+        toastMixin.fire({
+          text: "Contraseña actualizada",
+        });
+        setOpenChildren(false);
       }
     },
   };
@@ -101,15 +155,8 @@ export const UsuariosAdm = () => {
       dispatch(cleanActiveUser());
       dispatch(changeUserResOk(false));
     }
-  }, [ResponseOk,dispatch]);
+  }, [ResponseOk, dispatch]);
 
-    //hacer loading de cosas necesarias de la pagina
-  useEffect(() => {
-    dispatch(startLoading());
-    dispatch(startGetUsers());
-    dispatch(startGetAreas());
-    dispatch(stopLoading());
-  }, [dispatch]);
 
 
   //ve los usuarios y mapeo para usarlos en el data grid
@@ -126,58 +173,109 @@ export const UsuariosAdm = () => {
     setUsers(user);
   }, [Users]);
 
+  //click en alguna fila abrir modal y cambiar usuario activo
   const handleClick = (params: any) => {
     setOpenModal(true);
+    dispatch(startRenew());
     let id = params.row.id;
     delete params.row.id;
     dispatch(setActiveUser(params.row));
     params.row.id = id;
   };
+  //abrir modal al presionar boton de mas
   const handleAdd = () => {
+    dispatch(startRenew());
     setOpenModal(true);
   };
+  //cerrar modal y limpiar usuario activo
   const handleOnClose = () => {
     setOpenModal(false);
     dispatch(cleanActiveUser());
   };
+  //Eliminar usuario
+  const handleEliminarUser = () => {
+    QuestionSwall.fire().then((result) => {
+      if (result.value) {
+        dispatch(startDeleteUser());
+
+        dispatch(startRenew());
+      }
+    });
+  };
 
   //modal child para cambiar contraseña
-  const ChildModal=()=> {
-    const [open, setOpen] = React.useState(false);
+  const ChildModal = () => {
     const handleOpen = () => {
-      setOpen(true);
+      setOpenChildren(true);
     };
     const handleClose = () => {
-      setOpen(false);
+      setOpenChildren(false);
     };
 
     return (
       <>
         <div hidden={ActiveUser ? false : true}>
-          <button className="btn btn-warning botonM" onClick={handleOpen}>
+          <a className="btn btn-warning" onClick={handleOpen}>
             <i className="fas fa-lock-open"></i>
-          </button>
+          </a>
         </div>
         <Modal
           hideBackdrop
-          open={open}
+          open={openChildren}
           onClose={handleClose}
           aria-labelledby="child-modal-title"
           aria-describedby="child-modal-description"
         >
-          <Box sx={style}>
-            <h2 id="child-modal-title">Text in a child modal</h2>
-            <p id="child-modal-description">
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-            </p>
+          <Box sx={styleChildren}>
+            <Typography variant="h5" id="modal-modal-title">
+              Cambiar contraseña
+            </Typography>
+            <Formik {...FormikPropsChildren}>
+              {(form) => (
+                <Form>
+                  <div className="mb-3">
+                    <label className="form-label">
+                      <i className="fas fa-lock"></i> Password
+                    </label>
+                    <Field
+                      className="form-control"
+                      type="password"
+                      name="passwordC"
+                      style={
+                        form.touched.passwordC &&
+                        form.errors.passwordC && { border: "1px solid red" }
+                      }
+                      autoComplete="off"
+                    />
+                    <div style={{ color: "red" }}>
+                      <ErrorMessage name="passwordC" component="div" />
+                    </div>
+                  </div>
+
+                  <div className="d-flex justify-content-around mb-3">
+                    <button className="btn btn-primary" type="submit">
+                      Cambiar Contraseña
+                    </button>
+
+                    <a className="btn btn-danger" onClick={handleClose}>
+                      Cancelar
+                    </a>
+                  </div>
+                </Form>
+              )}
+            </Formik>
           </Box>
         </Modal>
       </>
     );
-  }
+  };
 
   return (
-    <div className="UserTable">
+    <>
+    <div>
+      <h1>Listado de Usuarios</h1>
+    </div>
+    <div className="TableInf">
       <DataGrid
         initialState={{
           pagination: {
@@ -218,6 +316,7 @@ export const UsuariosAdm = () => {
                     }
                     name="name"
                     placeholder="Escribe el nombre de la persona"
+                    autoComplete="off"
                   />
                   <div style={{ color: "red" }}>
                     <ErrorMessage name="name" component="div" />
@@ -237,6 +336,7 @@ export const UsuariosAdm = () => {
                       form.errors.userName && { border: "1px solid red" }
                     }
                     placeholder="Escribe el UserName "
+                    autoComplete="off"
                   />
                   <div style={{ color: "red" }}>
                     <ErrorMessage name="userName" component="div" />
@@ -288,14 +388,14 @@ export const UsuariosAdm = () => {
                 </div>
 
                 <div className="d-flex justify-content-around mb-3">
-                  <ChildModal/>
+                  <ChildModal />
                   <button className="btn btn-primary" type="submit">
                     {ActiveUser ? "Editar Usuario" : "Crear Usuario"}
                   </button>
                   <div hidden={ActiveUser ? false : true}>
-                    <button className="btn btn-danger">
+                    <a className="btn btn-danger" onClick={handleEliminarUser}>
                       <i className="fas fa-trash-alt"></i>
-                    </button>
+                    </a>
                   </div>
                 </div>
               </Form>
@@ -309,5 +409,6 @@ export const UsuariosAdm = () => {
         </span>
       </button>
     </div>
+    </>
   );
 };
