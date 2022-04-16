@@ -13,7 +13,7 @@ export const Login = () => {
   const validaciones = (datos: FormValues) => {
     let errores: any = {};
     //validar el nombre
-    if (!datos.usuario) errores.usuario = "El nombre es obligatorio";
+    if (!datos.usuario) errores.usuario = "Escriba su usuario";
     //validar el email
     if (!datos.contrasena) errores.contrasena = "Escribe la contraseña";
     return errores;

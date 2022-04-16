@@ -8,6 +8,7 @@ import { SidebarAdmin } from '../components/sidebar/SidebarAdmin';
 import { UseDashboard } from '../hooks/UseDashboard';
 import '../styles/admin.scss'
 import { AreasAdm } from '../components/usuariosAdm/AreasAdm';
+import { CategoriasAdm } from '../components/usuariosAdm/CategoriasAdm';
 
 export const AdminDashboardRoutes = () => {
   //logica necesaria para el dashboard
@@ -30,6 +31,7 @@ export const AdminDashboardRoutes = () => {
             <Routes>
               <Route path="/" element={<UsuariosAdm />} />
               <Route path= "/areas" element={<AreasAdm />} />
+              <Route path= "/categorias" element={<CategoriasAdm />} />
               <Route path="/*" element={<UsuariosAdm />} />
             </Routes>
           </div>

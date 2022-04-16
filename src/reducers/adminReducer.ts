@@ -1,4 +1,4 @@
-import { Admin } from '../interface/Admin';
+import { Admin} from '../interface/Admin';
 import { types } from '../types/types';
 import { User } from '../interface/User';
 
@@ -7,6 +7,7 @@ const initialState:Admin = {
     admInformation:{
     Users: [],
     Areas: [],
+    Categorias: [],
     ResponseOk: false,
     ActiveUser: null 
     }

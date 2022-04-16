@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { IconContext } from 'react-icons';
 import { AiOutlineApartment, AiOutlineLogout, AiOutlineUser } from 'react-icons/ai';
+import { BiCategory } from 'react-icons/bi';
 import { useDispatch } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import { clearAdmin } from '../../actions/admin';
@@ -42,7 +43,7 @@ export const SidebarAdmin = () => {
                 </NavLink>
               </li>
               <li>
-                <NavLink className="hovered" to={"/agenda/admin/"}>
+                <NavLink to={"/agenda/admin/"}>
                   <span className="icon">
                     <AiOutlineUser />
                   </span>
@@ -50,13 +51,23 @@ export const SidebarAdmin = () => {
                 </NavLink>
               </li>
               <li>
-                <NavLink className="hovered" to={"/agenda/admin/areas"}>
+                <NavLink  to={"/agenda/admin/areas"}>
                   <span className="icon">
                     <AiOutlineApartment />
                   </span>
                   <span className="title">Areas</span>
                 </NavLink>
               </li>
+
+              <li>
+                <NavLink  to={"/agenda/admin/categorias"}>
+                  <span className="icon">
+                    <BiCategory />
+                  </span>
+                  <span className="title">Categorias</span>
+                </NavLink>
+              </li>
+
               <li>
                 <NavLink to={"/agenda"} onClick={handleLogOut}>
                   <span className="icon">

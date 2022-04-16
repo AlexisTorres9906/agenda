@@ -262,7 +262,6 @@ const updateArea = (area: Area): types => ({
 export const startDeleteArea = (id: string) => {
   return async (dispatch: any) => {
     let error = false;
-    let errorMsg = "";
     LoadingSwall.fire();
     await reqInsConToken
       .delete(`/admin/area/`, { params: { id: id } })
