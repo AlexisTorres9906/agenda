@@ -92,6 +92,7 @@ export const CategoriasAdm = () => {
     dispatch(startRenew());
     dispatch(startDeleteCategoria(ActiveCategory!._id));
   };
+  
   //Add Area
   const handleAdd = () => {
     dispatch(startRenew());
