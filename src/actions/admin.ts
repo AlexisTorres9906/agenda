@@ -1,9 +1,9 @@
 import { reqInsConToken } from "../helpers/axios";
-import { startLogout } from "./auth";
 import { User } from "../interface/User";
 import { types } from "../types/types";
 import { Area } from "../interface/Areas";
 import { ErrorSwall, toastMixin, LoadingSwall } from "../helpers/swalls";
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 export const startGetUsers = () => {
@@ -14,7 +14,7 @@ export const startGetUsers = () => {
         dispatch(getUsers(res.data.usuariosR));
       })
       .catch((err) => {
-        dispatch(startLogout());
+        ErrorSwall.fire();
       });
   };
 };
@@ -80,7 +80,7 @@ export const startUpdateUser = (user: object) => {
           errorMsg = res.data.msg;
         }
       })
-      .catch((err) => {});
+      .catch((err) => {ErrorSwall.fire();});
     LoadingSwall.close();
     if (error) {
       ErrorSwall.fire({
@@ -136,7 +136,7 @@ export const startDeleteUser = () => {
           error = true;
         }
       })
-      .catch((err) => {});
+      .catch((err) => {ErrorSwall.fire();});
     LoadingSwall.close();
     if (error) {
       ErrorSwall.fire({
@@ -159,15 +159,18 @@ const deleteUser = (uid: string): types => ({
 });
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
-export const startGetAreas = () => {
+export const startGetAreas = ()=> {
+
+  //create promise
   return async (dispatch: any) => {
     await reqInsConToken
       .get("/admin/area")
       .then((res) => {
         dispatch(getAreas(res.data.areas));
       })
-      .catch((err) => {});
+      .catch((err) => {ErrorSwall.fire();});
   };
+ 
 };
 
 const getAreas = (areas: Area[]): types => ({
@@ -234,7 +237,7 @@ export const startUpdateArea = (id:string, area: object) => {
           errorMsg = res.data.msg;
         }
       })
-      .catch((err) => {});
+      .catch((err) => {ErrorSwall.fire();});
     LoadingSwall.close();
     if (error) {
       ErrorSwall.fire({
@@ -273,7 +276,7 @@ export const startDeleteArea = (id: string) => {
           error = true;
         }
       })
-      .catch((err) => {});
+      .catch((err) => {ErrorSwall.fire();});
     LoadingSwall.close();
     if (error) {
       ErrorSwall.fire({
@@ -294,7 +297,6 @@ const deleteArea = (id: string): types => ({
   type: "[Admin] deleteArea",
   payload: id,
 });
-
 //////////////////////////////////////////////////////////////////////////////////////////////////
 export const setActiveArea = (area: Area): types => ({
   type: "[Admin] setActiveArea",
@@ -304,6 +306,158 @@ export const setActiveArea = (area: Area): types => ({
 export const cleanActiveArea = (): types => ({
   type: "[Admin] cleanActiveArea",
 });
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+export const startGetCategorias = ()=> {
+    return async (dispatch: any) => {
+      await reqInsConToken
+        .get("/info/category")
+        .then((res) => {
+          dispatch(getCategorias(res.data.categorias));
+        })
+        .catch((err) => {ErrorSwall.fire();});
+    };
+  
+}
+
+const getCategorias = (categorias:any): types => ({
+  type: "[info] getCategorias",
+  payload: categorias,
+});
+//////////////////////////////////////////////////////////////////////////////////////////////////
+export const startAddCategoria = (categoria: any) => {
+  return async (dispatch: any) => {
+    let error = false;
+    let errorMsg = "";
+    LoadingSwall.fire();
+    await reqInsConToken
+      .post("/admin/categoria", categoria)
+      .then((res) => {
+        console.log(res);
+        if (!res.data.ok) {
+          error = true;
+          errorMsg = res.data.msg;
+        } else {
+          delete res.data.ok;
+          dispatch(addCategoria(res.data.categoria));
+          dispatch(changeResponseOK(true));
+        }
+      })
+      .catch((err) => {
+        ErrorSwall.fire();
+      });
+    LoadingSwall.close();
+    if (error) {
+      toastMixin.fire({
+        icon: "error",
+        title: "Error al crear la categoria",
+        text: `Razon: ${errorMsg}`,
+      });
+    } else {
+      toastMixin.fire({
+        title: "Exito",
+        text: "Categoria creada",
+        icon: "success",
+        timer: 2000,
+      });
+    }
+  };
+};
+const addCategoria = (categoria: any): types => ({
+  type: "[Admin] addCategory",
+  payload: categoria,
+});
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+export const startUpdateCategoria = (id:string, categoria: object) => {
+  return async (dispatch: any) => {
+    let error = false;
+    let errorMsg = "";
+    LoadingSwall.fire();
+    await reqInsConToken
+      .put('/admin/categoria/',categoria,{params:{id:id}})
+      .then((res) => {
+        if (res.data.ok) {
+          console.log(res.data.categoria);
+          dispatch(updateCategoria(res.data.categoria));
+          dispatch(changeResponseOK(true));
+        } else {
+          error = true;
+          errorMsg = res.data.msg;
+        }
+      })
+      .catch((err) => {
+        ErrorSwall.fire();
+      });
+    LoadingSwall.close();
+    if (error) {
+      ErrorSwall.fire({
+        text: `No se pudo actualizar la categoria,
+        Causa: ${errorMsg}`,
+        timer: 3000,
+      });
+    } else {
+      toastMixin.fire({
+        title: "Exito",
+        text: "Categoria actualizada",
+        icon: "success",
+        timer: 2000,
+      });
+    }
+  };
+};
+
+const updateCategoria = (categoria: any): types => ({
+  type: "[Admin] updateCategory",
+  payload: categoria,
+});
+//////////////////////////////////////////////////////////////////////////////////////////////////
+export const startDeleteCategoria = (id: string) => {
+  return async (dispatch: any) => {
+    let error = false;
+    LoadingSwall.fire();
+    await reqInsConToken
+      .delete(`/admin/categoria/`, { params: { id: id } })
+      .then((res) => {
+        if (res.data.ok) {
+          dispatch(deleteCategoria(id));
+          dispatch(changeResponseOK(true));
+        } else {
+          error = true;
+        }
+      })
+      .catch((err) => {ErrorSwall.fire();});
+    LoadingSwall.close();
+    if (error) {
+      ErrorSwall.fire({
+        text: "No se pudo eliminar la categoria",
+      });
+    } else {
+      toastMixin.fire({
+        title: "Exito",
+        text: "Categoria eliminada",
+        icon: "success",
+        timer: 2000,
+      });
+    }
+  };
+};
+
+const deleteCategoria = (id: string): types => ({
+  type: "[Admin] deleteCategory",
+  payload: id,
+});
+//////////////////////////////////////////////////////////////////////////////////////////////////
+export const setActiveCategory = (category: any): types => ({
+  type: "[Admin] setActiveCategory",
+  payload: category,
+});
+
+export const cleanActiveCategory = (): types => ({
+  type: "[Admin] cleanActiveCategory",
+});
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 

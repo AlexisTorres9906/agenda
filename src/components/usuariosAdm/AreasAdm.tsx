@@ -20,13 +20,13 @@ import {
   startDeleteArea
 } from "../../actions/admin";
 import { startRenew } from "../../actions/auth";
-import { startLoading, stopLoading } from "../../actions/ui";
 import { styleModal } from "../../helpers/stylesModal";
 import { Area } from "../../interface/Areas";
 import { RootState } from "../../store/store";
 import * as Yup from "yup";
 import { BiRename } from "react-icons/bi";
 import { startAddArea, startUpdateArea } from '../../actions/admin';
+import { LoadingInfo } from '../LoadingInfo';
 
 const columns = [
   { field: "id", headerName: "ID", width: 250 },
@@ -43,6 +43,7 @@ export const AreasAdm = () => {
   );
   const [areas, setAreas] = useState([] as Area[]);
   const [openModal, setOpenModal] = useState(false);
+  const [loadinInfo, setLoadingInfo] = useState(false);
   const initialValues = ActiveArea
     ? {
         nombre: ActiveArea.nombre,
@@ -61,9 +62,12 @@ export const AreasAdm = () => {
   ////////////////////////////////////////////////////////////////////////////////////////////////
   //useeffect de inicio de la ventana
   useEffect(() => {
-    dispatch(startLoading());
-    dispatch(startGetAreas());
-    dispatch(stopLoading());
+    const getAreas = async () => {
+      setLoadingInfo(true);
+      await Promise.all([dispatch(startGetAreas())]);
+      setLoadingInfo(false);
+    }
+    getAreas();
   }, [dispatch]);
 
   //useeffect de carga de areas
@@ -136,100 +140,104 @@ export const AreasAdm = () => {
       <div>
         <h1>Listado de Areas</h1>
       </div>
-      <div className="TableInf">
-        <DataGrid
-          initialState={{
-            pagination: {
-              pageSize: 10,
-            },
-          }}
-          localeText={esES.components.MuiDataGrid.defaultProps.localeText}
-          columns={columns}
-          rows={areas as []}
-          onRowClick={(p) => handleClick(p)}
-          rowsPerPageOptions={[100, 50, 25, 10]}
-        />
+      {loadinInfo ? <LoadingInfo/> :(
+              <div className="TableInf">
+              <DataGrid
+                initialState={{
+                  pagination: {
+                    pageSize: 10,
+                  },
+                }}
+                localeText={esES.components.MuiDataGrid.defaultProps.localeText}
+                columns={columns}
+                rows={areas as []}
+                onRowClick={(p) => handleClick(p)}
+                rowsPerPageOptions={[100, 50, 25, 10]}
+              />
+      
+              <Modal
+                open={openModal}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+                onClose={handleOnClose}
+              >
+                <Box sx={style}>
+                  <Formik {...FormikProps}>
+                    {(form) => (
+                      <Form>
+                        <Typography variant="h5" id="modal-modal-title">
+                          {ActiveArea ? "Editar Area" : "Agregar Area"}
+                        </Typography>
+      
+                        <div className="mb-3 mt-3">
+                          <label className="form-label">
+                            <BiRename />
+                             Nombre
+                          </label>
+                          <Field
+                            className="form-control"
+                            type="text"
+                            style={
+                              form.touched.nombre &&
+                              form.errors.nombre && { border: "1px solid red" }
+                            }
+                            name="nombre"
+                            placeholder="Escribe el nombre del area"
+                            autoComplete="off"
+                          />
+                          <div style={{ color: "red" }}>
+                            <ErrorMessage name="nombre" component="div" />
+                          </div>
+                        </div>
+      
+                        <div className="mb-3">
+                          <label className="form-label">
+                            <BiRename />
+                             Nombre Corto
+                          </label>
+                          <Field
+                            className="form-control"
+                            type="text"
+                            name="nombreCorto"
+                            style={
+                              form.touched.nombreCorto &&
+                              form.errors.nombreCorto && { border: "1px solid red" }
+                            }
+                            placeholder="Escribe el Nombre Corto del area"
+                            autoComplete="off"
+                          />
+                          <div style={{ color: "red" }}>
+                            <ErrorMessage name="nombreCorto" component="div" />
+                          </div>
+                        </div>
+                        <div className="d-flex justify-content-around mb-3">
+                          <button className="btn btn-primary" type="submit">
+                            {ActiveArea ? "Editar Area" : "Agregar Area"}
+                          </button>
+                          {
+                              ActiveArea && (
+                                  <a className="btn btn-danger" onClick={handleEliminarArea}>
+                                  <i className="fas fa-trash-alt"></i>
+                                </a>
+                              )
+                          }
+                        
+                        </div>
+                      </Form>
+                    )}
+                  </Formik>
+                </Box>
+              </Modal>
+      
+              <button onClick={handleAdd} className="btn-flotante">
+                <span>
+                  <i className="fas fa-plus"></i>
+                </span>
+              </button>
+            </div>
+      )
+      }
 
-        <Modal
-          open={openModal}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-          onClose={handleOnClose}
-        >
-          <Box sx={style}>
-            <Formik {...FormikProps}>
-              {(form) => (
-                <Form>
-                  <Typography variant="h5" id="modal-modal-title">
-                    {ActiveArea ? "Editar Area" : "Agregar Area"}
-                  </Typography>
-
-                  <div className="mb-3 mt-3">
-                    <label className="form-label">
-                      <BiRename />
-                       Nombre
-                    </label>
-                    <Field
-                      className="form-control"
-                      type="text"
-                      style={
-                        form.touched.nombre &&
-                        form.errors.nombre && { border: "1px solid red" }
-                      }
-                      name="nombre"
-                      placeholder="Escribe el nombre del area"
-                      autoComplete="off"
-                    />
-                    <div style={{ color: "red" }}>
-                      <ErrorMessage name="nombre" component="div" />
-                    </div>
-                  </div>
-
-                  <div className="mb-3">
-                    <label className="form-label">
-                      <BiRename />
-                       Nombre Corto
-                    </label>
-                    <Field
-                      className="form-control"
-                      type="text"
-                      name="nombreCorto"
-                      style={
-                        form.touched.nombreCorto &&
-                        form.errors.nombreCorto && { border: "1px solid red" }
-                      }
-                      placeholder="Escribe el Nombre Corto del area"
-                      autoComplete="off"
-                    />
-                    <div style={{ color: "red" }}>
-                      <ErrorMessage name="nombreCorto" component="div" />
-                    </div>
-                  </div>
-                  <div className="d-flex justify-content-around mb-3">
-                    <button className="btn btn-primary" type="submit">
-                      {ActiveArea ? "Editar Area" : "Agregar Area"}
-                    </button>
-                    {
-                        ActiveArea && (
-                            <a className="btn btn-danger" onClick={handleEliminarArea}>
-                            <i className="fas fa-trash-alt"></i>
-                          </a>
-                        )
-                    }
-                  
-                  </div>
-                </Form>
-              )}
-            </Formik>
-          </Box>
-        </Modal>
-
-        <button onClick={handleAdd} className="btn-flotante">
-          <span>
-            <i className="fas fa-plus"></i>
-          </span>
-        </button>
-      </div>
     </>
   );
 };

@@ -136,6 +136,59 @@ export const adminReducer = (state = initialState, action:types):Admin => {
                     Areas: state.admInformation.Areas.filter((area:any) => area._id !== action.payload)
                 }
             }
+        case "[info] getCategorias":
+            return {
+                ...state,
+                admInformation:{
+                    ...state.admInformation,
+                    Categorias: action.payload
+                }
+            }
+        case "[Admin] setActiveCategory":
+            return {
+                ...state,
+                admInformation:{
+                    ...state.admInformation,
+                    ActiveCategory: action.payload
+                }
+            }
+        case "[Admin] cleanActiveCategory":
+            return {
+                ...state,
+                admInformation:{
+                    ...state.admInformation,
+                    ActiveCategory: null as any
+                }
+            }
+        case "[Admin] addCategory":
+            return {
+                ...state,
+                admInformation:{
+                    ...state.admInformation,
+                    Categorias: [...state.admInformation.Categorias, action.payload]
+            }
+        }
+        case "[Admin] updateCategory":
+            return {
+                ...state,
+                admInformation:{
+                    ...state.admInformation,
+                    Categorias: state.admInformation.Categorias.map((category:any) => {
+                        if (category._id === action.payload._id) {
+                            return action.payload;
+                        }
+                        return category;
+                    })
+                }
+            }
+        case "[Admin] deleteCategory":
+            return {
+                ...state,
+                admInformation:{
+                    ...state.admInformation,
+                    Categorias: state.admInformation.Categorias.filter((category:any) => category._id !== action.payload)
+                }
+            }
         default:
            return state
     }
