@@ -1,6 +1,6 @@
 import { User } from "../interface/User";
 import { Area } from '../interface/Areas';
-import { Categorias } from '../interface/Admin';
+import { Categorias, Ambito } from '../interface/Admin';
 
 export type types =
   | { type: "[Admin] getUsers"; payload: User[] }
@@ -22,6 +22,11 @@ export type types =
   | { type: "[Admin] addCategory"; payload: Categorias }
   | { type: "[Admin] updateCategory"; payload: any }
   | { type: "[Admin] deleteCategory"; payload: String }
+  | { type: "[Admin] addAmbito"; payload: Ambito }
+  | { type: "[Admin] updateAmbito"; payload: any }
+  | { type: "[Admin] deleteAmbito"; payload: String }
+  | { type: "[Admin] setActiveAmbito"; payload: Ambito }
+  | { type: "[Admin] cleanActiveAmbito" }
   | { type: "[auth] Checking login state" }
   | { type: "[auth] Finish checking" }
   | { type: "[auth] Start login" }
@@ -30,5 +35,6 @@ export type types =
   | { type: "[auth] Start token renew" }
   | { type: "[auth] Logout" }
   | { type: "[info] getCategorias", payload: any }
+  | { type: "[info] getAmbitos", payload: any }
   | { type: "[ui] startLoading" }
   | { type: "[ui] stopLoading" };

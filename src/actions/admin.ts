@@ -3,6 +3,7 @@ import { User } from "../interface/User";
 import { types } from "../types/types";
 import { Area } from "../interface/Areas";
 import { ErrorSwall, toastMixin, LoadingSwall } from "../helpers/swalls";
+import { Ambito } from '../interface/Admin';
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -229,7 +230,6 @@ export const startUpdateArea = (id:string, area: object) => {
       .put('/admin/area/',area,{params:{id:id}})
       .then((res) => {
         if (res.data.ok) {
-          console.log(res.data.area);
           dispatch(updateArea(res.data.area));
           dispatch(changeResponseOK(true));
         } else {
@@ -334,7 +334,6 @@ export const startAddCategoria = (categoria: any) => {
     await reqInsConToken
       .post("/admin/categoria", categoria)
       .then((res) => {
-        console.log(res);
         if (!res.data.ok) {
           error = true;
           errorMsg = res.data.msg;
@@ -379,7 +378,6 @@ export const startUpdateCategoria = (id:string, categoria: object) => {
       .put('/admin/categoria/',categoria,{params:{id:id}})
       .then((res) => {
         if (res.data.ok) {
-          console.log(res.data.categoria);
           dispatch(updateCategoria(res.data.categoria));
           dispatch(changeResponseOK(true));
         } else {
@@ -456,6 +454,150 @@ export const setActiveCategory = (category: any): types => ({
 
 export const cleanActiveCategory = (): types => ({
   type: "[Admin] cleanActiveCategory",
+});
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+export const startGetAmbitos = ()=> {
+    return async (dispatch: any) => {
+      await reqInsConToken
+        .get("/info/scope")
+        .then((res) => {
+          dispatch(getAmbitos(res.data.ambitos));
+        })
+        .catch((err) => {ErrorSwall.fire();});
+    };
+  }
+
+const getAmbitos = (ambitos:any): types => ({
+  type: "[info] getAmbitos",
+  payload: ambitos,
+});
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+export const startAddAmbito = (ambito:Ambito) => {
+    return async (dispatch:any) =>{
+      LoadingSwall.fire();
+      let error = false;
+      let errorMsg = "";
+      await reqInsConToken.post('/admin/scope',ambito)
+      .then((res)=>{
+        if(!res.data.ok){
+          error = true;
+          errorMsg = res.data.msg;
+        }
+        else{
+          delete res.data.ok;
+          dispatch(addAmbito(res.data.ambito));
+          dispatch(changeResponseOK(true));
+        }
+      }).catch((err)=>{ErrorSwall.fire();});
+      LoadingSwall.close();
+      if(error){
+        ErrorSwall.fire({
+          text:`No se pudo crear el ambito,
+          Causa: ${errorMsg}`,
+          timer:3000
+        });
+      }else{
+        toastMixin.fire({
+          title:"Exito",
+          text:"Ambito creado",
+          icon:"success",
+          timer:2000
+        });
+      }
+  }
+}
+
+const addAmbito = (ambito:Ambito):types => ({
+  type: "[Admin] addAmbito",
+  payload: ambito,
+});
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+export const startUpdateAmbito = (id:string, ambito:object) => {
+  let error = false;
+  let errorMsg = "";
+  return async (dispatch:any) =>{
+    LoadingSwall.fire();
+    await reqInsConToken.put('/admin/scope',ambito,{params:{id:id}})
+    .then((res)=>{
+      if(res.data.ok){
+        dispatch(updateAmbito(res.data.ambito));
+        dispatch(changeResponseOK(true));
+      }else{
+        error = true;
+        errorMsg = res.data.msg;
+      }
+    }).catch((err)=>{ErrorSwall.fire();});
+    LoadingSwall.close();
+    if(error){
+      ErrorSwall.fire({
+        text:`No se pudo actualizar el ambito,
+        Causa: ${errorMsg}`,
+        timer:3000
+      });
+    }else{
+      toastMixin.fire({
+        title:"Exito",
+        text:"Ambito actualizado",
+        icon:"success",
+        timer:2000
+      });
+    }
+  }
+}
+
+const updateAmbito = (ambito:Ambito):types => ({
+  type: "[Admin] updateAmbito",
+  payload: ambito,
+});
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+export const startDeleteAmbito = (id:string) => {
+  let error = false;
+  LoadingSwall.fire();
+  return async (dispatch:any) =>{
+    await reqInsConToken.delete('/admin/scope',{params:{id:id}})
+    .then((res)=>{
+      if(res.data.ok){
+        dispatch(deleteAmbito(id));
+        dispatch(changeResponseOK(true));
+      }else{
+        error = true;
+      }
+    }).catch((err)=>{ErrorSwall.fire();});
+    LoadingSwall.close();
+    if(error){
+      ErrorSwall.fire({
+        text:`No se pudo eliminar el ambito`,
+        timer:3000
+      });
+    }else{
+      toastMixin.fire({
+        title:"Exito",
+        text:"Ambito eliminado",
+        icon:"success",
+        timer:2000
+      });
+    }
+  }
+}
+
+const deleteAmbito = (id:string):types => ({
+  type: "[Admin] deleteAmbito",
+  payload: id,
+});
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+export const setActiveAmbito = (ambito:Ambito):types => ({
+  type: "[Admin] setActiveAmbito",
+  payload: ambito,
+});
+
+export const cleanActiveAmbito = ():types => ({
+  type: "[Admin] cleanActiveAmbito",
 });
 
 

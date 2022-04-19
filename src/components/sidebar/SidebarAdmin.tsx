@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { IconContext } from 'react-icons';
 import { AiOutlineApartment, AiOutlineLogout, AiOutlineUser } from 'react-icons/ai';
+import { VscOpenPreview } from 'react-icons/vsc';
 import { BiCategory } from 'react-icons/bi';
 import { useDispatch } from 'react-redux';
 import { NavLink } from 'react-router-dom';
@@ -67,6 +68,17 @@ export const SidebarAdmin = () => {
                   <span className="title">Categorias</span>
                 </NavLink>
               </li>
+
+              
+              <li>
+                <NavLink  to={"/agenda/admin/ambitos"}>
+                  <span className="icon">
+                    <VscOpenPreview />
+                  </span>
+                  <span className="title">Ambitos</span>
+                </NavLink>
+              </li>
+
 
               <li>
                 <NavLink to={"/agenda"} onClick={handleLogOut}>

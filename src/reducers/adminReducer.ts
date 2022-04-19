@@ -7,9 +7,10 @@ const initialState:Admin = {
     admInformation:{
     Users: [],
     Areas: [],
+    Ambitos : [],
     Categorias: [],
     ResponseOk: false,
-    ActiveUser: null 
+    ActiveUser: null,
     }
 }
 
@@ -187,6 +188,59 @@ export const adminReducer = (state = initialState, action:types):Admin => {
                 admInformation:{
                     ...state.admInformation,
                     Categorias: state.admInformation.Categorias.filter((category:any) => category._id !== action.payload)
+                }
+            }
+        case "[info] getAmbitos":
+            return {
+                ...state,
+                admInformation:{
+                    ...state.admInformation,
+                    Ambitos: action.payload
+                }
+            }
+        case "[Admin] addAmbito":
+            return {
+                ...state,
+                admInformation:{
+                    ...state.admInformation,
+                    Ambitos: [...state.admInformation.Ambitos, action.payload],
+            }
+        }
+        case "[Admin] updateAmbito":
+            return {
+                ...state,
+                admInformation:{
+                    ...state.admInformation,
+                    Ambitos: state.admInformation.Ambitos.map((ambito:any) => {
+                        if (ambito._id === action.payload._id) {
+                            return action.payload;
+                        }
+                        return ambito;
+                    })
+                }
+            }
+        case "[Admin] deleteAmbito":
+            return {
+                ...state,
+                admInformation:{
+                    ...state.admInformation,
+                    Ambitos: state.admInformation.Ambitos.filter((ambito:any) => ambito._id !== action.payload)
+                }
+            }
+        case "[Admin] setActiveAmbito":
+            return {
+                ...state,
+                admInformation:{
+                    ...state.admInformation,
+                    ActiveAmbito: action.payload
+                }
+            }
+        case "[Admin] cleanActiveAmbito":
+            return {
+                ...state,
+                admInformation:{
+                    ...state.admInformation,
+                    ActiveAmbito: undefined
                 }
             }
         default:

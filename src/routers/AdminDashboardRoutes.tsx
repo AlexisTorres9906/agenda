@@ -9,6 +9,7 @@ import { UseDashboard } from '../hooks/UseDashboard';
 import '../styles/admin.scss'
 import { AreasAdm } from '../components/usuariosAdm/AreasAdm';
 import { CategoriasAdm } from '../components/usuariosAdm/CategoriasAdm';
+import { AmbitosAdm } from '../components/usuariosAdm/AmbitosAdm';
 
 export const AdminDashboardRoutes = () => {
   //logica necesaria para el dashboard
@@ -32,6 +33,7 @@ export const AdminDashboardRoutes = () => {
               <Route path="/" element={<UsuariosAdm />} />
               <Route path= "/areas" element={<AreasAdm />} />
               <Route path= "/categorias" element={<CategoriasAdm />} />
+              <Route path= "/ambitos" element={<AmbitosAdm />} />
               <Route path="/*" element={<UsuariosAdm />} />
             </Routes>
           </div>
