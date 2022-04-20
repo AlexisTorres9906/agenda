@@ -21,6 +21,12 @@
   }
   .navigation.active{
     width: 60px;
+    .welcome{
+      display: none;
+    }
+  }
+  .welcome{
+    padding-left: 15px;
   }
   .navigation ul {
     position: absolute;
@@ -42,6 +48,13 @@
   .navigation ul li:nth-child(1) {
     margin-bottom: 40px;
     pointer-events: none;
+  }
+
+  .navigation ul li:nth-child(2) {
+    margin-bottom: 10px;
+    pointer-events: none;
+    //first span
+   
   }
 
   .navigation ul li:nth-child(1) a span:nth-child(2) {

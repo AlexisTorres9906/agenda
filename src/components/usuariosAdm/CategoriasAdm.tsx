@@ -19,6 +19,7 @@ import * as Yup from "yup";
 import { startGetCategorias, cleanActiveCategory, setActiveCategory, startAddCategoria, changeResponseOK, startUpdateCategoria, startDeleteCategoria } from '../../actions/admin';
 import { LoadingInfo } from "../LoadingInfo";
 import { startRenew } from "../../actions/auth";
+import { QuestionSwall } from "../../helpers/swalls";
 
 const columns = [
   { field: "_id", headerName: "ID", width: 250 },
@@ -89,8 +90,12 @@ export const CategoriasAdm = () => {
 
   //delete Area
   const handleDeleteCategoria = () => {
+    QuestionSwall.fire().then((result) => {
+      if (result.value) {
     dispatch(startRenew());
     dispatch(startDeleteCategoria(ActiveCategory!._id));
+      }
+    });
   };
   
   //Add Area

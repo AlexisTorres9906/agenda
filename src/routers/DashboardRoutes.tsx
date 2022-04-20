@@ -30,6 +30,7 @@ export const DashboardRoutes = () => {
 
   useEffect(() => {
     dispatch(startRenew());
+    
   }, [location,dispatch]);
   
   return (

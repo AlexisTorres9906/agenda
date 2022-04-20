@@ -1,6 +1,8 @@
 import React, { useEffect } from "react";
-import { AiOutlineMenu} from "react-icons/ai";
+import { AiOutlineMenu } from "react-icons/ai";
 import "../../styles/Topbar.scss";
+import { RootState } from "../../store/store";
+import { useSelector } from "react-redux";
 export const Topbar = () => {
   //make event click on toggle
   const inputRef = React.useRef<HTMLDivElement>(null);
@@ -27,6 +29,7 @@ export const Topbar = () => {
         </div>
         {/*UserImg*/}
         <div className="user">
+            
           <img
             src={`${process.env.PUBLIC_URL}/assets/img/user.png`}
             alt="aqui va la foto"

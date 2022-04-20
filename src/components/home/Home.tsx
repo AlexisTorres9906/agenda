@@ -2,6 +2,7 @@ import "../../styles/home.scss";
 import { Head } from "./Head";
 import { GridRecientes } from "./GridRecientes";
 import { Contacts } from "./Contacts";
+import { NavLink } from "react-router-dom";
 
 export const Home = () => {
   return (
@@ -19,11 +20,11 @@ export const Home = () => {
           </div>
         </div>
       </div>
-      <a href="/agenda/home" className="btn-flotante">
+      <NavLink to={"/agenda/FAcuerdos"} className="btn-flotante">
         <span>
           <i className="fas fa-plus"></i>
         </span>
-      </a>
+      </NavLink>
     </div>
   );
 };

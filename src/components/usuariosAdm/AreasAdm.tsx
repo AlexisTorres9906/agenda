@@ -27,6 +27,7 @@ import * as Yup from "yup";
 import { BiRename } from "react-icons/bi";
 import { startAddArea, startUpdateArea } from '../../actions/admin';
 import { LoadingInfo } from '../LoadingInfo';
+import { QuestionSwall } from "../../helpers/swalls";
 
 const columns = [
   { field: "id", headerName: "ID", width: 250 },
@@ -131,8 +132,12 @@ export const AreasAdm = () => {
 
   //boton de eliminar area
   const handleEliminarArea = () => {
+    QuestionSwall.fire().then((result) => {
+      if (result.value) {
     dispatch(startDeleteArea(ActiveArea!._id));
     dispatch(startRenew());
+      }
+    });
   };
 
   return (

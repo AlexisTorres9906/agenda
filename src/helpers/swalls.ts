@@ -41,3 +41,14 @@ export const QuestionSwall = Swal.mixin({
   confirmButtonText: "Si, eliminar",
   cancelButtonText: "Cancelar",
 });
+
+export const QuestionExit = Swal.mixin({
+  title: "¿Estas seguro de que quieres salir?",
+  text: "Si sales, se perderan los cambios que hayas hecho",
+  icon: "warning",
+  showCancelButton: true,
+  confirmButtonColor: "#3085d6",
+  cancelButtonColor: "#d33",
+  confirmButtonText: "Si, salir",
+  cancelButtonText: "Cancelar",
+});

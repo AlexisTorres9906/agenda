@@ -3,11 +3,12 @@ import { IconContext } from 'react-icons';
 import { AiOutlineApartment, AiOutlineLogout, AiOutlineUser } from 'react-icons/ai';
 import { VscOpenPreview } from 'react-icons/vsc';
 import { BiCategory } from 'react-icons/bi';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import { clearAdmin } from '../../actions/admin';
 import { startLogout } from '../../actions/auth';
 import nayaritC from "../../assets/nayaritC.svg"
+import { RootState } from '../../store/store';
 
 export const SidebarAdmin = () => {
     const dispatch = useDispatch();
@@ -23,7 +24,7 @@ export const SidebarAdmin = () => {
         list.forEach((item) => item.removeEventListener("mouseover", activeLink));
       };
     }, []);
-  
+    const { name } = useSelector((state: RootState) => state.auth);
   
     const handleLogOut = () => {
       dispatch(startLogout());
@@ -43,6 +44,13 @@ export const SidebarAdmin = () => {
                   <span>Gobierno de Nayarit</span>
                 </NavLink>
               </li>
+
+              <li className='welcome'>
+                <NavLink to={"/"}>
+                  <span>Bienvenido {name}</span>
+                </NavLink>
+              </li>
+
               <li>
                 <NavLink to={"/agenda/admin/"}>
                   <span className="icon">

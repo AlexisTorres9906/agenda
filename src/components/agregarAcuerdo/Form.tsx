@@ -1,9 +1,15 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React from "react";
+import React, { useState } from "react";
+import { useCallbackPrompt } from "../../hooks/useCallbackPrompt";
 
 import "../../styles/agregarAcuerdo.scss";
+import { useEffect } from 'react';
+import { QuestionExit } from '../../helpers/swalls';
+import DialogBox from "../DialogBox.component";
 
 export const Form = () => {
+
+  //cosas de las animaciones
   const divTabcon = React.useRef<HTMLDivElement>(null);
   const divTabinv = React.useRef<HTMLDivElement>(null);
   const anchorTabcon = React.useRef<HTMLAnchorElement>(null);
@@ -27,17 +33,39 @@ export const Form = () => {
 
   const goToNextTab = (e: any) => {
     e.preventDefault();
-      divTabinv.current?.classList.add("active");
-      anchorTabinv.current?.classList.add("active");
-      divTabcon.current?.classList.remove("active");
-      anchorTabcon.current?.classList.remove("active");
+    divTabinv.current?.classList.add("active");
+    anchorTabinv.current?.classList.add("active");
+    divTabcon.current?.classList.remove("active");
+    anchorTabcon.current?.classList.remove("active");
   };
+  ////////////////////////////////////////////////////////////////////////////////////////////////
+  //cosas iniciales
+  const [showDialog, setShowDialog] = useState<boolean>(true)
+  const [showPrompt, confirmNavigation, cancelNavigation] =
+  useCallbackPrompt (showDialog)
+
+  useEffect(() => {
+    return () => {
+      console.log("cleanup");   
+    }
+  }, [])
+  
+  
 
 
   return (
     <section className="acuerdos-form">
+      {
+           <DialogBox
+           // @ts-ignore
+           showDialog={showPrompt}
+           confirmNavigation={confirmNavigation}
+           cancelNavigation={cancelNavigation}
+         />
+      }
+   
       <form>
-        <div>
+      <div>
           <h2 className="text-center">Acuerdos</h2>
         </div>
         <div>
@@ -171,12 +199,6 @@ export const Form = () => {
                   onClick={goToNextTab}
                 ></i>
               </div>
-
-              <div className="d-flex justify-content-center align-items-center mb-3">
-                <button className="btn btn-primary" type="submit">
-                  Crear Actividad
-                </button>
-              </div>
             </div>
 
             <div
@@ -188,6 +210,11 @@ export const Form = () => {
               <p>Content for tab 2.</p>
             </div>
           </div>
+        </div>
+        <div className="d-flex justify-content-center align-items-center mb-3">
+          <button className="btn btn-primary" type="submit">
+            Crear Actividad
+          </button>
         </div>
       </form>
     </section>

@@ -8,9 +8,10 @@ import {
 import { IconContext } from "react-icons";
 import { useEffect } from "react";
 import { NavLink } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { startLogout } from "../../actions/auth";
-import nayaritC from "../../assets/nayaritC.svg"
+import nayaritC from "../../assets/nayaritC.svg";
+import { RootState } from "../../store/store";
 
 export const Sidebar = () => {
   const dispatch = useDispatch();
@@ -27,6 +28,7 @@ export const Sidebar = () => {
     };
   }, []);
 
+  const { name } = useSelector((state: RootState) => state.auth);
 
   const handleLogOut = () => {
     dispatch(startLogout());
@@ -37,7 +39,7 @@ export const Sidebar = () => {
       <IconContext.Provider value={{ className: "shared-class" }}>
         <div className="navigation">
           <ul>
-            <li >
+            <li>
               <NavLink to={"/"}>
                 <span className="icon">
                   <img src={nayaritC} width="35px" alt="nayarit" />
@@ -45,6 +47,13 @@ export const Sidebar = () => {
                 <span>Gobierno de Nayarit</span>
               </NavLink>
             </li>
+
+            <li className='welcome'>
+                <NavLink to={"/"}>
+                  <span>Bienvenido {name}</span>
+                </NavLink>
+              </li>
+            
             <li>
               <NavLink className="hovered" to={"/agenda/"}>
                 <span className="icon">
