@@ -79,6 +79,7 @@ export const AmbitosAdm = () => {
         dispatch(startAddAmbito(values as Ambito));
       }
     },
+    
   };
 
   //click sobre una fila
@@ -154,7 +155,6 @@ export const AmbitosAdm = () => {
                     <Typography variant="h5" id="modal-modal-title">
                       {ActiveAmbito ? "Editar Ambito" : "Agregar Ambito"}
                     </Typography>
-
                     <div className="mb-3 mt-3">
                       <label className="form-label">
                         <BiRename />

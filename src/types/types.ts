@@ -19,9 +19,11 @@ export type types =
   | { type: "[Admin] cleanActiveArea"}
   | { type: "[Admin] setActiveCategory"; payload: Categorias }
   | { type: "[Admin] cleanActiveCategory" }
+  | { type: "[Admin] getCategorias", payload: any }
   | { type: "[Admin] addCategory"; payload: Categorias }
   | { type: "[Admin] updateCategory"; payload: any }
   | { type: "[Admin] deleteCategory"; payload: String }
+  | { type: "[Admin] getAmbitos", payload: any }
   | { type: "[Admin] addAmbito"; payload: Ambito }
   | { type: "[Admin] updateAmbito"; payload: any }
   | { type: "[Admin] deleteAmbito"; payload: String }

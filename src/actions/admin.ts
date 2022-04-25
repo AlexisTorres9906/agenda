@@ -322,7 +322,7 @@ export const startGetCategorias = ()=> {
 }
 
 const getCategorias = (categorias:any): types => ({
-  type: "[info] getCategorias",
+  type: "[Admin] getCategorias",
   payload: categorias,
 });
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -470,7 +470,7 @@ export const startGetAmbitos = ()=> {
   }
 
 const getAmbitos = (ambitos:any): types => ({
-  type: "[info] getAmbitos",
+  type: "[Admin] getAmbitos",
   payload: ambitos,
 });
 

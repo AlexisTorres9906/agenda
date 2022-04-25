@@ -1,8 +1,6 @@
 import React, { useEffect } from "react";
 import { AiOutlineMenu } from "react-icons/ai";
 import "../../styles/Topbar.scss";
-import { RootState } from "../../store/store";
-import { useSelector } from "react-redux";
 export const Topbar = () => {
   //make event click on toggle
   const inputRef = React.useRef<HTMLDivElement>(null);

@@ -8,7 +8,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { startRenew, tokenIsValid } from '../actions/auth';
 import { RootState } from "../store/store";
-import { Form } from "../components/agregarAcuerdo/Form";
+import { AgregarAcuerdoForm } from '../components/agregarAcuerdo/AgregarAcuerdoForm';
 export const DashboardRoutes = () => {
   //logica necesaria para el dashboard
   UseDashboard();
@@ -42,7 +42,7 @@ export const DashboardRoutes = () => {
           <div className="content">
             <Routes>
               <Route path="/" element={<Home />} />
-              <Route path="/FAcuerdos" element={<Form/>} />
+              <Route path="/FAcuerdos" element={<AgregarAcuerdoForm/>} />
               <Route path="/*" element={<Home />} />
             </Routes>
           </div>

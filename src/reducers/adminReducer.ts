@@ -137,7 +137,7 @@ export const adminReducer = (state = initialState, action:types):Admin => {
                     Areas: state.admInformation.Areas.filter((area:any) => area._id !== action.payload)
                 }
             }
-        case "[info] getCategorias":
+        case "[Admin] getCategorias":
             return {
                 ...state,
                 admInformation:{
@@ -190,7 +190,7 @@ export const adminReducer = (state = initialState, action:types):Admin => {
                     Categorias: state.admInformation.Categorias.filter((category:any) => category._id !== action.payload)
                 }
             }
-        case "[info] getAmbitos":
+        case "[Admin] getAmbitos":
             return {
                 ...state,
                 admInformation:{
