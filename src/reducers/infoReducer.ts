@@ -4,6 +4,7 @@ import { types } from '../types/types';
 const InitialState: Info = {
     Categorias: [],
     Ambitos: [],
+    FolioA: ''
 }
 
 export const infoReducer = (state = InitialState, action: types): Info => {
@@ -18,6 +19,11 @@ export const infoReducer = (state = InitialState, action: types): Info => {
             return {
                 ...state,
                 Ambitos: action.payload
+            }
+        case "[info] getFolioA":
+            return {
+                ...state,
+                FolioA: action.payload
             }
         default:
             return state;

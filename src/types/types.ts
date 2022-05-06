@@ -38,5 +38,6 @@ export type types =
   | { type: "[auth] Logout" }
   | { type: "[info] getCategorias", payload: any }
   | { type: "[info] getAmbitos", payload: any }
+  | { type: "[info] getFolioA", payload: any }
   | { type: "[ui] startLoading" }
   | { type: "[ui] stopLoading" };

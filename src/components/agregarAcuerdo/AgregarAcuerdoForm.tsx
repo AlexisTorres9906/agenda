@@ -1,10 +1,8 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useRef, useState } from "react";
 import { useCallbackPrompt } from "../../hooks/useCallbackPrompt";
-
 import "../../styles/agregarAcuerdo.scss";
 import { useEffect } from "react";
-
 import DialogBox from "../DialogBox.component";
 import {
   Formik,
@@ -15,14 +13,20 @@ import {
   useFormikContext,
   useField,
   ErrorMessage,
+  FormikHelpers,
 } from "formik";
 import * as Yup from "yup";
 import DatePicker, { registerLocale, setDefaultLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import es from "date-fns/locale/es";
 import { useDispatch, useSelector } from "react-redux";
-import { startGetAmbitos, startGetCategorias } from "../../actions/info";
+import {
+  startGetAmbitos,
+  startGetCategorias,
+  startGetFolioA,
+} from "../../actions/info";
 import { RootState } from "../../store/store";
+import { sendAcuerdo } from "../../Api/sendAcuerdo";
 registerLocale("es", es);
 setDefaultLocale("es");
 
@@ -87,46 +91,59 @@ export const AgregarAcuerdoForm = () => {
 
   const [showDialog, setShowDialog] = useState<boolean>(false);
   const dispatch = useDispatch();
-  const initialValues = useRef({
-    nombre: "",
-    descripcion: "",
-    fechaI: "",
-    fechaP: "",
-    categoria: "",
-    ambito: "",
-    lugar: "",
-  })
   const [showPrompt, confirmNavigation, cancelNavigation] =
     useCallbackPrompt(showDialog);
-  const { Ambitos, Categorias } = useSelector((state: RootState) => state.info);
+  const { Ambitos, Categorias, FolioA } = useSelector(
+    (state: RootState) => state.info
+  );
+  const valoresIniciales = {
+    nombre: "",
+    descripcion: "",
+    fechaInstruccion: "",
+    fechaPCierre: "",
+    prioridad: "Baja",
+    categoria: Categorias[0] ? Categorias[0]._id : "",
+    ambito: Ambitos[0] ? Ambitos[0]._id : "",
+    lugar: "",
+  };
+  const initialValues = useRef(valoresIniciales);
+  //Saca la información de los select
   useEffect(() => {
     const load = async () => {
       await Promise.all([
         dispatch(startGetCategorias()),
         dispatch(startGetAmbitos()),
+        dispatch(startGetFolioA()),
       ]);
     };
     load();
   }, [dispatch]);
-
+  //Esto se utiliza para llenar el primer campo del formik en ambitos y categorias
   useEffect(() => {
     initialValues.current.ambito = Ambitos[0] ? Ambitos[0]._id : "";
     initialValues.current.categoria = Categorias[0] ? Categorias[0]._id : "";
-  }, [Categorias, Ambitos,initialValues]);
+  }, [Categorias, Ambitos, initialValues]);
 
+  //Utilizo esto para algunos bugs relacionados al Formik que suceden al recargar la pagina
   const FormFormik = () => {
     // Grab values and submitForm from context
     const { values } = useFormikContext();
     let valores = values as any;
     useEffect(() => {
-       //if a value besides categoria or ambito is changed, then the form is invalid
-       if(valores.nombre!=="" || valores.descripcion!=="" ||valores.fechaI!=="" ||valores.fechaP!=="" ||valores.lugar!=="" || valores.lugar!==""){
+      if (
+        valores.nombre !== "" ||
+        valores.descripcion !== "" ||
+        valores.fechaInstruccion !== "" ||
+        valores.fechaPCierre !== "" ||
+        valores.lugar !== ""
+      ) {
         setShowDialog(true);
-       }
-    }, [values,valores]);
+      } else {
+        setShowDialog(false);
+      }
+    }, [values, valores]);
     return null;
   };
-  
 
   ////////////////////////////////////////////////////////////////////////////////////////////////
   //formik
@@ -136,17 +153,17 @@ export const AgregarAcuerdoForm = () => {
     descripcion: Yup.string().required(
       "La descripción del acuerdo es requerida"
     ),
-    //fechaI must be a date or null
-    fechaI: Yup.date().nullable(),
-    //fechaP must be a date or null
-    fechaP: Yup.date()
+    //fechaInstruccion must be a date or null
+    fechaInstruccion: Yup.date().nullable(),
+    //fechaPCierre must be a date or null
+    fechaPCierre: Yup.date()
       .nullable()
-      .when("fechaI", {
+      .when("fechaInstruccion", {
         is: (val: any) => val !== "",
         // la fecha de inicio debe ser menor a la fecha de finalizacion o null
         then: Yup.date()
           .min(
-            Yup.ref("fechaI"),
+            Yup.ref("fechaInstruccion"),
             "La fecha de finalizacion debe ser mayor a la fecha de instrucción"
           )
           .nullable(),
@@ -157,30 +174,40 @@ export const AgregarAcuerdoForm = () => {
   });
 
   const FormikProps: FormikConfig<FormikValues> = {
-     initialValues: initialValues.current,
-      validationSchema: validationSchema,
-      enableReinitialize: true,
-      onSubmit: (values) => {
-          console.log(values);
-      },
+    initialValues: initialValues.current,
+    validationSchema: validationSchema,
+    enableReinitialize: true,
+    onSubmit: function (
+      values: FormikValues,
+      { resetForm }: FormikHelpers<FormikValues>
+    ): void | Promise<any> {
+      sendAcuerdo(values)
+        .then((res) => {
+          if (res) {
+            //restart the form
+            resetForm();
+            dispatch(startGetFolioA());
+          }
+        })
+        .catch((err) => {});
+    },
   };
 
   ////////////////////////////////////////////////////////////////////////////////////////////////
 
   return (
     <section className="acuerdos-form">
-       
-        <DialogBox
-          // @ts-ignore
-          showDialog={showPrompt}
-          confirmNavigation={confirmNavigation}
-          cancelNavigation={cancelNavigation}
-        />
+      <DialogBox
+        // @ts-ignore
+        showDialog={showPrompt}
+        confirmNavigation={confirmNavigation}
+        cancelNavigation={cancelNavigation}
+      />
 
       <Formik {...FormikProps}>
         {(form) => (
           <Form>
-              <FormFormik/>
+            <FormFormik />
             <div>
               <h2 className="text-center">Acuerdos</h2>
             </div>
@@ -217,7 +244,7 @@ export const AgregarAcuerdoForm = () => {
                   role="tabpanel"
                   ref={divTabcon}
                 >
-                  <h6>AU-000006-2022</h6>
+                  <h6>{FolioA}</h6>
 
                   <div className="mb-3">
                     <label className="form-label">
@@ -262,15 +289,15 @@ export const AgregarAcuerdoForm = () => {
                       <i className="far fa-calendar-alt"></i> Fecha Instrucción
                     </label>
                     <DatePickerField
-                      name="fechaI"
+                      name="fechaInstruccion"
                       className={`form-control ${
-                        form.touched.fechaI &&
-                        form.errors.fechaI &&
+                        form.touched.fechaInstruccion &&
+                        form.errors.fechaInstruccion &&
                         "is-invalid"
                       }`}
                     />
                     <div style={{ color: "red" }}>
-                      <ErrorMessage name="fechaI" component="div" />
+                      <ErrorMessage name="fechaInstruccion" component="div" />
                     </div>
                   </div>
                   <div className="mb-3">
@@ -279,15 +306,15 @@ export const AgregarAcuerdoForm = () => {
                       de cierre
                     </label>
                     <DatePickerField
-                      name="fechaP"
+                      name="fechaPCierre"
                       className={`form-control ${
-                        form.touched.fechaP &&
-                        form.errors.fechaP &&
+                        form.touched.fechaPCierre &&
+                        form.errors.fechaPCierre &&
                         "is-invalid"
                       }`}
                     />
                     <div style={{ color: "red" }}>
-                      <ErrorMessage name="fechaP" component="div" />
+                      <ErrorMessage name="fechaPCierre" component="div" />
                     </div>
                   </div>
 
@@ -298,6 +325,7 @@ export const AgregarAcuerdoForm = () => {
                     <Field
                       as="select"
                       name="prioridad"
+                      type="number"
                       className={`form-control ${
                         form.touched.prioridad &&
                         form.errors.prioridad &&
@@ -305,9 +333,9 @@ export const AgregarAcuerdoForm = () => {
                       }`}
                     >
                       <optgroup label="Escoge una prioridad">
-                        <option value="0">Baja</option>
-                        <option value="1">Media</option>
-                        <option value="2">Alta</option>
+                        <option value="Baja">Baja</option>
+                        <option value="Media">Media</option>
+                        <option value="Alta">Alta</option>
                       </optgroup>
                     </Field>
                     <div style={{ color: "red" }}>

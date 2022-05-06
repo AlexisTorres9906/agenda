@@ -40,3 +40,20 @@ const getAmbitos = (ambitos:any): types => ({
 });
 
 ///////////////////////////////////////////////////////////////////////////////
+export const startGetFolioA = ()=> {
+    return async (dispatch: any) => {
+      await reqInsConToken
+        .get("/info/folio")
+        .then((res) => {
+          dispatch(getFolioA(res.data.folio));
+        })
+        .catch((err) => {ErrorSwall.fire();});
+    };
+  }
+
+  const getFolioA = (folioA:any): types => ({
+    type: "[info] getFolioA",
+    payload: folioA,
+  });
+
+///////////////////////////////////////////////////////////////////////////////
