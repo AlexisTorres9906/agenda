@@ -181,10 +181,19 @@ export const AgregarAcuerdoForm = () => {
       values: FormikValues,
       { resetForm }: FormikHelpers<FormikValues>
     ): void | Promise<any> {
-      sendAcuerdo(values)
+      //eliminate nulls
+      const valores = { ...values };
+      Object.keys(valores).forEach((key) => {
+        if (valores[key] === "") {
+          delete valores[key];
+        }
+      }
+      );
+      console.log(valores);
+      
+      sendAcuerdo(valores)
         .then((res) => {
           if (res) {
-            //restart the form
             resetForm();
             dispatch(startGetFolioA());
           }
@@ -406,6 +415,7 @@ export const AgregarAcuerdoForm = () => {
                       type="text"
                       name="lugar"
                       placeholder="Ingrese un lugar o domicilio..."
+                      autoComplete="off"
                     />
                     <div style={{ color: "red" }}>
                       <ErrorMessage name="lugar" component="div" />

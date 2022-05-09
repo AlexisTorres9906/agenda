@@ -4,7 +4,9 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import './index.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
+//import { registerLicense } from '@syncfusion/ej2-base';
 
+//registerLicense('License Key');
 
 ReactDOM.render(
   <React.StrictMode>

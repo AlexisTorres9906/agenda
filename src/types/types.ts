@@ -1,8 +1,11 @@
 import { User } from "../interface/User";
 import { Area } from '../interface/Areas';
 import { Categorias, Ambito } from '../interface/Admin';
+import { Acuerdo } from '../interface/Acuerdos';
 
 export type types =
+  | { type: "[Acuerdo] getAcuerdos"; payload: Acuerdo[] }
+  | { type: "[Acuerdo] clearAcuerdos" }
   | { type: "[Admin] getUsers"; payload: User[] }
   | { type: "[Admin] addUser"; payload: User }
   | { type: "[Admin] updateUser"; payload: any }
@@ -39,5 +42,6 @@ export type types =
   | { type: "[info] getCategorias", payload: any }
   | { type: "[info] getAmbitos", payload: any }
   | { type: "[info] getFolioA", payload: any }
+  | { type: "[info] reset" }
   | { type: "[ui] startLoading" }
   | { type: "[ui] stopLoading" };

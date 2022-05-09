@@ -1,10 +1,10 @@
 import "../../styles/Sidebar.scss";
 import {
   AiOutlineHome,
-  AiOutlineUser,
   AiOutlineLogout,
   AiOutlineFileAdd,
 } from "react-icons/ai";
+import { TiDocumentText } from "react-icons/ti";
 import { IconContext } from "react-icons";
 import { useEffect } from "react";
 import { NavLink } from "react-router-dom";
@@ -67,15 +67,15 @@ export const Sidebar = () => {
                 <span className="icon">
                   <AiOutlineFileAdd />
                 </span>
-                <span className="title">Agregar Actividad</span>
+                <span className="title">Agregar Acuerdos</span>
               </NavLink>
             </li>
             <li>
-              <NavLink to={"/agenda/home"}>
+              <NavLink to={"/agenda/vAcuerdos"}>
                 <span className="icon">
-                  <AiOutlineUser />
+                  <TiDocumentText />
                 </span>
-                <span className="title">Ejemplo 2</span>
+                <span className="title">Ver Acuerdos</span>
               </NavLink>
             </li>
             <li>

@@ -9,6 +9,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { startRenew, tokenIsValid } from '../actions/auth';
 import { RootState } from "../store/store";
 import { AgregarAcuerdoForm } from '../components/agregarAcuerdo/AgregarAcuerdoForm';
+import { Vacuerdos } from '../components/verAcuerdos/Vacuerdos';
+import { startGetAcuerdos } from '../actions/acuerdo';
 export const DashboardRoutes = () => {
   //logica necesaria para el dashboard
   UseDashboard();
@@ -30,9 +32,15 @@ export const DashboardRoutes = () => {
 
   useEffect(() => {
     dispatch(startRenew());
-    
   }, [location,dispatch]);
   
+  //acuerdos del usuario
+  useEffect(() => {
+    dispatch(startGetAcuerdos());
+  }, [dispatch])
+  
+
+
   return (
     <div className="dashboard">
       <div className="containerP">
@@ -43,6 +51,7 @@ export const DashboardRoutes = () => {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/FAcuerdos" element={<AgregarAcuerdoForm/>} />
+              <Route path="/vAcuerdos" element={<Vacuerdos/>} />
               <Route path="/*" element={<Home />} />
             </Routes>
           </div>

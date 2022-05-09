@@ -25,6 +25,11 @@ export const infoReducer = (state = InitialState, action: types): Info => {
                 ...state,
                 FolioA: action.payload
             }
+        case "[info] reset":
+            return {
+                ...InitialState
+            }
+            
         default:
             return state;
     }

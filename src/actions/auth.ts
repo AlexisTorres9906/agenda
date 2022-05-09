@@ -107,7 +107,10 @@ export const startLogout = () => {
   return (dispatch: any) => {
     localStorage.removeItem("token");
     localStorage.removeItem("token-init-date");
+    localStorage.clear();
     dispatch(logout());
+    dispatch(deleteInfo());
+    dispatch(deleteAcuerdos());
   };
 };
 
@@ -115,6 +118,14 @@ const logout = (): types => ({
   type: "[auth] Logout",
 });
 
+const deleteInfo = (): types => ({
+  type: "[info] reset",
+});
+
+
+const deleteAcuerdos = (): types => ({
+  type: "[Acuerdo] clearAcuerdos",
+});
 const login = (user: User): types => ({
   type: "[auth] Login",
   payload: user,
