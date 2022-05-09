@@ -80,7 +80,7 @@ export const Vacuerdos = () => {
         };
       })
     );
-  }, [acuerdos,data]);
+  }, [acuerdos]);
 
   //////////////////////////////////////////
 
@@ -93,6 +93,7 @@ export const Vacuerdos = () => {
           treeColumnIndex={1}
           childMapping="compromiso"
           height="550"
+          width="100%"
           allowFiltering={true}
           allowSorting={true}
           pageSettings={{ pageSize: 50 }}
@@ -108,37 +109,37 @@ export const Vacuerdos = () => {
         >
           <ColumnsDirective>
             <ColumnDirective field="_id" visible={false} />
-            <ColumnDirective field="folio" headerText="Folio" width="30" />
-            <ColumnDirective field="nombre" headerText="Nombre" width="30" />
-            <ColumnDirective field="estatus" headerText="Estatus" width="30" />
+            <ColumnDirective field="folio" headerText="Folio" width="120" />
+            <ColumnDirective field="nombre" headerText="Nombre" width="120" />
+            <ColumnDirective field="estatus" headerText="Estatus" width="120" />
             <ColumnDirective
               field="prioridad"
               headerText="Prioridad"
-              width="30"
+              width="120"
             />
 
               <ColumnDirective
               field="categoria.nombre"
               headerText="Categoria"
-              width="30"
+              width="120"
               format="yMd"
             />
              <ColumnDirective
               field="ambito.nombre"
               headerText="Ambito"
-              width="30"
+              width="120"
               format="yMd"
             />
              <ColumnDirective
               field="fechaInstruccion"
               headerText="Instruccion"
-              width="30"
+              width="140"
               format="yMd"
             />
             <ColumnDirective
               field="fechaCreacion"
               headerText="Creación"
-              width="30"
+              width="120"
               format="yMd"
               visible={false}
             />

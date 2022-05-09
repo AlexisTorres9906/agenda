@@ -1,35 +1,49 @@
-.content{
-    margin: 0 !important;
+.content {
+  margin: 0 !important;
+
+  .e-grid .e-csvexport::before,
+  .e-grid-menu .e-csvexport::before {
+    content: "\e241";
+  }
+
+  .e-grid .e-print::before,
+  .e-grid-menu .e-print::before {
+    content: "\e813";
+  }
+  .e-grid .e-pdfexport::before,
+  .e-grid-menu .e-pdfexport::before {
+    content: "\e240";
+  }
+  .e-grid .e-excelexport::before,
+  .e-grid-menu .e-excelexport::before {
+    content: "\e242";
+  }
 }
 
-h1{
-  
+h1 {
   @media (min-width: 1200px) {
     margin-left: 10vw;
   }
-    
+}
+
+.TableInf {
+  width: 100%;
+  border-collapse: collapse;
+  height: 90%;
+  border-spacing: 0;
+  margin-bottom: 20px;
+  //flex
+  display: flex;
+
+  @media (min-width: 1200px) {
+    margin-left: 150px;
+    width: 1100px;
+    //center div
+    justify-content: center;
+    align-items: center;
   }
 
-.TableInf{
-    width: 100%;
-    border-collapse: collapse;
-    height: 90%;
-    border-spacing: 0;
-    margin-bottom: 20px;
-    //flex
-    display: flex;
-
-    @media (min-width: 1200px) {
-        margin-left: 150px;
-        width: 1100px;
-       //center div
-         justify-content: center;
-         align-items: center;
-
-    }
-
-
-.btn-flotante {
+  .btn-flotante {
     font-size: 1.5rem; /* Cambiar el tamaño de la tipografia */
     text-transform: uppercase; /* Texto en mayusculas */
     font-weight: bold; /* Fuente en negrita o bold */
@@ -60,7 +74,7 @@ h1{
       right: 0px;
     }
   }
-  button{
+  button {
     font-size: 0.5rem;
   }
 }
