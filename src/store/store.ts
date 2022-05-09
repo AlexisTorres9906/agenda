@@ -1,9 +1,8 @@
 import { createStore, applyMiddleware, compose } from "redux";
-import thunk, { ThunkDispatch } from "redux-thunk";
+import thunk from "redux-thunk";
 import { rootReducer } from "../reducers/rootReducers";
 import storage from 'redux-persist/lib/storage';
 import { persistStore, persistReducer } from 'redux-persist';
-import {  useDispatch } from "react-redux";
 
 
   const composeEnhancers = process.env.NODE_ENV === 'development' ? (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({

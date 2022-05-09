@@ -80,8 +80,7 @@ export const Vacuerdos = () => {
         };
       })
     );
-    console.log(data);
-  }, [acuerdos]);
+  }, [acuerdos,data]);
 
   //////////////////////////////////////////
 

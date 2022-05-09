@@ -189,7 +189,6 @@ export const AgregarAcuerdoForm = () => {
         }
       }
       );
-      console.log(valores);
       
       sendAcuerdo(valores)
         .then((res) => {
