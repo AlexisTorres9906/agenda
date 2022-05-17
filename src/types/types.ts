@@ -5,6 +5,9 @@ import { Acuerdo } from '../interface/Acuerdos';
 
 export type types =
   | { type: "[Acuerdo] getAcuerdos"; payload: Acuerdo[] }
+  | { type: "[Acuerdo] addAcuerdo"; payload: Acuerdo }
+  | { type: "[Acuerdo] setActiveAcuerdo"; payload: Acuerdo }
+  | { type: "[Acuerdo] clearActiveAcuerdo" }
   | { type: "[Acuerdo] clearAcuerdos" }
   | { type: "[Admin] getUsers"; payload: User[] }
   | { type: "[Admin] addUser"; payload: User }

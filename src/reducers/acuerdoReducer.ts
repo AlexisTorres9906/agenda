@@ -3,6 +3,7 @@ import { types } from '../types/types';
 
 interface AcuerdoState {
     acuerdos: Acuerdo[];
+    activeAcuerdo?: Acuerdo;
 }
 
 const initialState:AcuerdoState = {
@@ -20,6 +21,21 @@ export const acuerdoReducer = (state = initialState, action:types):AcuerdoState 
             return {
                 ...state,
                 acuerdos: []
+            }
+        case "[Acuerdo] addAcuerdo":
+            return {
+                ...state,
+                acuerdos: [...state.acuerdos, action.payload]
+            }
+        case "[Acuerdo] setActiveAcuerdo":
+            return {
+                ...state,
+                activeAcuerdo: action.payload
+            }
+        case "[Acuerdo] clearActiveAcuerdo":
+            return {
+                ...state,
+                activeAcuerdo: undefined
             }
         default:
             return state;

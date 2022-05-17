@@ -27,6 +27,7 @@ import {
 } from "../../actions/info";
 import { RootState } from "../../store/store";
 import { sendAcuerdo } from "../../Api/sendAcuerdo";
+import { addAcuerdo } from '../../actions/acuerdo';
 registerLocale("es", es);
 setDefaultLocale("es");
 
@@ -192,9 +193,10 @@ export const AgregarAcuerdoForm = () => {
       
       sendAcuerdo(valores)
         .then((res) => {
-          if (res) {
+          if (Object.entries(res).length !== 0) {
             resetForm();
             dispatch(startGetFolioA());
+            dispatch(addAcuerdo(res));
           }
         })
         .catch((err) => {});

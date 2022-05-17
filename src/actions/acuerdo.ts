@@ -10,6 +10,7 @@ export const startGetAcuerdos = ()=> {
         await reqInsConToken
             .get("/acuerdo")
             .then((res) => {
+                
                 dispatch(getAcuerdos(res.data.acuerdos));
             }
             )
@@ -29,5 +30,18 @@ const getAcuerdos = (acuerdos:any): types => ({
     payload: acuerdos,
 });
 
+export const addAcuerdo = (acuerdo:any): types => ({
+    type: "[Acuerdo] addAcuerdo",
+    payload: acuerdo,
+});
 
 ////////////////////////////////////////////////////////////////////////////////
+
+export const setActiveAcuerdo = (acuerdo:any): types => ({
+    type: "[Acuerdo] setActiveAcuerdo",
+    payload: acuerdo,
+});
+
+export const clearActiveAcuerdo = (): types => ({
+    type: "[Acuerdo] clearActiveAcuerdo",
+});

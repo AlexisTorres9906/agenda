@@ -3,13 +3,13 @@ import { ErrorSwall, LoadingSwall, toastMixin } from "../helpers/swalls";
 
 export const sendAcuerdo = async (acuerdo: object) => {
   LoadingSwall.fire();
-  let ok = false;
+  let data:object = {};
   await reqInsConToken
     .post("/acuerdo", acuerdo)
     .then((res) => {
       LoadingSwall.close();
       if (res.data.ok) {
-        ok = true;
+        data = res.data.acuerdo;
         toastMixin.fire({
           icon: "success",
           title: "Acuerdo Creado Exitosamente",
@@ -23,5 +23,5 @@ export const sendAcuerdo = async (acuerdo: object) => {
     .catch((err) => {
       ErrorSwall.fire();
     });
-  return ok;
+  return data;
 };
