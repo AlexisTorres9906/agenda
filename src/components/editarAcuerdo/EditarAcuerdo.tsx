@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useCallbackPrompt } from "../../hooks/useCallbackPrompt";
 import "../../styles/agregarAcuerdo.scss";
 import { useEffect } from "react";
@@ -20,14 +20,11 @@ import DatePicker, { registerLocale, setDefaultLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import es from "date-fns/locale/es";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  startGetAmbitos,
-  startGetCategorias,
-  startGetFolioA,
-} from "../../actions/info";
+import { startGetAmbitos, startGetCategorias } from "../../actions/info";
 import { RootState } from "../../store/store";
-import { sendAcuerdo } from "../../Api/sendAcuerdo";
-import { addAcuerdo } from '../../actions/acuerdo';
+import { updateAcuerdo } from "../../Api/sendAcuerdo";
+import { clearActiveAcuerdo, updateAcuerdoL } from "../../actions/acuerdo";
+import { useNavigate } from "react-router";
 registerLocale("es", es);
 setDefaultLocale("es");
 
@@ -56,13 +53,12 @@ const DatePickerField = ({ ...props }) => {
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
-
-export const AgregarAcuerdoForm = () => {
+export const EditarAcuerdo = () => {
   //cosas de las animaciones
-  const divTabcon = React.useRef<HTMLDivElement>(null);
-  const divTabinv = React.useRef<HTMLDivElement>(null);
-  const anchorTabcon = React.useRef<HTMLAnchorElement>(null);
-  const anchorTabinv = React.useRef<HTMLAnchorElement>(null);
+  const divTabcon = useRef<HTMLDivElement>(null);
+  const divTabinv = useRef<HTMLDivElement>(null);
+  const anchorTabcon = useRef<HTMLAnchorElement>(null);
+  const anchorTabinv = useRef<HTMLAnchorElement>(null);
 
   //cambios en los tabs
   const handleChangeTab = (e: any) => {
@@ -94,18 +90,19 @@ export const AgregarAcuerdoForm = () => {
   const dispatch = useDispatch();
   const [showPrompt, confirmNavigation, cancelNavigation] =
     useCallbackPrompt(showDialog);
-  const { Ambitos, Categorias, FolioA } = useSelector(
-    (state: RootState) => state.info
-  );
+  const { Ambitos, Categorias } = useSelector((state: RootState) => state.info);
+  const { activeAcuerdo } = useSelector((state: RootState) => state.acuerdos);
+  const navigate = useNavigate();
+  const envio = useRef(0)
   const valoresIniciales = {
-    nombre: "",
-    descripcion: "",
-    fechaInstruccion: "",
-    fechaPCierre: "",
-    prioridad: "Baja",
-    categoria: Categorias[0] ? Categorias[0]._id : "",
-    ambito: Ambitos[0] ? Ambitos[0]._id : "",
-    lugar: "",
+    nombre: activeAcuerdo?.nombre,
+    descripcion: activeAcuerdo?.descripcion,
+    fechaInstruccion: activeAcuerdo?.fechaInstruccion,
+    fechaPCierre: activeAcuerdo?.fechaPCierre,
+    prioridad: activeAcuerdo?.prioridad,
+    categoria: activeAcuerdo?.categoria._id,
+    ambito: activeAcuerdo?.ambito._id,
+    lugar: activeAcuerdo?.lugar,
   };
   const initialValues = useRef(valoresIniciales);
   //Saca la información de los select
@@ -114,16 +111,40 @@ export const AgregarAcuerdoForm = () => {
       await Promise.all([
         dispatch(startGetCategorias()),
         dispatch(startGetAmbitos()),
-        dispatch(startGetFolioA()),
       ]);
     };
     load();
   }, [dispatch]);
   //Esto se utiliza para llenar el primer campo del formik en ambitos y categorias
   useEffect(() => {
-    initialValues.current.ambito = Ambitos[0] ? Ambitos[0]._id : "";
-    initialValues.current.categoria = Categorias[0] ? Categorias[0]._id : "";
-  }, [Categorias, Ambitos, initialValues]);
+    initialValues.current.ambito = activeAcuerdo?.ambito._id;
+    initialValues.current.categoria = activeAcuerdo?.categoria._id;
+  }, [
+    Categorias,
+    Ambitos,
+    initialValues,
+    activeAcuerdo?.ambito._id,
+    activeAcuerdo?.categoria._id,
+  ]);
+
+  useEffect(() => {
+    return () => {
+      const func = () => {
+      if (envio.current!==1) {
+        console.log(envio);
+        setShowDialog(false);
+        dispatch(clearActiveAcuerdo());
+      }
+    }
+    func();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!showDialog) {
+      setShowDialog(false);
+    }
+  }, [showDialog,setShowDialog]);
 
   //Utilizo esto para algunos bugs relacionados al Formik que suceden al recargar la pagina
   const FormFormik = () => {
@@ -132,11 +153,14 @@ export const AgregarAcuerdoForm = () => {
     let valores = values as any;
     useEffect(() => {
       if (
-        valores.nombre !== "" ||
-        valores.descripcion !== "" ||
-        valores.fechaInstruccion !== "" ||
-        valores.fechaPCierre !== "" ||
-        valores.lugar !== ""
+        valores.nombre !== activeAcuerdo?.nombre ||
+        valores.descripcion !== activeAcuerdo?.descripcion ||
+        valores.fechaInstruccion !== activeAcuerdo?.fechaInstruccion ||
+        valores.fechaPCierre !== activeAcuerdo?.fechaPCierre ||
+        valores.lugar !== activeAcuerdo?.lugar ||
+        valores.prioridad !== activeAcuerdo?.prioridad ||
+        valores.categoria !== activeAcuerdo?.categoria._id ||
+        valores.ambito !== activeAcuerdo?.ambito._id
       ) {
         setShowDialog(true);
       } else {
@@ -144,6 +168,14 @@ export const AgregarAcuerdoForm = () => {
       }
     }, [values, valores]);
     return null;
+  };
+
+  const enviar = (isValid: boolean) => {
+    if(isValid){
+      setShowDialog(false);
+    } else {
+      setShowDialog(true);
+    }
   };
 
   ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -188,15 +220,14 @@ export const AgregarAcuerdoForm = () => {
         if (valores[key] === "") {
           delete valores[key];
         }
-      }
-      );
-      
-      sendAcuerdo(valores)
+      });
+
+      updateAcuerdo(valores, activeAcuerdo?._id as string)
         .then((res) => {
           if (Object.entries(res).length !== 0) {
-            resetForm();
-            dispatch(startGetFolioA());
-            dispatch(addAcuerdo(res));
+           envio.current = 1;
+            dispatch(updateAcuerdoL(res, activeAcuerdo?._id as string));
+            navigate("../vAcuerdos", { replace: true });
           }
         })
         .catch((err) => {});
@@ -254,7 +285,7 @@ export const AgregarAcuerdoForm = () => {
                   role="tabpanel"
                   ref={divTabcon}
                 >
-                  <h6>{FolioA}</h6>
+                  <h6>{activeAcuerdo?.folio}</h6>
 
                   <div className="mb-3">
                     <label className="form-label">
@@ -451,8 +482,12 @@ export const AgregarAcuerdoForm = () => {
               </div>
             </div>
             <div className="d-flex justify-content-center align-items-center mb-3">
-              <button className="btn btn-primary" type="submit">
-                Crear Acuerdo
+              <button
+                className="btn btn-primary"
+                type="submit"
+                onClick={()=>enviar(form.isValid)}
+              >
+                Editar Acuerdo
               </button>
             </div>
           </Form>

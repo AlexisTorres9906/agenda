@@ -16,6 +16,7 @@ export interface Acuerdo {
     fechaInstruccion?: Date | null;
     fechaPCierre?: Date | null;
     fechaIEjecucion?: Date | null;
+    fechaRCierre?: Date | null;
   }
   export interface CategoriaOrAmbito {
     _id: string;

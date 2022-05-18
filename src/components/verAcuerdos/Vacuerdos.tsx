@@ -17,7 +17,7 @@ import "../../styles/vAcuerdos.scss";
 import { L10n, loadCldr, setCulture } from "@syncfusion/ej2-base";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store/store";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import * as gregorian from "../../data/es-MX/ca-gregorian.json";
 import * as numbers from "../../data/es-MX/numbers.json";
 import * as timeZoneNames from "../../data/es-MX/timeZoneNames.json";
@@ -27,6 +27,8 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { styleModalInfo } from "../../helpers/stylesModal";
 import { clearActiveAcuerdo, setActiveAcuerdo } from "../../actions/acuerdo";
+import { Acuerdo } from "../../interface/Acuerdos";
+import { useNavigate } from "react-router-dom";
 
 loadCldr(gregorian, numbers, timeZoneNames);
 setCulture("es-MX");
@@ -90,31 +92,67 @@ export const Vacuerdos = () => {
   const [data, setData] = useState({});
   const [openModal, setOpenModal] = useState(false);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  ///en caso de regresar de otra pantalla
+  useEffect(() => {
+    const func = () => {
+      if (!activeAcuerdo) {
+        setOpenModal(false);
+      }
+      else {
+        setOpenModal(true);
+      }
+    };
+    func();
+  }, [activeAcuerdo]);
 
   //////////////////////////////////////////
+
+  const cambiarDatos = useCallback(
+    (objeto = acuerdos) => {
+      if (!objeto) return; // null object
+      objeto.forEach((acuerdo: Acuerdo) => {
+        //cambiar la fecha de instruccion de string a date
+        acuerdo.fechaInstruccion = acuerdo.fechaInstruccion
+          ? new Date(acuerdo.fechaInstruccion as any)
+          : (null as any);
+
+        acuerdo.fechaPCierre = acuerdo.fechaPCierre
+          ? new Date(acuerdo.fechaPCierre as any)
+          : (null as any);
+
+        acuerdo.fechaIEjecucion = acuerdo.fechaIEjecucion
+          ? new Date(acuerdo.fechaIEjecucion as any)
+          : (null as any);
+
+        acuerdo.fechaRCierre = acuerdo.fechaRCierre
+          ? new Date(acuerdo.fechaRCierre as any)
+          : (null as any);
+
+        //ver quienes estan vencidos
+        acuerdo.estatus =
+          acuerdo.estatus === "Registrado" || "En proceso"
+            ? acuerdo.fechaPCierre
+              ? acuerdo.fechaPCierre < new Date()
+                ? "Vencido"
+                : acuerdo.estatus
+              : acuerdo.estatus
+            : acuerdo.estatus;
+        //seguir leyendo en caso de que haya mas acuerdos
+        if (
+          acuerdo.compromiso != (undefined || null) &&
+          acuerdo!.compromiso.length > 0
+        ) {
+          cambiarDatos(acuerdo.compromiso);
+        }
+      });
+    },
+    [acuerdos]
+  );
+
   //mapeo de string a date de los datos y cambio de vencidos
-  const cambiarDatos = (objeto = acuerdos) => {
-    if (!objeto) return; // null object
-    objeto.forEach((acuerdo) => {
-      //cambiar la fecha de instruccion de string a date
-      acuerdo.fechaInstruccion = acuerdo.fechaInstruccion
-        ? new Date(acuerdo.fechaInstruccion as any)
-        : (null as any);
-      //ver quienes estan vencidos
-      acuerdo.estatus = acuerdo.fechaInstruccion
-        ? acuerdo.fechaInstruccion < new Date()
-          ? "Vencido"
-          : acuerdo.estatus
-        : acuerdo.estatus;
-      //seguir leyendo en caso de que haya mas acuerdos
-      if (
-        acuerdo.compromiso != (undefined || null) &&
-        acuerdo.compromiso?.length > 0
-      ) {
-        cambiarDatos(acuerdo.compromiso);
-      }
-    });
-  };
+
   useEffect(() => {
     cambiarDatos();
     setData(acuerdos);
@@ -144,29 +182,163 @@ export const Vacuerdos = () => {
         <Box sx={style}>
           <div className="vAcuerdos">
             <Typography variant="h5" id="modal-modal-title">
-              <p className="titulo">{activeAcuerdo?.folio}</p>
+              <div className="titulo">{activeAcuerdo?.folio}</div>
             </Typography>
             <Typography variant="subtitle1" id="modal-modal-description">
+              {/*-------------Datos de la primera fila* */}
               <div className="container">
                 <div className="row justify-content-between">
-                  <p className="col-auto container ">
+                  <div className="col-auto container row justify-content-start">
                     <div className="col-auto fuente-subtitulo">
                       Nombre del acuerdo:
                     </div>
-                    <div className="col-auto">{activeAcuerdo?.nombre}</div>
-                  </p>
-                  <p className={`col-md-6 container `}>
-                    <div className="row justify-content-end">
-                      <div className="col-auto fuente-subtitulo">
-                        Estado del acuerdo:
-                      </div>
-                      <div
-                        className={`col-auto fuente-${activeAcuerdo?.estatus}`}
-                      >
-                        {activeAcuerdo?.estatus}
-                      </div>
+                    <div className="col q-auto">{activeAcuerdo?.nombre}</div>
+                  </div>
+                  <div className={`col-auto container row justify-content-end`}>
+                    <div className="col-auto fuente-subtitulo">
+                      Estado del acuerdo:
                     </div>
-                  </p>
+                    <div
+                      className={`col-auto fuente-${activeAcuerdo?.estatus}`}
+                    >
+                      {activeAcuerdo?.estatus}
+                    </div>
+                  </div>
+                </div>
+                {/*-------------Datos de la segunda fila----------------------------* */}
+                <div className="row container justify-content-between">
+                  <div className="col-auto row">
+                    <div className="col-auto fuente-subtitulo">
+                      Descripción:
+                    </div>
+                    <div className="col-auto">{activeAcuerdo?.descripcion}</div>
+                  </div>
+                  <div className="col-auto row">
+                    <div className="col-auto fuente-subtitulo">
+                      Prioridad del acuerdo:
+                    </div>
+                    <div
+                      className={`col-auto fuente-${activeAcuerdo?.prioridad}`}
+                    >
+                      {activeAcuerdo?.prioridad}
+                    </div>
+                  </div>
+                </div>
+                {/*---------------------------Datos tercera fila----------------------* */}
+                <div
+                  className={`row container ${
+                    activeAcuerdo?.fechaInstruccion &&
+                    activeAcuerdo?.fechaPCierre
+                      ? "justify-content-between"
+                      : "justify-content-start"
+                  } `}
+                >
+                  {activeAcuerdo?.fechaInstruccion && (
+                    <>
+                      <div className="col-auto row justify-content-start">
+                        <div className="col-auto fuente-subtitulo">
+                          Fecha de instrucción:
+                        </div>
+                        <div className="col-auto">
+                          {new Date(
+                            activeAcuerdo?.fechaInstruccion.toString()
+                          ).toLocaleDateString()}
+                        </div>
+                      </div>
+                    </>
+                  )}
+                  {activeAcuerdo?.fechaPCierre && (
+                    <>
+                      <div className="col-auto row justify-content-start">
+                        <div className="col-auto fuente-subtitulo">
+                          Fecha programada de cierre:
+                        </div>
+                        <div className="col-auto">
+                          {new Date(
+                            activeAcuerdo?.fechaPCierre.toString()
+                          ).toLocaleDateString()}
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
+                {/*---------------------------Datos cuarta fila----------------------* */}
+                <div
+                  className={`row container ${
+                    activeAcuerdo?.fechaIEjecucion &&
+                    activeAcuerdo?.fechaRCierre
+                      ? "justify-content-between"
+                      : "justify-content-start"
+                  } `}
+                >
+                  {activeAcuerdo?.fechaIEjecucion && (
+                    <>
+                      <div className="col-auto row justify-content-start">
+                        <div className="col-auto fuente-subtitulo">
+                          Fecha de inicio de ejecución:
+                        </div>
+                        <div className="col-auto">
+                          {new Date(
+                            activeAcuerdo?.fechaIEjecucion.toString()
+                          ).toLocaleDateString()}
+                        </div>
+                      </div>
+                    </>
+                  )}
+                  {activeAcuerdo?.fechaRCierre && (
+                    <>
+                      <div className="col-auto row justify-content-start">
+                        <div className="col-auto fuente-subtitulo">
+                          Fecha de cierre:
+                        </div>
+                        <div className="col-auto">
+                          {new Date(
+                            activeAcuerdo?.fechaRCierre.toString()
+                          ).toLocaleDateString()}
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
+
+                {/*---------------------------Datos quinta fila----------------------* */}
+                <div className="row container justify-content-between">
+                  <div className="col-auto row">
+                    <div className="col-auto fuente-subtitulo">Area:</div>
+                    <div className="col-auto">{activeAcuerdo?.area.nombre}</div>
+                  </div>
+                  <div className="col-auto row">
+                    <div className="col-auto fuente-subtitulo">Categoria:</div>
+                    <div className="col-auto">
+                      {activeAcuerdo?.categoria.nombre}
+                    </div>
+                  </div>
+                  <div className="col-auto row">
+                    <div className="col-auto fuente-subtitulo">Ambito:</div>
+                    <div className="col-auto">
+                      {activeAcuerdo?.ambito.nombre}
+                    </div>
+                  </div>
+                </div>
+                {/*---------------------------Datos sexta fila----------------------* */}
+                <div className="row container justify-content-start">
+                  <div className="col-auto row">
+                    <div className="col-auto fuente-subtitulo">Lugar:</div>
+                    <div className="col-auto">{activeAcuerdo?.lugar}</div>
+                  </div>
+                </div>
+                {/*---------------------------Datos septima fila----------------------* */}
+                <div className="row container justify-content-between mt-3">
+                  <button
+                    className=" col-auto btn btn-primary"
+                    onClick={() => {
+                      //navigate
+                      navigate("../editarAcuerdo", { replace: true });
+                    }}
+                  >
+                    Editar
+                  </button>
+                  <button className=" col-auto btn btn-primary">Cambiar</button>
                 </div>
               </div>
             </Typography>
@@ -219,7 +391,15 @@ export const Vacuerdos = () => {
           <ColumnDirective
             field="fechaInstruccion"
             headerText="Instruccion"
-            width="300"
+            width="100"
+            format="yMd"
+            type="date"
+          />
+
+          <ColumnDirective
+            field="fechaPCierre"
+            headerText="P.Cierre"
+            width="100"
             format="yMd"
             type="date"
           />

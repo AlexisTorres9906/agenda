@@ -36,6 +36,13 @@ export const addAcuerdo = (acuerdo:any): types => ({
 });
 
 ////////////////////////////////////////////////////////////////////////////////
+export const updateAcuerdoL = (acuerdo:any,id:String) => ({
+    type: "[Acuerdo] updateAcuerdoL",
+    payload: acuerdo,
+    id: id,
+});
+
+////////////////////////////////////////////////////////////////////////////////
 
 export const setActiveAcuerdo = (acuerdo:any): types => ({
     type: "[Acuerdo] setActiveAcuerdo",

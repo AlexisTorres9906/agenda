@@ -11,6 +11,7 @@ import { RootState } from "../store/store";
 import { AgregarAcuerdoForm } from '../components/agregarAcuerdo/AgregarAcuerdoForm';
 import { Vacuerdos } from '../components/verAcuerdos/Vacuerdos';
 import { startGetAcuerdos } from '../actions/acuerdo';
+import { EditarAcuerdo } from '../components/editarAcuerdo/EditarAcuerdo';
 export const DashboardRoutes = () => {
   //logica necesaria para el dashboard
   UseDashboard();
@@ -52,6 +53,7 @@ export const DashboardRoutes = () => {
               <Route path="/" element={<Home />} />
               <Route path="/FAcuerdos" element={<AgregarAcuerdoForm/>} />
               <Route path="/vAcuerdos" element={<Vacuerdos/>} />
+              <Route path="/editarAcuerdo" element={<EditarAcuerdo/>} />
               <Route path="/*" element={<Home />} />
             </Routes>
           </div>

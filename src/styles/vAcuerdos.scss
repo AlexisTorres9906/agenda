@@ -1,7 +1,6 @@
 @import "base.scss";
 
 .vAcuerdos {
-
   .titulo {
     font-size: 1.2em;
     font-weight: bold;
@@ -12,14 +11,49 @@
 
   .fuente-Registrado {
     font-family: "Roboto", sans-serif;
-    font-weight: 300;
     color: #00aeef;
+    font-weight: bold;
+
   }
-  .fuente-subtitulo{
+  .fuente-Vencido {
     font-family: "Roboto", sans-serif;
-    font-weight: 300;
+    font-weight: bold;
+    color: #ff0000;
+  }
+  .fuente-Baja {
+    font-family: "Roboto", sans-serif;
+    font-weight: bold;
+    color: #00ff15;
+  }
+  .fuente-Media {
+    font-family: "Roboto", sans-serif;
+    font-weight: bold;
+    color: #ffae00;
+  }
+  .fuente-Alta {
+    font-family: "Roboto", sans-serif;
+    font-weight: bold;
+    color: #ff0000;
+  }
+
+  .fuente-subtitulo {
+    font-family: "Roboto", sans-serif;
     color: #000;
     font-weight: bold;
   }
-
+  .row {
+    margin: 0;
+    padding: 0;
+    padding-bottom: .2rem;
+    --bs-gutter-x: 0.5rem;
+  }
+  .btn-primary{
+    width: 30%;
+    height: 3rem;
+    border-radius: 0.25rem;
+    border: 1px solid #00aeef;
+    background-color: #00aeef;
+    color: #fff;
+    font-family: "Roboto", sans-serif;
+  }
 }
