@@ -229,7 +229,17 @@ export const Vacuerdos = () => {
                       Estado del acuerdo:
                     </div>
                     <div
-                      className={`col-auto fuente-${activeAcuerdo?.estatus}`}
+                      className={`col-auto ${
+                        activeAcuerdo?.estatus === "Vencido"
+                          ? "fuente-Vencido"
+                          : activeAcuerdo?.estatus === "Cancelado"
+                          ? "fuente-Cancelado"
+                          : activeAcuerdo?.estatus === "Registrado"
+                          ? "fuente-Registrado"
+                          : activeAcuerdo?.estatus === "En proceso"
+                          ? "fuente-En"
+                          : "fuente-subtitulo"
+                      }`}
                     >
                       {activeAcuerdo?.estatus}
                     </div>
