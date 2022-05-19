@@ -258,7 +258,15 @@ export const Vacuerdos = () => {
                       Prioridad del acuerdo:
                     </div>
                     <div
-                      className={`col-auto fuente-${activeAcuerdo?.prioridad}`}
+                      className={`col-auto ${
+                        activeAcuerdo?.prioridad === "Alta"
+                          ? "fuente-Alta"
+                          : activeAcuerdo?.prioridad === "Media"
+                          ? "fuente-Media"
+                          : activeAcuerdo?.prioridad === "Baja"
+                          ? "fuente-Baja"
+                          : "fuente-subtitulo"
+                      }`}
                     >
                       {activeAcuerdo?.prioridad}
                     </div>
