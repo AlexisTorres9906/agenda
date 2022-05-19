@@ -26,9 +26,15 @@ import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { styleModalInfo } from "../../helpers/stylesModal";
-import { clearActiveAcuerdo, setActiveAcuerdo } from "../../actions/acuerdo";
+import {
+  clearActiveAcuerdo,
+  setActiveAcuerdo,
+  updateAcuerdoL,
+} from "../../actions/acuerdo";
 import { Acuerdo } from "../../interface/Acuerdos";
 import { useNavigate } from "react-router-dom";
+import { updateAcuerdo } from "../../Api/sendAcuerdo";
+import Swal from "sweetalert2";
 
 loadCldr(gregorian, numbers, timeZoneNames);
 setCulture("es-MX");
@@ -73,7 +79,7 @@ const prioTemplate = (props: any) => {
     props.prioridad === "Baja"
       ? "https://i.ibb.co/LQS15vD/baja.png"
       : props.prioridad === "Media"
-      ? "https://i.ibb.co/zhLrsvV/media.png"
+      ? "https://i.ibb.co/YhJvy06/media2.png"
       : "https://i.ibb.co/zskVDGf/alta.png";
   return (
     <div>
@@ -99,8 +105,7 @@ export const Vacuerdos = () => {
     const func = () => {
       if (!activeAcuerdo) {
         setOpenModal(false);
-      }
-      else {
+      } else {
         setOpenModal(true);
       }
     };
@@ -170,6 +175,31 @@ export const Vacuerdos = () => {
     dispatch(clearActiveAcuerdo());
   };
 
+  ////////////////////////////////////////////
+  //botones---------------------------------- cambiar estado
+  const cambiarEstado = (estatus: String) => {
+    updateAcuerdo({ estatus: estatus }, activeAcuerdo?._id as string)
+      .then((res) => {
+        if (Object.entries(res).length !== 0) {
+          dispatch(updateAcuerdoL(res, activeAcuerdo?._id as string));
+          switch (estatus) {
+            case "Cancelado":
+              {
+                Swal.fire({
+                  title: "Cancelado",
+                  text: "El acuerdo ha sido cancelado",
+                  icon: "success",
+                  timer: 2000,
+                });
+              }
+              break;
+            default:
+              break;
+          }
+        }
+      })
+      .catch((err) => {});
+  };
   ////////////////////////////////////////////
   return (
     <>
@@ -338,7 +368,32 @@ export const Vacuerdos = () => {
                   >
                     Editar
                   </button>
-                  <button className=" col-auto btn btn-primary">Cambiar</button>
+                  <button
+                    className="col-auto btn btn-success"
+                    hidden={activeAcuerdo?.estatus !== "Registrado"}
+                  >
+                    Marcar como "En proceso"
+                  </button>
+                  <button
+                    className="col-auto btn btn-danger"
+                    onClick={() => cambiarEstado("Cancelado")}
+                    hidden={
+                      activeAcuerdo?.estatus === "Cancelado" ||
+                      activeAcuerdo?.estatus === "Finalizado"
+                    }
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    className="col-auto btn btn-success"
+                    onClick={() => cambiarEstado("Registrado")}
+                    hidden={
+                      activeAcuerdo?.estatus !== "Cancelado" &&
+                      activeAcuerdo?.estatus !== "Finalizado"
+                    }
+                  >
+                    Cambiar a "Registrado"
+                  </button>
                 </div>
               </div>
             </Typography>

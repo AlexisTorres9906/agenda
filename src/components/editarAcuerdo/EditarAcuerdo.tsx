@@ -197,7 +197,7 @@ export const EditarAcuerdo = () => {
         then: Yup.date()
           .min(
             Yup.ref("fechaInstruccion"),
-            "La fecha de finalizacion debe ser mayor a la fecha de instrucción"
+            "La fecha de finalización debe ser mayor a la fecha de instrucción"
           )
           .nullable(),
       }),
@@ -412,7 +412,7 @@ export const EditarAcuerdo = () => {
 
                   <div className="mb-3">
                     <label className="form-label">
-                      <i className="far fa-building"></i> Ambito
+                      <i className="far fa-building"></i> Ámbito
                     </label>
                     <Field
                       as="select"

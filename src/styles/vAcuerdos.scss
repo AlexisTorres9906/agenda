@@ -13,7 +13,16 @@
     font-family: "Roboto", sans-serif;
     color: #00aeef;
     font-weight: bold;
-
+  }
+  .fuente-Cancelado {
+    font-family: "Roboto", sans-serif;
+    color: #f00;
+    font-weight: bold;
+  }
+  .fuente-En {
+      font-family: "Roboto", sans-serif;
+      color: #150070;
+      font-weight: bold;
   }
   .fuente-Vencido {
     font-family: "Roboto", sans-serif;
@@ -49,10 +58,28 @@
   }
   .btn-primary{
     width: 30%;
-    height: 3rem;
+    height: 3.5rem;
     border-radius: 0.25rem;
     border: 1px solid #00aeef;
     background-color: #00aeef;
+    color: #fff;
+    font-family: "Roboto", sans-serif;
+  }
+  .btn-danger{
+    width: 30%;
+    height: 3.5rem;
+    border-radius: 0.25rem;
+    border: 1px solid #ff0000;
+    background-color: #ff0000;
+    color: #fff;
+    font-family: "Roboto", sans-serif;
+  }
+  .btn-success{
+    width: 30%;
+    height: 3.5rem;
+    border-radius: 0.25rem;
+    border: 1px solid #00d512;
+    background-color: #00d512;
     color: #fff;
     font-family: "Roboto", sans-serif;
   }
