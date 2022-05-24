@@ -38,7 +38,7 @@ export const updateAcuerdo = async (acuerdo: object,id:String) => {
     .then((res) => {
       LoadingSwall.close();
       if (res.data.ok) {
-        data = res.data.acuerdo;
+        data = res.data;
         toastMixin.fire({
           icon: "success",
           title: "Acuerdo Actualizado Exitosamente",
@@ -50,8 +50,6 @@ export const updateAcuerdo = async (acuerdo: object,id:String) => {
       }
     })
     .catch((err) => {
-      console.log(err);
-      
       ErrorSwall.fire();
     });
   return data;

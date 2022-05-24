@@ -93,7 +93,7 @@ export const EditarAcuerdo = () => {
   const { Ambitos, Categorias } = useSelector((state: RootState) => state.info);
   const { activeAcuerdo } = useSelector((state: RootState) => state.acuerdos);
   const navigate = useNavigate();
-  const envio = useRef(0)
+  const envio = useRef(0);
   const valoresIniciales = {
     nombre: activeAcuerdo?.nombre,
     descripcion: activeAcuerdo?.descripcion,
@@ -130,13 +130,12 @@ export const EditarAcuerdo = () => {
   useEffect(() => {
     return () => {
       const func = () => {
-      if (envio.current!==1) {
-        console.log(envio);
-        setShowDialog(false);
-        dispatch(clearActiveAcuerdo());
-      }
-    }
-    func();
+        if (envio.current !== 1) {
+          setShowDialog(false);
+          dispatch(clearActiveAcuerdo());
+        }
+      };
+      func();
     };
   }, []);
 
@@ -144,7 +143,7 @@ export const EditarAcuerdo = () => {
     if (!showDialog) {
       setShowDialog(false);
     }
-  }, [showDialog,setShowDialog]);
+  }, [showDialog, setShowDialog]);
 
   //Utilizo esto para algunos bugs relacionados al Formik que suceden al recargar la pagina
   const FormFormik = () => {
@@ -171,7 +170,7 @@ export const EditarAcuerdo = () => {
   };
 
   const enviar = (isValid: boolean) => {
-    if(isValid){
+    if (isValid) {
       setShowDialog(false);
     } else {
       setShowDialog(true);
@@ -223,10 +222,20 @@ export const EditarAcuerdo = () => {
       });
 
       updateAcuerdo(valores, activeAcuerdo?._id as string)
-        .then((res) => {
+        .then((res: any) => {
           if (Object.entries(res).length !== 0) {
-           envio.current = 1;
-            dispatch(updateAcuerdoL(res, activeAcuerdo?._id as string));
+            envio.current = 1;
+            
+            const resp = res.acuerdoP
+              ? {
+                  acuerdoP: res.acuerdoP,
+                  acuerdo: res.acuerdo,
+                }
+              : {
+                  acuerdoP: res.acuerdo,
+                  acuerdo: res.acuerdo,
+                };
+            dispatch(updateAcuerdoL(resp, activeAcuerdo?._id as string));
             navigate("../vAcuerdos", { replace: true });
           }
         })
@@ -485,7 +494,7 @@ export const EditarAcuerdo = () => {
               <button
                 className="btn btn-primary"
                 type="submit"
-                onClick={()=>enviar(form.isValid)}
+                onClick={() => enviar(form.isValid)}
               >
                 Editar Acuerdo
               </button>

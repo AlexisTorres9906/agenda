@@ -51,6 +51,7 @@ const DatePickerField = ({ ...props }) => {
       onChange={(val) => {
         setFieldValue(field.name, val);
       }}
+      dateFormat="dd/MM/yy"
     />
   );
 };

@@ -1,12 +1,19 @@
 import { User } from "../interface/User";
-import { Area } from '../interface/Areas';
-import { Categorias, Ambito } from '../interface/Admin';
-import { Acuerdo } from '../interface/Acuerdos';
+import { Area } from "../interface/Areas";
+import { Categorias, Ambito } from "../interface/Admin";
+import { Acuerdo } from "../interface/Acuerdos";
 
 export type types =
   | { type: "[Acuerdo] getAcuerdos"; payload: Acuerdo[] }
   | { type: "[Acuerdo] addAcuerdo"; payload: Acuerdo }
-  | { type: "[Acuerdo] updateAcuerdoL"; payload: Acuerdo; id: string }
+  | {
+      type: "[Acuerdo] updateAcuerdoL";
+      payload: {
+        acuerdoP: Acuerdo;
+        acuerdo: Acuerdo;
+      };
+      id: string;
+    }
   | { type: "[Acuerdo] setActiveAcuerdo"; payload: Acuerdo }
   | { type: "[Acuerdo] clearActiveAcuerdo" }
   | { type: "[Acuerdo] clearAcuerdos" }
@@ -23,14 +30,14 @@ export type types =
   | { type: "[Admin] updateArea"; payload: any }
   | { type: "[Admin] deleteArea"; payload: String }
   | { type: "[Admin] setActiveArea"; payload: Area }
-  | { type: "[Admin] cleanActiveArea"}
+  | { type: "[Admin] cleanActiveArea" }
   | { type: "[Admin] setActiveCategory"; payload: Categorias }
   | { type: "[Admin] cleanActiveCategory" }
-  | { type: "[Admin] getCategorias", payload: any }
+  | { type: "[Admin] getCategorias"; payload: any }
   | { type: "[Admin] addCategory"; payload: Categorias }
   | { type: "[Admin] updateCategory"; payload: any }
   | { type: "[Admin] deleteCategory"; payload: String }
-  | { type: "[Admin] getAmbitos", payload: any }
+  | { type: "[Admin] getAmbitos"; payload: any }
   | { type: "[Admin] addAmbito"; payload: Ambito }
   | { type: "[Admin] updateAmbito"; payload: any }
   | { type: "[Admin] deleteAmbito"; payload: String }
@@ -43,9 +50,9 @@ export type types =
   | { type: "[auth] Start Register" }
   | { type: "[auth] Start token renew" }
   | { type: "[auth] Logout" }
-  | { type: "[info] getCategorias", payload: any }
-  | { type: "[info] getAmbitos", payload: any }
-  | { type: "[info] getFolioA", payload: any }
+  | { type: "[info] getCategorias"; payload: any }
+  | { type: "[info] getAmbitos"; payload: any }
+  | { type: "[info] getFolioA"; payload: any }
   | { type: "[info] reset" }
   | { type: "[ui] startLoading" }
   | { type: "[ui] stopLoading" };

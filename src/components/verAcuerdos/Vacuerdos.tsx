@@ -10,6 +10,7 @@ import {
   TreeGridComponent,
   PdfExport,
   ExcelExport,
+  SortSettingsModel,
 } from "@syncfusion/ej2-react-treegrid";
 import { ClickEventArgs } from "@syncfusion/ej2-navigations";
 import * as EJ2_LOCALE from "../../data/es.json";
@@ -17,7 +18,7 @@ import "../../styles/vAcuerdos.scss";
 import { L10n, loadCldr, setCulture } from "@syncfusion/ej2-base";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store/store";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo, useRef } from 'react';
 import * as gregorian from "../../data/es-MX/ca-gregorian.json";
 import * as numbers from "../../data/es-MX/numbers.json";
 import * as timeZoneNames from "../../data/es-MX/timeZoneNames.json";
@@ -35,6 +36,10 @@ import { Acuerdo } from "../../interface/Acuerdos";
 import { useNavigate } from "react-router-dom";
 import { updateAcuerdo } from "../../Api/sendAcuerdo";
 import Swal from "sweetalert2";
+import { EnProceso } from "./EnProceso";
+import React from "react";
+import { Finalizado } from "./Finalizado";
+import { CambiarFAcuerdo } from "./CambiarFAcuerdo";
 
 loadCldr(gregorian, numbers, timeZoneNames);
 setCulture("es-MX");
@@ -89,7 +94,7 @@ const prioTemplate = (props: any) => {
   );
 };
 const style = styleModalInfo;
-export const Vacuerdos = () => {
+export const Vacuerdos = React.memo(() => {
   //////////////////////////////////////////
   //información de los acuerdos y generales iniciales
   const { acuerdos, activeAcuerdo } = useSelector(
@@ -99,6 +104,18 @@ export const Vacuerdos = () => {
   const [openModal, setOpenModal] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const hoy = useRef(new Date());
+  useMemo(() => {
+    hoy.current.setHours(0, 0, 0, 0);
+  }, [])
+  //hoy
+  
+
+  const sortOptions:SortSettingsModel = {
+    columns: [
+        { field: 'fechaCreacion', direction: 'Descending' },
+    ]
+};
 
   ///en caso de regresar de otra pantalla
   useEffect(() => {
@@ -113,7 +130,6 @@ export const Vacuerdos = () => {
   }, [activeAcuerdo]);
 
   //////////////////////////////////////////
-
   const cambiarDatos = useCallback(
     (objeto = acuerdos) => {
       if (!objeto) return; // null object
@@ -135,20 +151,38 @@ export const Vacuerdos = () => {
           ? new Date(acuerdo.fechaRCierre as any)
           : (null as any);
 
-        //ver quienes estan vencidos
-        acuerdo.estatus =
-          acuerdo.estatus === "Registrado" || "En proceso"
-            ? acuerdo.fechaPCierre
-              ? acuerdo.fechaPCierre < new Date()
-                ? "Vencido"
-                : acuerdo.estatus
-              : acuerdo.estatus
-            : acuerdo.estatus;
-        //seguir leyendo en caso de que haya mas acuerdos
+          acuerdo.fechaCreacion = acuerdo.fechaCreacion
+          ? new Date(acuerdo.fechaCreacion as any)
+          : (null as any);
+
+        //vencido: que se ha pasa la fecha programada de cierre
+        //fuera de tiempo: que se ha pasado la fecha de instruccion y el estado no es en proceso
+
         if (
-          acuerdo.compromiso != (undefined || null) &&
-          acuerdo!.compromiso.length > 0
+          acuerdo.estatus !== "Finalizado" &&
+          acuerdo.estatus !== "Cancelado" &&
+          !acuerdo.estatus.includes("Vencido")
         ) {
+          if (acuerdo.fechaPCierre && acuerdo.fechaPCierre < hoy.current) {
+            acuerdo.estatus =
+              acuerdo.estatus === "Registrado"
+                ? "Vencido (Registrado)"
+                : "Vencido (En proceso)";
+            //acuerdo.estatus = `Vencido (${acuerdo.estatus})`;
+          } else if (
+            acuerdo.fechaInstruccion &&
+            acuerdo.estatus === "Registrado" &&
+            acuerdo.fechaInstruccion <= hoy.current
+          ) {
+            acuerdo.estatus =
+              acuerdo.fechaInstruccion.getTime() ===hoy.current.getTime()
+                ? "Para hoy"
+                : "Fuera de tiempo";
+          }
+          if(acuerdo.fechaPCierre && acuerdo.fechaPCierre.getTime() === hoy.current.getTime()){acuerdo.estatus = "Vence hoy"}
+        }
+        //seguir leyendo en caso de que haya mas sub acuerdos(compromisos)
+        if (acuerdo.compromiso && acuerdo.compromiso.length > 0) {
           cambiarDatos(acuerdo.compromiso);
         }
       });
@@ -178,20 +212,31 @@ export const Vacuerdos = () => {
   ////////////////////////////////////////////
   //botones---------------------------------- cambiar estado
   const cambiarEstado = (estatus: String) => {
-    updateAcuerdo({ estatus: estatus }, activeAcuerdo?._id as string)
+    const data =
+      estatus === "Cancelado"
+        ? { estatus: "Cancelado", fechaIEjecucion: "", fechaRCierre: "" }
+        : { estatus };
+
+    updateAcuerdo(data, activeAcuerdo?._id as string)
       .then((res) => {
         if (Object.entries(res).length !== 0) {
           dispatch(updateAcuerdoL(res, activeAcuerdo?._id as string));
           switch (estatus) {
             case "Cancelado":
-              {
-                Swal.fire({
-                  title: "Cancelado",
-                  text: "El acuerdo ha sido cancelado",
-                  icon: "success",
-                  timer: 2000,
-                });
-              }
+              Swal.fire({
+                title: "Cancelado",
+                text: "El acuerdo ha sido cancelado",
+                icon: "success",
+                timer: 2000,
+              });
+              break;
+            case "Registrado":
+              Swal.fire({
+                title: "Registrado",
+                text: "El acuerdo ha regresado al estado registrado",
+                icon: "success",
+                timer: 2000,
+              });
               break;
             default:
               break;
@@ -200,6 +245,7 @@ export const Vacuerdos = () => {
       })
       .catch((err) => {});
   };
+
   ////////////////////////////////////////////
   return (
     <>
@@ -230,7 +276,7 @@ export const Vacuerdos = () => {
                     </div>
                     <div
                       className={`col-auto ${
-                        activeAcuerdo?.estatus === "Vencido"
+                        activeAcuerdo?.estatus.includes("Vencido")
                           ? "fuente-Vencido"
                           : activeAcuerdo?.estatus === "Cancelado"
                           ? "fuente-Cancelado"
@@ -238,6 +284,12 @@ export const Vacuerdos = () => {
                           ? "fuente-Registrado"
                           : activeAcuerdo?.estatus === "En proceso"
                           ? "fuente-En"
+                          : activeAcuerdo?.estatus === "Finalizado"
+                          ? "fuente-Finalizado"
+                          : activeAcuerdo?.estatus === "Fuera de tiempo"
+                          ? "fuente-Fuera"
+                          : activeAcuerdo?.estatus.includes("hoy")
+                          ? "fuente-Hoy"
                           : "fuente-subtitulo"
                       }`}
                     >
@@ -376,41 +428,64 @@ export const Vacuerdos = () => {
                   </div>
                 </div>
                 {/*---------------------------Datos septima fila----------------------* */}
+                {activeAcuerdo?.resultado && activeAcuerdo?.resultado !== "" && (
+                  <div className="row container justify-content-start">
+                    <div className="col-auto row">
+                      <div className="col-auto fuente-subtitulo">
+                        Resultado:
+                      </div>
+                      <div className="col-auto">{activeAcuerdo?.resultado}</div>
+                    </div>
+                  </div>
+                )}
+                {/*--------------------------- Datos octava fila-------------------------- */}
                 <div className="row container justify-content-between mt-3">
                   <button
                     className=" col-auto btn btn-primary"
                     onClick={() => {
-                      //navigate
                       navigate("../editarAcuerdo", { replace: true });
                     }}
                   >
-                    Editar
+                    Editar Acuerdo
                   </button>
-                  <button
-                    className="col-auto btn btn-success"
-                    hidden={activeAcuerdo?.estatus !== "Registrado"}
-                  >
-                    Marcar como "En proceso"
-                  </button>
+                  {(activeAcuerdo?.estatus.includes("En proceso") ||
+                    activeAcuerdo?.estatus === "Finalizado" || activeAcuerdo?.estatus === "Vence hoy") && (
+                    <CambiarFAcuerdo />
+                  )}
+
+                  {(activeAcuerdo?.estatus.includes("Registrado") ||
+                    activeAcuerdo?.estatus === "Fuera de tiempo" ||
+                    activeAcuerdo?.estatus === "Para hoy") && <EnProceso />}
+
+                  {(activeAcuerdo?.estatus.includes("En proceso") || activeAcuerdo?.estatus === "Vence hoy" ) &&
+                    activeAcuerdo?.fechaIEjecucion !== null && <Finalizado />}
                   <button
                     className="col-auto btn btn-danger"
                     onClick={() => cambiarEstado("Cancelado")}
                     hidden={
                       activeAcuerdo?.estatus === "Cancelado" ||
-                      activeAcuerdo?.estatus === "Finalizado"
+                      activeAcuerdo?.estatus === "Finalizado" ||
+                      activeAcuerdo?.compromiso === (null && undefined) ||
+                      activeAcuerdo?.compromiso?.length !== 0
                     }
                   >
-                    Cancelar
+                    Cancelar Acuerdo
                   </button>
                   <button
                     className="col-auto btn btn-success"
                     onClick={() => cambiarEstado("Registrado")}
                     hidden={
-                      activeAcuerdo?.estatus !== "Cancelado" &&
-                      activeAcuerdo?.estatus !== "Finalizado"
+                      activeAcuerdo?.estatus !== "Cancelado" ||
+                      activeAcuerdo?.compromiso?.length !== 0
                     }
                   >
                     Cambiar a "Registrado"
+                  </button>
+                  <button
+                    className="col-auto btn btn-agregar"
+                    hidden={activeAcuerdo?.estatus !== "Finalizado"}
+                  >
+                    Agregar compromiso
                   </button>
                 </div>
               </div>
@@ -436,7 +511,10 @@ export const Vacuerdos = () => {
         allowPdfExport={true}
         toolbarClick={toolbarClick.bind(this)}
         locale="es-MX"
+        immediateRender={false}
         rowSelected={onSelect}
+        sortSettings={sortOptions}
+        
         //enableAdaptiveUI={true}
       >
         <ColumnsDirective>
@@ -499,4 +577,4 @@ export const Vacuerdos = () => {
       </TreeGridComponent>
     </>
   );
-};
+});

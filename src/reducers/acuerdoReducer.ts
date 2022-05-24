@@ -9,7 +9,8 @@ interface AcuerdoState {
 const initialState: AcuerdoState = {
   acuerdos: [],
 };
-
+/*
+//esto funciona para entrar a un objeto y actualizar todos los hijos
 const cambiarDatos = (objeto: Acuerdo, action: any) => {
   if (!objeto) return; // null object
   if (objeto._id === action.id) {
@@ -27,22 +28,25 @@ const cambiarDatos = (objeto: Acuerdo, action: any) => {
   return objeto;
 };
 
-const revisarHijos = (objeto: Acuerdo[], action: any) => {
-  if (!objeto) return; // null object
+const revisarHijos = (objeto: Acuerdo[], action: any):Acuerdo[] => {
+  if (!objeto) return []; // null object
   return objeto.map((item) => {
     if (item._id === action.id) {
       return action.payload;
     } else if (
-      item.compromiso != (undefined || null) &&
+      item.compromiso != null &&
       item!.compromiso.length > 0
     ) {
-      revisarHijos(item.compromiso, action);
+      return {
+        ...item,
+        compromiso: revisarHijos(item.compromiso, action)
+      }
     }
     else return item;
   }
   );
 }
-
+*/
 
 export const acuerdoReducer = (
   state = initialState,
@@ -77,10 +81,13 @@ export const acuerdoReducer = (
     case "[Acuerdo] updateAcuerdoL":
       return {
         ...state,
-        acuerdos: state.acuerdos.map((acuerdo: Acuerdo) =>
-          cambiarDatos(acuerdo, action)
+        acuerdos: state.acuerdos.map((item) => {
+            if(item._id === action.payload.acuerdoP._id)
+              return action.payload.acuerdoP;
+            else return item;
+        }
         ),
-        activeAcuerdo: action.payload,
+        activeAcuerdo: action.payload.acuerdo
       };
     default:
       return state;
