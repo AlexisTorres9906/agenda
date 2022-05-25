@@ -12,6 +12,7 @@ import { AgregarAcuerdoForm } from '../components/agregarAcuerdo/AgregarAcuerdoF
 import { Vacuerdos } from '../components/verAcuerdos/Vacuerdos';
 import { startGetAcuerdos } from '../actions/acuerdo';
 import { EditarAcuerdo } from '../components/editarAcuerdo/EditarAcuerdo';
+import { AgregarCompromiso } from "../components/agregarAcuerdo/AgregarCompromiso";
 export const DashboardRoutes = () => {
   //logica necesaria para el dashboard
   UseDashboard();
@@ -54,6 +55,7 @@ export const DashboardRoutes = () => {
               <Route path="/FAcuerdos" element={<AgregarAcuerdoForm/>} />
               <Route path="/vAcuerdos" element={<Vacuerdos/>} />
               <Route path="/editarAcuerdo" element={<EditarAcuerdo/>} />
+              <Route path="/agregarCompromiso" element={<AgregarCompromiso/>} />
               <Route path="/*" element={<Home />} />
             </Routes>
           </div>

@@ -93,9 +93,18 @@ const DatePickerField = ({ ...props }) => {
     //Modificar el acuerdo
     const cambiarEstado = (data: object) => {
       updateAcuerdo({ ...data }, activeAcuerdo?._id as string)
-        .then((res) => {
+        .then((res:any) => {
           if (Object.entries(res).length !== 0) {
-            dispatch(updateAcuerdoL(res, activeAcuerdo?._id as string));
+            const resp = res.acuerdoP
+              ? {
+                  acuerdoP: res.acuerdoP,
+                  acuerdo: res.acuerdo,
+                }
+              : {
+                  acuerdoP: res.acuerdo,
+                  acuerdo: res.acuerdo,
+                };
+            dispatch(updateAcuerdoL(resp, activeAcuerdo?._id as string));
             Swal.fire({
               title: "Modificado",
               text: "El acuerdo ha sido modificado",

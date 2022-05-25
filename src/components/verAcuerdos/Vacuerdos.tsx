@@ -218,9 +218,18 @@ export const Vacuerdos = React.memo(() => {
         : { estatus };
 
     updateAcuerdo(data, activeAcuerdo?._id as string)
-      .then((res) => {
+      .then((res:any) => {
         if (Object.entries(res).length !== 0) {
-          dispatch(updateAcuerdoL(res, activeAcuerdo?._id as string));
+          const resp = res.acuerdoP
+          ? {
+              acuerdoP: res.acuerdoP,
+              acuerdo: res.acuerdo,
+            }
+          : {
+              acuerdoP: res.acuerdo,
+              acuerdo: res.acuerdo,
+            };
+        dispatch(updateAcuerdoL(resp, activeAcuerdo?._id as string));
           switch (estatus) {
             case "Cancelado":
               Swal.fire({
@@ -465,7 +474,7 @@ export const Vacuerdos = React.memo(() => {
                     hidden={
                       activeAcuerdo?.estatus === "Cancelado" ||
                       activeAcuerdo?.estatus === "Finalizado" ||
-                      activeAcuerdo?.compromiso === (null && undefined) ||
+                      activeAcuerdo?.compromiso === (null || undefined) ||
                       activeAcuerdo?.compromiso?.length !== 0
                     }
                   >
@@ -484,6 +493,9 @@ export const Vacuerdos = React.memo(() => {
                   <button
                     className="col-auto btn btn-agregar"
                     hidden={activeAcuerdo?.estatus !== "Finalizado"}
+                    onClick={() => {
+                      navigate("../agregarCompromiso", { replace: true });
+                    }}
                   >
                     Agregar compromiso
                   </button>
@@ -514,7 +526,7 @@ export const Vacuerdos = React.memo(() => {
         immediateRender={false}
         rowSelected={onSelect}
         sortSettings={sortOptions}
-        
+        enableCollapseAll={true}
         //enableAdaptiveUI={true}
       >
         <ColumnsDirective>

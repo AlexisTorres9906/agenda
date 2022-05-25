@@ -54,3 +54,33 @@ export const updateAcuerdo = async (acuerdo: object,id:String) => {
     });
   return data;
 }
+
+
+export const addCompromiso = async (acuerdo: object,id:String) => {
+  LoadingSwall.fire();
+  let data:object = {};
+  await reqInsConToken
+    .post("/acuerdo/compromiso", acuerdo,{
+      params: {
+        id
+      },
+    })
+    .then((res) => {
+      LoadingSwall.close();
+      if (res.data.ok) {
+        data = res.data;
+        toastMixin.fire({
+          icon: "success",
+          title: "Se ha creado el compromiso",
+          text: `Se ha creado un compromiso a partir del acuerdo con folio ${res.data.acuerdo.folio}`,
+          timer: 5000,
+        });
+      } else {
+        ErrorSwall.fire();
+      }
+    })
+    .catch((err) => {
+      ErrorSwall.fire();
+    });
+  return data;
+}

@@ -20,9 +20,9 @@ import DatePicker, { registerLocale, setDefaultLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import es from "date-fns/locale/es";
 import { useDispatch, useSelector } from "react-redux";
-import { startGetAmbitos, startGetCategorias } from "../../actions/info";
+import { startGetAmbitos, startGetCategorias, startGetFolioA } from "../../actions/info";
 import { RootState } from "../../store/store";
-import { updateAcuerdo } from "../../Api/sendAcuerdo";
+import { addCompromiso } from '../../Api/sendAcuerdo';
 import { clearActiveAcuerdo, updateAcuerdoL } from "../../actions/acuerdo";
 import { useNavigate } from "react-router";
 registerLocale("es", es);
@@ -53,7 +53,7 @@ const DatePickerField = ({ ...props }) => {
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
-export const EditarAcuerdo = () => {
+export const AgregarCompromiso = () => {
   //cosas de las animaciones
   const divTabcon = useRef<HTMLDivElement>(null);
   const divTabinv = useRef<HTMLDivElement>(null);
@@ -90,19 +90,19 @@ export const EditarAcuerdo = () => {
   const dispatch = useDispatch();
   const [showPrompt, confirmNavigation, cancelNavigation] =
     useCallbackPrompt(showDialog);
-  const { Ambitos, Categorias } = useSelector((state: RootState) => state.info);
+  const { Ambitos, Categorias,FolioA } = useSelector((state: RootState) => state.info);
   const { activeAcuerdo } = useSelector((state: RootState) => state.acuerdos);
   const navigate = useNavigate();
   const envio = useRef(0);
   const valoresIniciales = {
-    nombre: activeAcuerdo?.nombre,
-    descripcion: activeAcuerdo?.descripcion,
-    fechaInstruccion: activeAcuerdo?.fechaInstruccion,
-    fechaPCierre: activeAcuerdo?.fechaPCierre,
-    prioridad: activeAcuerdo?.prioridad,
-    categoria: activeAcuerdo?.categoria._id,
-    ambito: activeAcuerdo?.ambito._id,
-    lugar: activeAcuerdo?.lugar,
+    nombre: "",
+    descripcion: "",
+    fechaInstruccion: "",
+    fechaPCierre: "",
+    prioridad: "Baja",
+    categoria: Categorias[0] ? Categorias[0]._id : "",
+    ambito: Ambitos[0] ? Ambitos[0]._id : "",
+    lugar: "",
   };
   const initialValues = useRef(valoresIniciales);
   //Saca la información de los select
@@ -111,22 +111,21 @@ export const EditarAcuerdo = () => {
       await Promise.all([
         dispatch(startGetCategorias()),
         dispatch(startGetAmbitos()),
+        dispatch(startGetFolioA()),
       ]);
     };
     load();
   }, [dispatch]);
   //Esto se utiliza para llenar el primer campo del formik en ambitos y categorias
   useEffect(() => {
-    initialValues.current.ambito = activeAcuerdo?.ambito._id;
-    initialValues.current.categoria = activeAcuerdo?.categoria._id;
+    initialValues.current.ambito = Ambitos[0] ? Ambitos[0]._id : "";
+    initialValues.current.categoria = Categorias[0] ? Categorias[0]._id : "";
   }, [
     Categorias,
     Ambitos,
     initialValues,
-    activeAcuerdo?.ambito._id,
-    activeAcuerdo?.categoria._id,
   ]);
-
+//referente para hacer cambios de pagina y quitar acuerdos activos y continuar con el correcto funcionamiento de la app
   useEffect(() => {
     return () => {
       const func = () => {
@@ -152,14 +151,11 @@ export const EditarAcuerdo = () => {
     let valores = values as any;
     useEffect(() => {
       if (
-        valores.nombre !== activeAcuerdo?.nombre ||
-        valores.descripcion !== activeAcuerdo?.descripcion ||
-        valores.fechaInstruccion !== activeAcuerdo?.fechaInstruccion ||
-        valores.fechaPCierre !== activeAcuerdo?.fechaPCierre ||
-        valores.lugar !== activeAcuerdo?.lugar ||
-        valores.prioridad !== activeAcuerdo?.prioridad ||
-        valores.categoria !== activeAcuerdo?.categoria._id ||
-        valores.ambito !== activeAcuerdo?.ambito._id
+        valores.nombre !== "" ||
+        valores.descripcion !== "" ||
+        valores.fechaInstruccion !== "" ||
+        valores.fechaPCierre !== "" ||
+        valores.lugar !== ""
       ) {
         setShowDialog(true);
       } else {
@@ -168,7 +164,7 @@ export const EditarAcuerdo = () => {
     }, [values, valores]);
     return null;
   };
-
+///esto solo es para cambios especificos cuando hay cambios y es valido el formulario
   const enviar = (isValid: boolean) => {
     if (isValid) {
       setShowDialog(false);
@@ -192,7 +188,7 @@ export const EditarAcuerdo = () => {
       .nullable()
       .when("fechaInstruccion", {
         is: (val: any) => val !== "",
-        // la fecha de inicio debe ser menor a la fecha de finalizacion o null
+        // la fecha de inicio debe ser menor a la fecha de finalización o null
         then: Yup.date()
           .min(
             Yup.ref("fechaInstruccion"),
@@ -221,11 +217,10 @@ export const EditarAcuerdo = () => {
         }
       });
 
-      updateAcuerdo(valores, activeAcuerdo?._id as string)
+      addCompromiso(valores, activeAcuerdo?._id as string)
         .then((res: any) => {
           if (Object.entries(res).length !== 0) {
             envio.current = 1;
-            
             const resp = res.acuerdoP
               ? {
                   acuerdoP: res.acuerdoP,
@@ -294,7 +289,8 @@ export const EditarAcuerdo = () => {
                   role="tabpanel"
                   ref={divTabcon}
                 >
-                  <h6>{activeAcuerdo?.folio}</h6>
+                  <h6>{FolioA}</h6>
+                  <p>Se esta creando un compromiso a partir del acuerdo <strong>{activeAcuerdo?.folio}</strong></p>
 
                   <div className="mb-3">
                     <label className="form-label">
@@ -496,7 +492,7 @@ export const EditarAcuerdo = () => {
                 type="submit"
                 onClick={() => enviar(form.isValid)}
               >
-                Editar Acuerdo
+                Agregar Compromiso
               </button>
             </div>
           </Form>
