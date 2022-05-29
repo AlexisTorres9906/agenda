@@ -18,7 +18,7 @@ export interface Acuerdo {
     fechaIEjecucion?: Date | null;
     fechaRCierre?: Date | null;
     resultado: string | null;
-    AcuerdoMayor: Acuerdo | null;
+    acuerdoMayor: Acuerdo | null;
   }
   export interface CategoriaOrAmbito {
     _id: string;
@@ -37,3 +37,13 @@ export interface Acuerdo {
     nombreCorto: string;
   }
   
+  export interface AcuerdoAgenda {
+    _id: string;
+    Id: string;
+    Subject: string;
+    StartTime?: Date;
+    EndTime?: Date;
+    Description: string;
+    Responsable: string;
+    Prioridad: string;
+  }

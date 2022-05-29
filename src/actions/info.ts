@@ -4,7 +4,6 @@ import { types } from "../types/types";
 
 ///////////////////////////////////////////////////////////////////////////////
 export const startGetCategorias = ()=> {
-    
     return async (dispatch: any) => {
       await reqInsConToken
         .get("/info/category")

@@ -44,10 +44,12 @@ const DatePickerField = ({ ...props }) => {
         e.preventDefault();
       }}
       minDate={new Date()}
+      showTimeSelect = {true}
       selected={(field.value && new Date(field.value)) || null}
       onChange={(val) => {
         setFieldValue(field.name, val);
       }}
+      dateFormat="dd/MM/yy HH:mm"
     />
   );
 };
@@ -216,7 +218,7 @@ export const AgregarCompromiso = () => {
           delete valores[key];
         }
       });
-
+      valores.acuerdoMayor = activeAcuerdo?.acuerdoMayor ? activeAcuerdo.acuerdoMayor : activeAcuerdo?._id;
       addCompromiso(valores, activeAcuerdo?._id as string)
         .then((res: any) => {
           if (Object.entries(res).length !== 0) {
@@ -290,7 +292,7 @@ export const AgregarCompromiso = () => {
                   ref={divTabcon}
                 >
                   <h6>{FolioA}</h6>
-                  <p>Se esta creando un compromiso a partir del acuerdo <strong>{activeAcuerdo?.folio}</strong></p>
+                  <p>Se esta creando un compromiso a partir del acuerdo <strong> {activeAcuerdo?.folio}</strong></p>
 
                   <div className="mb-3">
                     <label className="form-label">

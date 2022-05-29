@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import Typography from "@mui/material/Typography";
 import { ErrorMessage,Form, Formik, FormikConfig, FormikValues, useField, useFormikContext } from "formik";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { styleModalChildren } from "../../helpers/stylesModal";
 import { RootState } from "../../store/store";
@@ -33,6 +33,7 @@ const DatePickerField = ({ ...props }) => {
           e.preventDefault();
         }}
         selected={(field.value && new Date(field.value)) || null}
+        maxDate={new Date()}
         onChange={(val) => {
           setFieldValue(field.name, val);
         }}
@@ -58,6 +59,12 @@ export const EnProceso = () => {
   const {  activeAcuerdo } = useSelector(
     (state: RootState) => state.acuerdos
   );
+  const [didMount, setDidMount] = useState(false); 
+
+  useEffect(() => {
+     setDidMount(true);
+     return () => setDidMount(false);
+  }, [])
 
 
   ////////////////////////////////////////////////////////////////////////////////
@@ -106,9 +113,15 @@ export const EnProceso = () => {
       .catch((err) => {});
   };
 
+ 
+
+
 
   ///////////////////////////////////////////////////////////////////////////////
-
+  if(!didMount) {
+    return null;
+  }
+  
   return (
     <>
       <button

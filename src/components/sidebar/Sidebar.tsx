@@ -3,6 +3,7 @@ import {
   AiOutlineHome,
   AiOutlineLogout,
   AiOutlineFileAdd,
+  AiOutlineCalendar,
 } from "react-icons/ai";
 import { TiDocumentText } from "react-icons/ti";
 import { IconContext } from "react-icons";
@@ -48,12 +49,12 @@ export const Sidebar = () => {
               </NavLink>
             </li>
 
-            <li className='welcome'>
-                <NavLink to={"/"}>
-                  <span>Bienvenido {name}</span>
-                </NavLink>
-              </li>
-            
+            <li className="welcome">
+              <NavLink to={"/"}>
+                <span>Bienvenido {name}</span>
+              </NavLink>
+            </li>
+
             <li>
               <NavLink className="hovered" to={"/agenda/"}>
                 <span className="icon">
@@ -76,6 +77,14 @@ export const Sidebar = () => {
                   <TiDocumentText />
                 </span>
                 <span className="title">Ver Acuerdos</span>
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to={"/agenda/calendario"}>
+                <span className="icon">
+                  <AiOutlineCalendar />
+                </span>
+                <span className="title">Agenda</span>
               </NavLink>
             </li>
             <li>

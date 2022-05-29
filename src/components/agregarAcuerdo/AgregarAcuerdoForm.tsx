@@ -30,7 +30,6 @@ import { sendAcuerdo } from "../../Api/sendAcuerdo";
 import { addAcuerdo } from '../../actions/acuerdo';
 registerLocale("es", es);
 setDefaultLocale("es");
-
 ////////////////////////////////////////////////////////////////////////////////////////////////
 //DatePicker
 
@@ -48,13 +47,15 @@ const DatePickerField = ({ ...props }) => {
       }}
       minDate={new Date()}
       selected={(field.value && new Date(field.value)) || null}
+      showTimeSelect = {true}
       onChange={(val) => {
         setFieldValue(field.name, val);
       }}
-      dateFormat="dd/MM/yy"
+      dateFormat="dd/MM/yy HH:mm"
     />
   );
 };
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 

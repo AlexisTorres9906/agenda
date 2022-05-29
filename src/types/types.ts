@@ -1,7 +1,7 @@
 import { User } from "../interface/User";
 import { Area } from "../interface/Areas";
 import { Categorias, Ambito } from "../interface/Admin";
-import { Acuerdo } from "../interface/Acuerdos";
+import { Acuerdo, AcuerdoAgenda } from '../interface/Acuerdos';
 
 export type types =
   | { type: "[Acuerdo] getAcuerdos"; payload: Acuerdo[] }
@@ -15,6 +15,7 @@ export type types =
       id: string;
     }
   | { type: "[Acuerdo] setActiveAcuerdo"; payload: Acuerdo }
+  | { type: "[Acuerdo] getAcuerdosAgenda"; payload: AcuerdoAgenda[] }
   | { type: "[Acuerdo] clearActiveAcuerdo" }
   | { type: "[Acuerdo] clearAcuerdos" }
   | { type: "[Admin] getUsers"; payload: User[] }

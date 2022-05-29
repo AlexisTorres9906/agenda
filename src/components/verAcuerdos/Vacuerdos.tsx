@@ -41,6 +41,7 @@ import React from "react";
 import { Finalizado } from "./Finalizado";
 import { CambiarFAcuerdo } from "./CambiarFAcuerdo";
 
+
 loadCldr(gregorian, numbers, timeZoneNames);
 setCulture("es-MX");
 const data = EJ2_LOCALE;

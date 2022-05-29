@@ -1,13 +1,15 @@
-import { Acuerdo } from "../interface/Acuerdos";
+import { Acuerdo, AcuerdoAgenda } from "../interface/Acuerdos";
 import { types } from "../types/types";
 
 interface AcuerdoState {
   acuerdos: Acuerdo[];
   activeAcuerdo?: Acuerdo;
+  acuerdoAgenda: AcuerdoAgenda[];
 }
 
 const initialState: AcuerdoState = {
   acuerdos: [],
+  acuerdoAgenda: [],
 };
 /*
 //esto funciona para entrar a un objeto y actualizar todos los hijos
@@ -62,6 +64,7 @@ export const acuerdoReducer = (
       return {
         ...state,
         acuerdos: [],
+        acuerdoAgenda: [],
       };
     case "[Acuerdo] addAcuerdo":
       return {
@@ -88,6 +91,11 @@ export const acuerdoReducer = (
         }
         ),
         activeAcuerdo: action.payload.acuerdo
+      };
+      case "[Acuerdo] getAcuerdosAgenda":
+      return {
+        ...state,
+        acuerdoAgenda: action.payload,
       };
     default:
       return state;

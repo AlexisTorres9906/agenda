@@ -43,11 +43,13 @@ const DatePickerField = ({ ...props }) => {
       onKeyDown={(e) => {
         e.preventDefault();
       }}
+      showTimeSelect = {true}
       minDate={new Date()}
       selected={(field.value && new Date(field.value)) || null}
       onChange={(val) => {
         setFieldValue(field.name, val);
       }}
+      dateFormat="dd/MM/yy HH:mm"
     />
   );
 };
