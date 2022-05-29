@@ -28,15 +28,6 @@ export const Calendario = () => {
       await Promise.all([dispatch(startGetAcuerdosAgenda())]);
     };
     load();
-    //eliminate html by class
-    const removeHtml = (className:any) => {
-        const elements = document.getElementsByClassName(className);
-        while (elements.length > 0 &&  elements[0].parentNode) {
-            elements[0].parentNode.removeChild(elements[0]);
-        }
-        }
-        removeHtml("e-all-day-time-zone-row")
-        removeHtml("e-repeat-container")
 
   }, [dispatch]);
 
