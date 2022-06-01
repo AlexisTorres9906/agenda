@@ -4,6 +4,7 @@ import { ErrorSwall, LoadingSwall, toastMixin } from "../helpers/swalls";
 export const sendAcuerdo = async (acuerdo: object) => {
   LoadingSwall.fire();
   let data:object = {};
+  
   await reqInsConToken
     .post("/acuerdo", acuerdo)
     .then((res) => {
