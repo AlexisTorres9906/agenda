@@ -25,6 +25,7 @@ import { RootState } from "../../store/store";
 import { addCompromiso } from '../../Api/sendAcuerdo';
 import { clearActiveAcuerdo, updateAcuerdoL } from "../../actions/acuerdo";
 import { useNavigate } from "react-router";
+import { startRenew } from "../../actions/auth";
 registerLocale("es", es);
 setDefaultLocale("es");
 
@@ -233,6 +234,7 @@ export const AgregarCompromiso = () => {
                   acuerdo: res.acuerdo,
                 };
             dispatch(updateAcuerdoL(resp, activeAcuerdo?._id as string));
+            dispatch(startRenew());
             navigate("../vAcuerdos", { replace: true });
           }
         })

@@ -21,6 +21,7 @@ import { addAcuerdo, startGetAcuerdosAgenda } from "../../actions/acuerdo";
 import { RootState } from "../../store/store";
 import { startGetAmbitos, startGetCategorias } from "../../actions/info";
 import { sendAcuerdo } from "../../Api/sendAcuerdo";
+import { startRenew } from "../../actions/auth";
 
 export const Calendario = () => {
   /////////////////////////////
@@ -74,7 +75,7 @@ export const Calendario = () => {
   //const data = extend([], dataR, null as any, true);
 
   const onCellClick = (args: any) => {
-    scheduleObj.current!.openEditor(args, "Add");
+    //scheduleObj.current!.openEditor(args, "Add");
     scheduleObj.current!.closeQuickInfoPopup();
   };
 
@@ -109,6 +110,7 @@ export const Calendario = () => {
       sendAcuerdo(data).then((res)=>{
         if (Object.entries(res).length !== 0) {
             dispatch(addAcuerdo(res));
+            dispatch(startRenew())
           }
       }).catch(()=>{
           args.cancel = true;
@@ -136,10 +138,12 @@ let dropdownCategoria: DropDownList;
     if (args.type === "QuickInfo" && !args.data.Id) {
       args.cancel = true;
     }
+
     if (args.type === "Editor") {
-        if(!inputAmbito){
+      
+        if(args.element.querySelector("#custom-field-row")){
             let b = args.element.querySelector("#custom-field-row")
-            b && b.remove();
+            b.remove();
         }
       if (!args.element.querySelector(".custom-field-row")) {
         let row = createElement("div", { className: "custom-field-row", id: "custom-field-row" });

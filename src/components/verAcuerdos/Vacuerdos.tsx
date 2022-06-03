@@ -18,7 +18,7 @@ import "../../styles/vAcuerdos.scss";
 import { L10n, loadCldr, setCulture } from "@syncfusion/ej2-base";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store/store";
-import { useEffect, useState, useCallback, useMemo, useRef } from 'react';
+import { useEffect, useState, useCallback, useMemo, useRef } from "react";
 import * as gregorian from "../../data/es-MX/ca-gregorian.json";
 import * as numbers from "../../data/es-MX/numbers.json";
 import * as timeZoneNames from "../../data/es-MX/timeZoneNames.json";
@@ -40,7 +40,7 @@ import { EnProceso } from "./EnProceso";
 import React from "react";
 import { Finalizado } from "./Finalizado";
 import { CambiarFAcuerdo } from "./CambiarFAcuerdo";
-
+import { startRenew } from "../../actions/auth";
 
 loadCldr(gregorian, numbers, timeZoneNames);
 setCulture("es-MX");
@@ -106,17 +106,18 @@ export const Vacuerdos = React.memo(() => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const hoy = useRef(new Date());
+  const hoysh = useRef(new Date());
+  //mañana
+  const mañana = useRef(new Date());
   useMemo(() => {
-    hoy.current.setHours(0, 0, 0, 0);
-  }, [])
+    mañana.current.setHours(23, 59, 59, 0);
+    hoysh.current.setHours(0, 0, 0, 0);
+  }, []);
   //hoy
-  
 
-  const sortOptions:SortSettingsModel = {
-    columns: [
-        { field: 'fechaCreacion', direction: 'Descending' },
-    ]
-};
+  const sortOptions: SortSettingsModel = {
+    columns: [{ field: "fechaCreacion", direction: "Descending" }],
+  };
 
   ///en caso de regresar de otra pantalla
   useEffect(() => {
@@ -152,10 +153,10 @@ export const Vacuerdos = React.memo(() => {
           ? new Date(acuerdo.fechaRCierre as any)
           : (null as any);
 
-          acuerdo.fechaCreacion = acuerdo.fechaCreacion
+        acuerdo.fechaCreacion = acuerdo.fechaCreacion
           ? new Date(acuerdo.fechaCreacion as any)
           : (null as any);
-
+        
         //vencido: que se ha pasa la fecha programada de cierre
         //fuera de tiempo: que se ha pasado la fecha de instruccion y el estado no es en proceso
 
@@ -173,14 +174,22 @@ export const Vacuerdos = React.memo(() => {
           } else if (
             acuerdo.fechaInstruccion &&
             acuerdo.estatus === "Registrado" &&
-            acuerdo.fechaInstruccion <= hoy.current
+            acuerdo.fechaInstruccion <= mañana.current
           ) {
-            acuerdo.estatus =
-              acuerdo.fechaInstruccion.getTime() ===hoy.current.getTime()
-                ? "Para hoy"
-                : "Fuera de tiempo";
+            acuerdo.estatus = "Para hoy";
+            if(acuerdo.fechaInstruccion <= hoy.current){
+              acuerdo.estatus = "Fuera de tiempo";
+            }
           }
-          if(acuerdo.fechaPCierre && acuerdo.fechaPCierre.getTime() === hoy.current.getTime()){acuerdo.estatus = "Vence hoy"}
+
+          if (
+            acuerdo.fechaPCierre &&
+            acuerdo.fechaPCierre.getTime() <= mañana.current.getTime() &&
+            acuerdo.fechaPCierre.getTime() >= hoysh.current.getTime() &&
+            !acuerdo.estatus.includes("Vencido")
+          ) {
+            acuerdo.estatus = "Vence hoy";
+          }
         }
         //seguir leyendo en caso de que haya mas sub acuerdos(compromisos)
         if (acuerdo.compromiso && acuerdo.compromiso.length > 0) {
@@ -190,6 +199,8 @@ export const Vacuerdos = React.memo(() => {
     },
     [acuerdos]
   );
+
+  ///funcion para saber si es hoy a cualquier hora
 
   //mapeo de string a date de los datos y cambio de vencidos
 
@@ -219,18 +230,19 @@ export const Vacuerdos = React.memo(() => {
         : { estatus };
 
     updateAcuerdo(data, activeAcuerdo?._id as string)
-      .then((res:any) => {
+      .then((res: any) => {
         if (Object.entries(res).length !== 0) {
           const resp = res.acuerdoP
-          ? {
-              acuerdoP: res.acuerdoP,
-              acuerdo: res.acuerdo,
-            }
-          : {
-              acuerdoP: res.acuerdo,
-              acuerdo: res.acuerdo,
-            };
-        dispatch(updateAcuerdoL(resp, activeAcuerdo?._id as string));
+            ? {
+                acuerdoP: res.acuerdoP,
+                acuerdo: res.acuerdo,
+              }
+            : {
+                acuerdoP: res.acuerdo,
+                acuerdo: res.acuerdo,
+              };
+          dispatch(updateAcuerdoL(resp, activeAcuerdo?._id as string));
+          dispatch(startRenew());
           switch (estatus) {
             case "Cancelado":
               Swal.fire({
@@ -459,7 +471,8 @@ export const Vacuerdos = React.memo(() => {
                     Editar Acuerdo
                   </button>
                   {(activeAcuerdo?.estatus.includes("En proceso") ||
-                    activeAcuerdo?.estatus === "Finalizado" || activeAcuerdo?.estatus === "Vence hoy") && (
+                    activeAcuerdo?.estatus === "Finalizado" ||
+                    activeAcuerdo?.estatus === "Vence hoy") && (
                     <CambiarFAcuerdo />
                   )}
 
@@ -467,7 +480,8 @@ export const Vacuerdos = React.memo(() => {
                     activeAcuerdo?.estatus === "Fuera de tiempo" ||
                     activeAcuerdo?.estatus === "Para hoy") && <EnProceso />}
 
-                  {(activeAcuerdo?.estatus.includes("En proceso") || activeAcuerdo?.estatus === "Vence hoy" ) &&
+                  {(activeAcuerdo?.estatus.includes("En proceso") ||
+                    activeAcuerdo?.estatus === "Vence hoy") &&
                     activeAcuerdo?.fechaIEjecucion !== null && <Finalizado />}
                   <button
                     className="col-auto btn btn-danger"
@@ -511,7 +525,7 @@ export const Vacuerdos = React.memo(() => {
         dataSource={data}
         treeColumnIndex={1}
         childMapping="compromiso"
-        height="550"
+        height="78vh"
         width="100%"
         allowFiltering={true}
         allowSorting={true}

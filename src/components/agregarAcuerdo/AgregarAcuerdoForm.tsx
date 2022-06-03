@@ -28,6 +28,7 @@ import {
 import { RootState } from "../../store/store";
 import { sendAcuerdo } from "../../Api/sendAcuerdo";
 import { addAcuerdo } from '../../actions/acuerdo';
+import { startRenew } from "../../actions/auth";
 registerLocale("es", es);
 setDefaultLocale("es");
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -198,6 +199,7 @@ export const AgregarAcuerdoForm = () => {
           if (Object.entries(res).length !== 0) {
             resetForm();
             dispatch(startGetFolioA());
+            dispatch(startRenew())
             dispatch(addAcuerdo(res));
           }
         })

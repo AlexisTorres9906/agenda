@@ -5,6 +5,7 @@ import {
   AiOutlineFileAdd,
   AiOutlineCalendar,
 } from "react-icons/ai";
+ import { RiContactsBookLine } from "react-icons/ri";
 import { TiDocumentText } from "react-icons/ti";
 import { IconContext } from "react-icons";
 import { useEffect } from "react";
@@ -85,6 +86,14 @@ export const Sidebar = () => {
                   <AiOutlineCalendar />
                 </span>
                 <span className="title">Agenda</span>
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to={"/agenda/contactos"}>
+                <span className="icon">
+                  <RiContactsBookLine />
+                </span>
+                <span className="title">Contactos</span>
               </NavLink>
             </li>
             <li>

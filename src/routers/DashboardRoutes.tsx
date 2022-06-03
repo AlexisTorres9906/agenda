@@ -14,6 +14,7 @@ import { startGetAcuerdos } from '../actions/acuerdo';
 import { EditarAcuerdo } from '../components/editarAcuerdo/EditarAcuerdo';
 import { AgregarCompromiso } from "../components/agregarAcuerdo/AgregarCompromiso";
 import { Calendario } from '../components/calendario/Calendario';
+import { Contactos } from "../components/contactos/Contactos";
 export const DashboardRoutes = () => {
   //logica necesaria para el dashboard
   UseDashboard();
@@ -58,6 +59,7 @@ export const DashboardRoutes = () => {
               <Route path="/editarAcuerdo" element={<EditarAcuerdo/>} />
               <Route path="/agregarCompromiso" element={<AgregarCompromiso/>} />
               <Route path="/calendario" element={<Calendario/>} />
+              <Route path="/contactos" element={<Contactos/>} />
               <Route path="/*" element={<Home />} />
             </Routes>
           </div>

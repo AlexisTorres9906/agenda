@@ -23,6 +23,7 @@ import es from "date-fns/locale/es";
 import { updateAcuerdo } from "../../Api/sendAcuerdo";
 import { updateAcuerdoL } from "../../actions/acuerdo";
 import Swal from "sweetalert2";
+import { startRenew } from "../../actions/auth";
 registerLocale("es", es);
 setDefaultLocale("es");
 
@@ -111,6 +112,7 @@ export const Finalizado = () => {
                 acuerdo: res.acuerdo,
               };
           dispatch(updateAcuerdoL(resp, activeAcuerdo?._id as string));
+          dispatch(startRenew())
           Swal.fire({
             title: "Finalizado",
             text: "El acuerdo ha sido finalizado",
