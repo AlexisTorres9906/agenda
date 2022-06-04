@@ -55,8 +55,15 @@ export const Contactos = () => {
       </div>
     );
   };
-  const template1 = gridImageTemplate;
-  const template2 = gridUrlTemplate;
+
+  const gridCellPhoneTemplate = (props: any) => {
+    var src = "tel:" + props.CellPhone;
+    return (
+        <div className="phone">
+            <a href={src}>{props.CellPhone}</a>
+        </div>
+    );
+  };
 
   const toolbarClick = (args: any) => {
     switch (args.item.text) {
@@ -111,7 +118,8 @@ export const Contactos = () => {
             template={gridUrlTemplate}
           ></ColumnDirective>
           <ColumnDirective
-            field="Address"
+           headerText="Celular"
+            template= {gridCellPhoneTemplate}
             width="180"
             allowGrouping={false}
           ></ColumnDirective>
@@ -126,9 +134,11 @@ const employeeDetails = [{
     FirstName: "Nancy",
     Title: "Sales Representative",
     EmailID: "email@gmail.com",
+    CellPhone: "5559482",
 },
 {
     FirstName: "Nancy",
     Title: "Sales Representative",
     EmailID: "email@gmail.com",
+    CellPhone: "3112891558"
 }];
