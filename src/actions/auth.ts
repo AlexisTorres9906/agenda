@@ -111,6 +111,7 @@ export const startLogout = () => {
     dispatch(logout());
     dispatch(deleteInfo());
     dispatch(deleteAcuerdos());
+    dispatch(clearContactos());
   };
 };
 
@@ -129,4 +130,8 @@ const deleteAcuerdos = (): types => ({
 const login = (user: User): types => ({
   type: "[auth] Login",
   payload: user,
+});
+
+const clearContactos = (): types => ({
+  type: "[Contacto] clearContactos",
 });

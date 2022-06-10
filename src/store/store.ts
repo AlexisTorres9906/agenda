@@ -15,7 +15,7 @@ import { persistStore, persistReducer } from 'redux-persist';
   const persistConfig = {
     key: 'acuerdoType',
     storage: storage,
-    whitelist: ['acuerdos'] // which reducer want to store
+    whitelist: ['acuerdos','contactos'] // which reducer want to store
   };
   const pReducer = persistReducer(persistConfig, rootReducer);
 

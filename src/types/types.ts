@@ -1,7 +1,7 @@
 import { User } from "../interface/User";
 import { Area } from "../interface/Areas";
 import { Categorias, Ambito } from "../interface/Admin";
-import { Acuerdo, AcuerdoAgenda } from '../interface/Acuerdos';
+import { Acuerdo, AcuerdoAgenda } from "../interface/Acuerdos";
 
 export type types =
   | { type: "[Acuerdo] getAcuerdos"; payload: Acuerdo[] }
@@ -56,4 +56,13 @@ export type types =
   | { type: "[info] getFolioA"; payload: any }
   | { type: "[info] reset" }
   | { type: "[ui] startLoading" }
-  | { type: "[ui] stopLoading" };
+  | { type: "[ui] stopLoading" }
+  | { type: "[Contacto] getContactos"; payload: any }
+  | { type: "[Contacto] addContacto"; payload: any }
+  | { type: "[Contacto] updateContacto"; payload: any }
+  | { type: "[Contacto] deleteContacto"; payload: any }
+  | { type: "[Contacto] setActiveContacto"; payload: any }
+  | { type: "[Contacto] cleanActiveContacto" }
+  | { type: "[Contacto] clearContactos" }
+  | { type: "[Contacto] setResponseOk"; payload: boolean }
+

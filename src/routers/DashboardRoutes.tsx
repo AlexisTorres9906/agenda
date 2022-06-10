@@ -15,6 +15,7 @@ import { EditarAcuerdo } from '../components/editarAcuerdo/EditarAcuerdo';
 import { AgregarCompromiso } from "../components/agregarAcuerdo/AgregarCompromiso";
 import { Calendario } from '../components/calendario/Calendario';
 import { Contactos } from "../components/contactos/Contactos";
+import { startGetContactos } from "../actions/contactos";
 export const DashboardRoutes = () => {
   //logica necesaria para el dashboard
   UseDashboard();
@@ -41,6 +42,7 @@ export const DashboardRoutes = () => {
   //acuerdos del usuario
   useEffect(() => {
     dispatch(startGetAcuerdos());
+    dispatch(startGetContactos());
   }, [dispatch])
   
 

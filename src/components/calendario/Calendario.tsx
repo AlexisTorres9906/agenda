@@ -28,7 +28,7 @@ export const Calendario = () => {
   //informacion inicial
   const [info, setInfo] = useState({});
   const { acuerdoAgenda } = useSelector((state: RootState) => state.acuerdos);
-  const { Ambitos,Categorias } = useSelector((state: RootState) => state.info);
+  const { Ambitos, Categorias } = useSelector((state: RootState) => state.info);
   const dispatch = useDispatch();
   useEffect(() => {
     const load = async () => {
@@ -89,50 +89,51 @@ export const Calendario = () => {
       scheduleObj.current!.quickPopup.openRecurrenceAlert();
     }
   };
-//////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////
   const onActionBegin = (args: any) => {
     //console.log(args);
   };
 
   const onActionComplete = (args: any) => {
-    if(args.requestType === "eventCreated"){
-    const info = args.data[0]
+    if (args.requestType === "eventCreated") {
+      const info = args.data[0];
       const data = {
         descripcion: info.Description,
-        nombre:  info.Subject,
-        fechaInstruccion:  info.StartTime,
-        fechaPCierre:  info.EndTime,
-        lugar:  info.Location,
-        ambito:  info.ambito,
-        categoria:  info.categoria,
-        prioridad:  info.prioridad,
-      }     
-      sendAcuerdo(data).then((res)=>{
-        if (Object.entries(res).length !== 0) {
+        nombre: info.Subject,
+        fechaInstruccion: info.StartTime,
+        fechaPCierre: info.EndTime,
+        lugar: info.Location,
+        ambito: info.ambito,
+        categoria: info.categoria,
+        prioridad: info.prioridad,
+      };
+      sendAcuerdo(data)
+        .then((res) => {
+          if (Object.entries(res).length !== 0) {
             dispatch(addAcuerdo(res));
-            dispatch(startRenew())
+            dispatch(startRenew());
           }
-      }).catch(()=>{
+        })
+        .catch(() => {
           args.cancel = true;
-      })
+        });
     }
-    }
+  };
 
   //////////////////////////////////////////////////////
-///inputs
+  ///inputs
 
-let inputPrio:HTMLElement;
-let inputAmbito:HTMLElement;
-let inputCategoria:HTMLElement;
+  let inputPrio: HTMLElement;
+  let inputAmbito: HTMLElement;
+  let inputCategoria: HTMLElement;
 
+  let dropdownPrioridad: DropDownList;
+  let dropdownAmbito: DropDownList;
+  let dropdownCategoria: DropDownList;
 
-let dropdownPrioridad: DropDownList;
-let dropdownAmbito: DropDownList;
-let dropdownCategoria: DropDownList;
-
-//////////////////////////////////////////////////////
-//////////////////////////////////////////////////////
-//nos referimos al popup de agregar acuerdo y tambien aqui se elimina un popup
+  //////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////
+  //nos referimos al popup de agregar acuerdo y tambien aqui se elimina un popup
   const onPopUpOpen = (args: any) => {
     //no abre el popup de agregar rapido
     if (args.type === "QuickInfo" && !args.data.Id) {
@@ -140,13 +141,15 @@ let dropdownCategoria: DropDownList;
     }
 
     if (args.type === "Editor") {
-      
-        if(args.element.querySelector("#custom-field-row")){
-            let b = args.element.querySelector("#custom-field-row")
-            b.remove();
-        }
+      if (args.element.querySelector("#custom-field-row")) {
+        let b = args.element.querySelector("#custom-field-row");
+        b.remove();
+      }
       if (!args.element.querySelector(".custom-field-row")) {
-        let row = createElement("div", { className: "custom-field-row", id: "custom-field-row" });
+        let row = createElement("div", {
+          className: "custom-field-row",
+          id: "custom-field-row",
+        });
         let formElement = args.element.querySelector(".e-schedule-form");
         formElement.firstChild.insertBefore(
           row,
@@ -168,7 +171,7 @@ let dropdownCategoria: DropDownList;
             { text: "Alta", value: "Alta" },
           ],
           fields: { text: "text", value: "value" },
-          value: 'Baja',
+          value: "Baja",
           floatLabelType: "Always",
           placeholder: "Prioridad",
         });
@@ -190,7 +193,10 @@ let dropdownCategoria: DropDownList;
         container.appendChild(inputAmbito);
         row.appendChild(container);
         dropdownAmbito = new DropDownList({
-          dataSource:Ambitos.map((ambito)=>({text:ambito.nombre,value:ambito._id})),
+          dataSource: Ambitos.map((ambito) => ({
+            text: ambito.nombre,
+            value: ambito._id,
+          })),
           fields: { text: "text", value: "value" },
           value: Ambitos[0]._id ? Ambitos[0]._id : "",
           floatLabelType: "Always",
@@ -200,27 +206,30 @@ let dropdownCategoria: DropDownList;
         inputAmbito.setAttribute("name", "ambito");
         ///////////////////////////////////////////////////////////////////////
         formElement.firstChild.insertBefore(
-            row,
-            formElement.lastChild.lastChild
-          );
-          container = createElement("div", {
-            className: "custom-field-container",
-          });
-          inputCategoria = createElement("input", {
-            className: "e-field",
-            attrs: { name: "categoriaDivInp", id: "categoriaDivInp" },
-          });
-          container.appendChild(inputCategoria);
-          row.appendChild(container);
-          dropdownCategoria = new DropDownList({
-            dataSource:Categorias.map((categoria)=>({text:categoria.nombre,value:categoria._id})),
-            fields: { text: "text", value: "value" },
-            value: Categorias[0]._id ? Categorias[0]._id : "",
-            floatLabelType: "Always",
-            placeholder: "Ambito",
-          });
-          dropdownCategoria.appendTo(inputCategoria);
-          inputCategoria.setAttribute("name", "categoria");
+          row,
+          formElement.lastChild.lastChild
+        );
+        container = createElement("div", {
+          className: "custom-field-container",
+        });
+        inputCategoria = createElement("input", {
+          className: "e-field",
+          attrs: { name: "categoriaDivInp", id: "categoriaDivInp" },
+        });
+        container.appendChild(inputCategoria);
+        row.appendChild(container);
+        dropdownCategoria = new DropDownList({
+          dataSource: Categorias.map((categoria) => ({
+            text: categoria.nombre,
+            value: categoria._id,
+          })),
+          fields: { text: "text", value: "value" },
+          value: Categorias[0]._id ? Categorias[0]._id : "",
+          floatLabelType: "Always",
+          placeholder: "Ambito",
+        });
+        dropdownCategoria.appendTo(inputCategoria);
+        inputCategoria.setAttribute("name", "categoria");
       }
     }
   };
@@ -257,17 +266,18 @@ let dropdownCategoria: DropDownList;
           allowEditing: false,
           dataSource: info as any,
           fields: {
-            id: 'Id',
-            subject: { name: 'Subject', validation: { required: true } },
-            location: { name: 'Location', validation: { required: true } },
+            id: "Id",
+            subject: { name: "Subject", validation: { required: true } },
+            location: { name: "Location", validation: { required: true } },
             description: {
-                name: 'Description', validation: {
-                    required: true
-                }
+              name: "Description",
+              validation: {
+                required: true,
+              },
             },
-            startTime: { name: 'StartTime', validation: { required: true } },
-            endTime: { name: 'EndTime', validation: { required: true } }
-        }
+            startTime: { name: "StartTime", validation: { required: true } },
+            endTime: { name: "EndTime", validation: { required: true } },
+          },
         }}
         readOnly={true}
         eventClick={onEventClick.bind(this)}

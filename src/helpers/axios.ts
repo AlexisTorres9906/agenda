@@ -16,7 +16,7 @@ export const reqInsSinToken: AxiosInstance = axios.create({
 
 export const reqInsConToken: AxiosInstance = axios.create({
   baseURL: baseUrl,
-  timeout: 5000,
+  timeout: 15000,
   headers: {
     "Content-Type": "application/json",
   },
