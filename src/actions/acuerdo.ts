@@ -71,3 +71,26 @@ const getAcuerdosAgenda = (acuerdos: any): types => ({
   type: "[Acuerdo] getAcuerdosAgenda",
   payload: acuerdos,
 });
+////////////////////////////////////////////////////////////////////////////////
+export const startGetAcuerdosImportantes = () => {
+  return async (dispatch: any) => {
+    await reqInsConToken
+      .get("/acuerdo/importantes")
+      .then((res) => {
+        dispatch(getAcuerdosImportantes(res.data.acuerdos));
+      })
+      .catch((err) => {
+        ErrorSwall.fire({
+          title: "Error",
+          text: "No se pudo obtener los acuerdos",
+          icon: "error",
+          confirmButtonText: "Cerrar",
+        });
+      });
+  };
+};
+
+export const getAcuerdosImportantes = (acuerdos: any): types => ({
+  type: "[Acuerdo] getAcuerdosImportantes",
+  payload: acuerdos,
+});

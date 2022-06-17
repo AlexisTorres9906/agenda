@@ -14,7 +14,6 @@ import { useEffect, useRef, useState } from "react";
 import "../../styles/calendario.scss";
 import {
   DropDownList,
-  DropDownListComponent,
 } from "@syncfusion/ej2-react-dropdowns";
 import { useDispatch, useSelector } from "react-redux";
 import { addAcuerdo, startGetAcuerdosAgenda } from "../../actions/acuerdo";
@@ -22,6 +21,7 @@ import { RootState } from "../../store/store";
 import { startGetAmbitos, startGetCategorias } from "../../actions/info";
 import { sendAcuerdo } from "../../Api/sendAcuerdo";
 import { startRenew } from "../../actions/auth";
+import { LoadingInfo } from '../LoadingInfo';
 
 export const Calendario = () => {
   /////////////////////////////
@@ -30,6 +30,7 @@ export const Calendario = () => {
   const { acuerdoAgenda } = useSelector((state: RootState) => state.acuerdos);
   const { Ambitos, Categorias } = useSelector((state: RootState) => state.info);
   const dispatch = useDispatch();
+  const [infoLista, setInfoLista] = useState(false)
   useEffect(() => {
     const load = async () => {
       await Promise.all([
@@ -38,7 +39,9 @@ export const Calendario = () => {
         dispatch(startGetAmbitos()),
       ]);
     };
-    load();
+    load().then(() => (
+      setInfoLista(true))
+    );
   }, [dispatch]);
 
   useEffect(() => {
@@ -255,6 +258,9 @@ export const Calendario = () => {
     }
   };
   //////////////////////////////////////////////////////
+  if(!infoLista){
+    return <LoadingInfo/>
+  }
   return (
     <div className="schedule-control-section">
       <ScheduleComponent

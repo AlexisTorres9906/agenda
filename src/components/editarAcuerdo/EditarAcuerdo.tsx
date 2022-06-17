@@ -44,7 +44,7 @@ const DatePickerField = ({ ...props }) => {
       onKeyDown={(e) => {
         e.preventDefault();
       }}
-      showTimeSelect = {true}
+      showTimeSelect={true}
       minDate={new Date()}
       selected={(field.value && new Date(field.value)) || null}
       onChange={(val) => {
@@ -54,9 +54,12 @@ const DatePickerField = ({ ...props }) => {
     />
   );
 };
+interface Props {
+  direccion: string;
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
-export const EditarAcuerdo = () => {
+export const EditarAcuerdo = (props: Props) => {
   //cosas de las animaciones
   const divTabcon = useRef<HTMLDivElement>(null);
   const divTabinv = useRef<HTMLDivElement>(null);
@@ -228,7 +231,7 @@ export const EditarAcuerdo = () => {
         .then((res: any) => {
           if (Object.entries(res).length !== 0) {
             envio.current = 1;
-            
+
             const resp = res.acuerdoP
               ? {
                   acuerdoP: res.acuerdoP,
@@ -240,7 +243,8 @@ export const EditarAcuerdo = () => {
                 };
             dispatch(updateAcuerdoL(resp, activeAcuerdo?._id as string));
             dispatch(startRenew());
-            navigate("../vAcuerdos", { replace: true });
+            if (props.direccion === "home") navigate("../", { replace: true });
+            else navigate("../vAcuerdos", { replace: true });
           }
         })
         .catch((err) => {});

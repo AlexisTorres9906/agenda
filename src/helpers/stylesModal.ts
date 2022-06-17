@@ -34,3 +34,16 @@ export const styleModal = {
     boxShadow: 12,
     p: 4,
   };
+
+  export const styleModalContacto = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: "auto",
+    overflow:'auto',
+    bgcolor: "background.paper",
+    height: "auto",
+    boxShadow: 24,
+    p: 4,
+  };

@@ -58,7 +58,8 @@ export const DashboardRoutes = () => {
               <Route path="/" element={<Home />} />
               <Route path="/FAcuerdos" element={<AgregarAcuerdoForm/>} />
               <Route path="/vAcuerdos" element={<Vacuerdos/>} />
-              <Route path="/editarAcuerdo" element={<EditarAcuerdo/>} />
+              <Route path="/editarAcuerdo" element={<EditarAcuerdo direccion={""} />} />
+              <Route path="/editarAcuerdo/home" element={<EditarAcuerdo direccion={"home"} />} />
               <Route path="/agregarCompromiso" element={<AgregarCompromiso/>} />
               <Route path="/calendario" element={<Calendario/>} />
               <Route path="/contactos" element={<Contactos/>} />

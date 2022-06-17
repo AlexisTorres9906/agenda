@@ -42,6 +42,15 @@ import { Finalizado } from "./Finalizado";
 import { CambiarFAcuerdo } from "./CambiarFAcuerdo";
 import { startRenew } from "../../actions/auth";
 
+//GridRecientes
+
+/*const { acuerdosImportantes } = useSelector((state: RootState) => state.acuerdos);
+  const evento = Evento;
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(startGetAcuerdosImportantes());
+  }, [])* */
+
 loadCldr(gregorian, numbers, timeZoneNames);
 setCulture("es-MX");
 const data = EJ2_LOCALE;
@@ -107,10 +116,10 @@ export const Vacuerdos = React.memo(() => {
   const navigate = useNavigate();
   const hoy = useRef(new Date());
   const hoysh = useRef(new Date());
-  //mañana
-  const mañana = useRef(new Date());
+  //manana
+  const manana = useRef(new Date());
   useMemo(() => {
-    mañana.current.setHours(23, 59, 59, 0);
+    manana.current.setHours(23, 59, 59, 0);
     hoysh.current.setHours(0, 0, 0, 0);
   }, []);
   //hoy
@@ -174,7 +183,7 @@ export const Vacuerdos = React.memo(() => {
           } else if (
             acuerdo.fechaInstruccion &&
             acuerdo.estatus === "Registrado" &&
-            acuerdo.fechaInstruccion <= mañana.current
+            acuerdo.fechaInstruccion <= manana.current
           ) {
             acuerdo.estatus = "Para hoy";
             if(acuerdo.fechaInstruccion <= hoy.current){
@@ -184,7 +193,7 @@ export const Vacuerdos = React.memo(() => {
 
           if (
             acuerdo.fechaPCierre &&
-            acuerdo.fechaPCierre.getTime() <= mañana.current.getTime() &&
+            acuerdo.fechaPCierre.getTime() <= manana.current.getTime() &&
             acuerdo.fechaPCierre.getTime() >= hoysh.current.getTime() &&
             !acuerdo.estatus.includes("Vencido")
           ) {
@@ -525,12 +534,13 @@ export const Vacuerdos = React.memo(() => {
         dataSource={data}
         treeColumnIndex={1}
         childMapping="compromiso"
-        height="78vh"
+        height="72vh"
         width="100%"
         allowFiltering={true}
         allowSorting={true}
-        pageSettings={{ pageSize: 50 }}
-        enableInfiniteScrolling={true}
+        pageSettings={{ pageSizes: true, pageSize: 12, pageCount: 8 , pageSizeMode : 'Root'}}
+        allowPaging={true}
+       // enableInfiniteScrolling={true}
         filterSettings={filterOptions}
         toolbar={toolbarOptions}
         editSettings={editSettings}

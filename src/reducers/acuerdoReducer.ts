@@ -5,11 +5,13 @@ interface AcuerdoState {
   acuerdos: Acuerdo[];
   activeAcuerdo?: Acuerdo;
   acuerdoAgenda: AcuerdoAgenda[];
+  acuerdosImportantes: Acuerdo[];
 }
 
 const initialState: AcuerdoState = {
   acuerdos: [],
   acuerdoAgenda: [],
+  acuerdosImportantes: [],
 };
 /*
 //esto funciona para entrar a un objeto y actualizar todos los hijos
@@ -90,12 +92,23 @@ export const acuerdoReducer = (
             else return item;
         }
         ),
-        activeAcuerdo: action.payload.acuerdo
+        activeAcuerdo: action.payload.acuerdo,
+        acuerdosImportantes: state.acuerdosImportantes.map((item) => {
+          if(item._id === action.payload.acuerdoP._id)
+            return action.payload.acuerdoP;
+          else return item;
+      }
+      )
       };
       case "[Acuerdo] getAcuerdosAgenda":
       return {
         ...state,
         acuerdoAgenda: action.payload,
+      };
+      case "[Acuerdo] getAcuerdosImportantes":
+      return {
+        ...state,
+        acuerdosImportantes: action.payload,
       };
     default:
       return state;

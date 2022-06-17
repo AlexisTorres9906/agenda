@@ -291,6 +291,11 @@
   }
   .contactos {
     min-width: 280px;
+  
+  }
+  .container-contactos{
+    max-height: 50vh;
+    overflow: auto;
   }
   .contacto{
 

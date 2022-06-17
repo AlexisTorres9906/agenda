@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import Typography from "@mui/material/Typography";
@@ -5,7 +6,6 @@ import {
   ColumnDirective,
   ColumnsDirective,
   Filter,
-  InfiniteScroll,
   Inject,
   Page,
   Sort,
@@ -36,39 +36,35 @@ import usuario from "../../assets/usuario.png";
 import { RootState } from "../../store/store";
 import { useDispatch, useSelector } from "react-redux";
 import { AiOutlineMail } from "react-icons/ai";
-import { clearActiveContacto } from '../../actions/contactos';
+import {
+  clearActiveContacto,
+  editContacto,
+  startDeleteContacto,
+  startEditContacto,
+} from "../../actions/contactos";
 import {
   startAddContacto,
   setResponseOk,
   setActiveContacto,
 } from "../../actions/contactos";
+import {
+  RowSelectingEventArgs,
+} from "@syncfusion/ej2-react-grids";
+import updateFavorito from "../../Api/updateFavorito";
 export const Contactos = () => {
   ////////////////////////////////////////////////////////////////////////////////////////////////
   //inicio
   const toolbarOptions = ["ExcelExport", "PdfExport", "Search"];
   let gridInstance: any;
-  let flag = true;
   const style = styleModal;
   const [openModal, setOpenModal] = useState(false);
-  const { contactos, ResponseOk,activeContacto } = useSelector(
+  const { contactos, ResponseOk, activeContacto } = useSelector(
     (state: RootState) => state.contactos
   );
   const dispatch = useDispatch();
   const collapsedStatePersist: boolean = true;
   const editSettings: any = { mode: "Dialog" };
   const filterOptions: any = { type: "Excel" };
-  
-
-  const created = (_: any) => {
-    console.log(
-      gridInstance.getHeaderTable().querySelectorAll(".e-filterbarcell")[0]
-    );
-
-    gridInstance
-      .getHeaderTable()
-      .querySelectorAll(".e-filterbarcell")[0]
-      .querySelector(".e-filterdiv").style.visibility = "hidden";
-  };
 
   const exportQueryCellInfo = (args: any) => {
     /*
@@ -128,9 +124,28 @@ export const Contactos = () => {
     var src = props.favorito ? estrellaI : estrella;
     return (
       <div className="favorito">
-        <img src={src} alt={props._id} height="25px" width="25px" />
+        <img
+          src={src}
+          alt={props._id}
+          height="25px"
+          width="25px"
+          onClick={()=>onFavorito(props.taskData)}
+        />
       </div>
     );
+  };
+  const onFavorito = (data:any) => {
+   const info ={
+     ...data,
+      favorito:!data.favorito
+   }
+   dispatch(editContacto(info));
+   updateFavorito(info,data._id).catch(err=>{
+     dispatch(editContacto({
+        ...data,
+        favorito:data.favorito
+     }));
+   });
   };
 
   const toolbarClick = (args: ClickEventArgs): void => {
@@ -158,21 +173,21 @@ export const Contactos = () => {
 
   ////////////////////////////////////////////////////////////////////////////////////////////////
   //formik
-  const initialValues = activeContacto ?
-  {
-    nombre: activeContacto.nombre,
-    descripcion: activeContacto.descripcion,
-    correo: activeContacto.correo,
-    telefono: activeContacto.telefono,
-  }
-  :
-  {
-    nombre: "",
-    descripcion: "",
-    correo: "",
-    telefono: "",
-  } 
-
+  const initialValues = activeContacto
+    ? {
+        nombre: activeContacto.nombre ? activeContacto.nombre : "",
+        descripcion: activeContacto.descripcion
+          ? activeContacto.descripcion
+          : "",
+        correo: activeContacto.correo ? activeContacto.correo : "",
+        telefono: activeContacto.telefono ? activeContacto.telefono : "",
+      }
+    : {
+        nombre: "",
+        descripcion: "",
+        correo: "",
+        telefono: "",
+      };
 
   const validationSchema = Yup.object({
     //name with no whiteSpace in the beginning
@@ -187,14 +202,28 @@ export const Contactos = () => {
     initialValues: initialValues,
     validationSchema: validationSchema,
     onSubmit: async (values) => {
-      dispatch(
-        startAddContacto({
-          correo: values.correo === "" ? null : values.correo,
-          nombre: values.nombre === "" ? null : values.nombre,
-          telefono: values.telefono === "" ? null : values.telefono,
-          descripcion: values.descripcion === "" ? null : values.descripcion,
-        })
-      );
+      if (activeContacto)
+        dispatch(
+          startEditContacto(
+            {
+              correo: values.correo === "" ? null : values.correo,
+              nombre: values.nombre === "" ? null : values.nombre,
+              telefono: values.telefono === "" ? null : values.telefono,
+              descripcion:
+                values.descripcion === "" ? null : values.descripcion,
+            },
+            activeContacto._id
+          )
+        );
+      else
+        dispatch(
+          startAddContacto({
+            correo: values.correo === "" ? null : values.correo,
+            nombre: values.nombre === "" ? null : values.nombre,
+            telefono: values.telefono === "" ? null : values.telefono,
+            descripcion: values.descripcion === "" ? null : values.descripcion,
+          })
+        );
     },
   };
   useEffect(() => {
@@ -202,7 +231,11 @@ export const Contactos = () => {
       setOpenModal(false);
     }
     dispatch(setResponseOk(false));
-  }, [ResponseOk]);
+  }, [ResponseOk, dispatch]);
+
+  const handleDelete = () => {
+    activeContacto && dispatch(startDeleteContacto(activeContacto._id));
+  };
 
   ////////////////////////////////////////////////////////////////////////////////////////////////
   //acciones modal
@@ -220,7 +253,14 @@ export const Contactos = () => {
     console.log(args.data);
     dispatch(setActiveContacto(args.data.taskData));
     setOpenModal(true);
-    
+  };
+
+  const rowSelectingHandler = (args: RowSelectingEventArgs) => {
+    if (args.target && args.target.localName === "img") args.cancel = true;
+  };
+
+  const sortOptions: SortSettingsModel = {
+    columns: [{ field: "favorito", direction: "Descending" }],
   };
   ////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -230,7 +270,7 @@ export const Contactos = () => {
         dataSource={contactos}
         ref={(grid) => (gridInstance = grid)}
         toolbar={toolbarOptions}
-        allowPaging={true} 
+        allowPaging={true}
         pageSettings={{ pageSizes: true, pageSize: 10, pageCount: 4 }}
         allowExcelExport={true}
         allowPdfExport={true}
@@ -242,9 +282,10 @@ export const Contactos = () => {
         rowSelected={onCellClick}
         allowFiltering={true}
         allowSorting={true}
-        created={created}
         filterSettings={filterOptions}
         editSettings={editSettings}
+        rowSelecting={rowSelectingHandler}
+        sortSettings={sortOptions}
       >
         <ColumnsDirective>
           <ColumnDirective
@@ -265,12 +306,12 @@ export const Contactos = () => {
           ></ColumnDirective>
           <ColumnDirective
             field="nombre"
-            headerText="Name"
+            headerText="Nombre"
             width="180"
           ></ColumnDirective>
           <ColumnDirective
             field="descripcion"
-            headerText="Descripción"
+            headerText="Cargo"
             width="220"
           ></ColumnDirective>
           <ColumnDirective
@@ -294,7 +335,9 @@ export const Contactos = () => {
             allowFiltering={false}
           ></ColumnDirective>
         </ColumnsDirective>
-        <Inject services={[Toolbar, ExcelExport, PdfExport, Filter, Sort,Page]} />
+        <Inject
+          services={[Toolbar, ExcelExport, PdfExport, Filter, Sort, Page]}
+        />
       </TreeGridComponent>
       <button className="btn-flotante" onClick={onAdd}>
         <span>
@@ -312,7 +355,7 @@ export const Contactos = () => {
             {(form) => (
               <Form>
                 <Typography variant="h5" id="modal-modal-title">
-                  Agregar Contacto
+                  {activeContacto ? "Editar Contacto" : "Agregar Contacto"}
                 </Typography>
                 <div className="mb-3 mt-3">
                   <label className="form-label">
@@ -338,7 +381,7 @@ export const Contactos = () => {
                 <div className="mb-3 mt-3">
                   <label className="form-label">
                     <BiRename />
-                     Descripción
+                     Cargo
                   </label>
                   <Field
                     className="form-control"
@@ -348,7 +391,7 @@ export const Contactos = () => {
                       form.errors.descripcion && { border: "1px solid red" }
                     }
                     name="descripcion"
-                    placeholder="Escribe la descripción del contacto"
+                    placeholder="Escribe el cargo del contacto"
                     autoComplete="off"
                   />
                   <div style={{ color: "red" }}>
@@ -400,8 +443,11 @@ export const Contactos = () => {
 
                 <div className="d-flex justify-content-around mb-3">
                   <button className="btn btn-primary" type="submit">
-                  {activeContacto ? "Actualizar" : "Agregar"}
+                    {activeContacto ? "Actualizar" : "Agregar"}
                   </button>
+                  <a className="btn btn-danger" onClick={handleDelete}>
+                    Eliminar
+                  </a>
                 </div>
               </Form>
             )}

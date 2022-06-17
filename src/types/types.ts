@@ -16,6 +16,7 @@ export type types =
     }
   | { type: "[Acuerdo] setActiveAcuerdo"; payload: Acuerdo }
   | { type: "[Acuerdo] getAcuerdosAgenda"; payload: AcuerdoAgenda[] }
+  | { type: "[Acuerdo] getAcuerdosImportantes"; payload: Acuerdo[] }
   | { type: "[Acuerdo] clearActiveAcuerdo" }
   | { type: "[Acuerdo] clearAcuerdos" }
   | { type: "[Admin] getUsers"; payload: User[] }
@@ -65,4 +66,3 @@ export type types =
   | { type: "[Contacto] cleanActiveContacto" }
   | { type: "[Contacto] clearContactos" }
   | { type: "[Contacto] setResponseOk"; payload: boolean }
-

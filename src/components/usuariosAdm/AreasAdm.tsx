@@ -158,6 +158,12 @@ export const AreasAdm = () => {
                 rows={areas as []}
                 onRowClick={(p) => handleClick(p)}
                 rowsPerPageOptions={[100, 50, 25, 10]}
+                componentsProps={{
+                  toolbar: {
+                    showQuickFilter: true,
+                    quickFilterProps: { debounceMs: 500 },
+                  },
+                }}
               />
       
               <Modal

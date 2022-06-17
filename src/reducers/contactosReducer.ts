@@ -63,6 +63,7 @@ export const  contactosReducer = (
             };
         case "[Acuerdo] clearAcuerdos":
             return initialState;
+
         default:
             return state;
     }

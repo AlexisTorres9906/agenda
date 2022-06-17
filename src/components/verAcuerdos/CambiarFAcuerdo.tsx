@@ -29,6 +29,7 @@ const DatePickerField = ({ ...props }) => {
         {...field}
         {...props}
         isClearable={true}
+        maxDate={new Date()}
         autoComplete="off"
         onKeyDown={(e) => {
           e.preventDefault();
