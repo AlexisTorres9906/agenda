@@ -23,6 +23,7 @@ import { sendAcuerdo } from "../../Api/sendAcuerdo";
 import { startRenew } from "../../actions/auth";
 import { LoadingInfo } from '../LoadingInfo';
 
+
 export const Calendario = () => {
   /////////////////////////////
   //informacion inicial

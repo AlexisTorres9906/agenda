@@ -51,7 +51,6 @@ export const GridRecientes = () => {
   //logica del grid
   let loc = { width: "31px", height: "24px" };
   const prioTemplate = (props: any) => {
-    console.log(props);
     
     var prioridad =
       props.prioridad === "Baja"
@@ -115,7 +114,6 @@ export const GridRecientes = () => {
     (objeto = acuerdosImportantes) => {
       if (!objeto) return; // null object
       const objetoT = objeto;
-      console.log(objetoT);
       try {
         setData(
           objetoT.map((acuerdo: Acuerdo) => {
@@ -236,8 +234,6 @@ export const GridRecientes = () => {
   };
   ///////////////////////////////////////////////////////////
   const onSelect = ({ data }: { data: any }) => {
-    console.log(data);
-
     dispatch(setActiveAcuerdo(data));
     setOpenModal(true);
   };

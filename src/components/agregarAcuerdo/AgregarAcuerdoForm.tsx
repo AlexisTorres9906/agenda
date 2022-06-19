@@ -17,6 +17,7 @@ import {
 } from "formik";
 import * as Yup from "yup";
 import DatePicker, { registerLocale, setDefaultLocale } from "react-datepicker";
+
 import "react-datepicker/dist/react-datepicker.css";
 import es from "date-fns/locale/es";
 import { useDispatch, useSelector } from "react-redux";
@@ -27,8 +28,10 @@ import {
 } from "../../actions/info";
 import { RootState } from "../../store/store";
 import { sendAcuerdo } from "../../Api/sendAcuerdo";
-import { addAcuerdo } from '../../actions/acuerdo';
+import { addAcuerdo, clearActiveAcuerdo } from '../../actions/acuerdo';
 import { startRenew } from "../../actions/auth";
+import { MultiSelect } from "../multiSelect/MultiSelect";
+import { TiContacts } from "react-icons/ti";
 registerLocale("es", es);
 setDefaultLocale("es");
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -58,6 +61,7 @@ const DatePickerField = ({ ...props }) => {
 };
 
 
+
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
 export const AgregarAcuerdoForm = () => {
@@ -82,7 +86,7 @@ export const AgregarAcuerdoForm = () => {
       anchorTabinv.current?.classList.add("active");
     }
   };
-
+////////////////////////////////////////////////////////////////////////////////////////////////
   const goToNextTab = (e: any) => {
     e.preventDefault();
     divTabinv.current?.classList.add("active");
@@ -90,6 +94,14 @@ export const AgregarAcuerdoForm = () => {
     divTabcon.current?.classList.remove("active");
     anchorTabcon.current?.classList.remove("active");
   };
+const gotoPrevTab = (e: any) => {
+  e.preventDefault();
+  divTabcon.current?.classList.add("active");
+  anchorTabcon.current?.classList.add("active");
+  divTabinv.current?.classList.remove("active");
+  anchorTabinv.current?.classList.remove("active");
+};
+
   ////////////////////////////////////////////////////////////////////////////////////////////////
   //cosas iniciales
 
@@ -109,6 +121,7 @@ export const AgregarAcuerdoForm = () => {
     categoria: Categorias[0] ? Categorias[0]._id : "",
     ambito: Ambitos[0] ? Ambitos[0]._id : "",
     lugar: "",
+    intervensores: [],
   };
   const initialValues = useRef(valoresIniciales);
   //Saca la información de los select
@@ -118,6 +131,7 @@ export const AgregarAcuerdoForm = () => {
         dispatch(startGetCategorias()),
         dispatch(startGetAmbitos()),
         dispatch(startGetFolioA()),
+        dispatch(clearActiveAcuerdo()),
       ]);
     };
     load();
@@ -185,6 +199,7 @@ export const AgregarAcuerdoForm = () => {
       values: FormikValues,
       { resetForm }: FormikHelpers<FormikValues>
     ): void | Promise<any> {
+      
       //eliminate nulls
       const valores = { ...values };
       Object.keys(valores).forEach((key) => {
@@ -204,6 +219,8 @@ export const AgregarAcuerdoForm = () => {
           }
         })
         .catch((err) => {});
+
+       
     },
   };
 
@@ -441,7 +458,23 @@ export const AgregarAcuerdoForm = () => {
                   role="tabpanel"
                   ref={divTabinv}
                 >
-                  <p>Content for tab 2.</p>
+                    <br />
+                  <div className="mb-3">
+                    <label className="form-label">
+                    <TiContacts/> Contactos
+                    </label>
+                    <MultiSelect 
+                    value={form.values.intervensores}   
+                    onChange={form.setFieldValue}   
+                    onBlur={form.setFieldTouched}   
+                    error={form.errors.intervensores}   
+                    touched={form.touched.intervensores}
+                    />
+                    <div style={{ color: "red" }}>
+                      <ErrorMessage name="intervensores" component="div" />
+                    </div>
+                  </div>
+
                   {
                     //if form is not valid
                     !form.isValid && (
@@ -451,6 +484,14 @@ export const AgregarAcuerdoForm = () => {
                       </div>
                     )
                   }
+
+                <div className="mb-3 flechaIzquierda">
+                    <i
+                      className="far fa-arrow-alt-circle-left"
+                      onClick={gotoPrevTab}
+                    ></i>
+                  </div>
+
                 </div>
               </div>
             </div>

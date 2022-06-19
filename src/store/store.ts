@@ -4,7 +4,6 @@ import { rootReducer } from "../reducers/rootReducers";
 import storage from 'redux-persist/lib/storage';
 import { persistStore, persistReducer } from 'redux-persist';
 
-
   const composeEnhancers = process.env.NODE_ENV === 'development' ? (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
     trace: true,
     traceLimit: 25,
@@ -12,10 +11,12 @@ import { persistStore, persistReducer } from 'redux-persist';
 
   //const composeEnhancers = null || compose;
 
+
+
   const persistConfig = {
     key: 'acuerdoType',
     storage: storage,
-    whitelist: ['acuerdos','contactos'] // which reducer want to store
+    whitelist: ['acuerdos','contactos'], // which reducer want to store
   };
   const pReducer = persistReducer(persistConfig, rootReducer);
 

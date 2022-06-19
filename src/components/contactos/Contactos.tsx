@@ -190,7 +190,6 @@ export const Contactos = () => {
       };
 
   const validationSchema = Yup.object({
-    //name with no whiteSpace in the beginning
     nombre: Yup.string().required("El nombre del contacto es requerido"),
     correo: Yup.string().email("El correo no es valido").nullable(),
     telefono: Yup.number()
@@ -250,7 +249,6 @@ export const Contactos = () => {
   ////////////////////////////////////////////////////////////////////////////////////////////////
   //grid
   const onCellClick = (args: any) => {
-    console.log(args.data);
     dispatch(setActiveContacto(args.data.taskData));
     setOpenModal(true);
   };

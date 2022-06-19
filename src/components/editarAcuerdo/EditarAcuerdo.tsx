@@ -26,6 +26,8 @@ import { updateAcuerdo } from "../../Api/sendAcuerdo";
 import { clearActiveAcuerdo, updateAcuerdoL } from "../../actions/acuerdo";
 import { useNavigate } from "react-router";
 import { startRenew } from "../../actions/auth";
+import { TiContacts } from "react-icons/ti";
+import { MultiSelectEditar } from "../multiSelect/MultiSelectEditar";
 registerLocale("es", es);
 setDefaultLocale("es");
 
@@ -89,6 +91,14 @@ export const EditarAcuerdo = (props: Props) => {
     divTabcon.current?.classList.remove("active");
     anchorTabcon.current?.classList.remove("active");
   };
+  const gotoPrevTab = (e: any) => {
+    e.preventDefault();
+    divTabcon.current?.classList.add("active");
+    anchorTabcon.current?.classList.add("active");
+    divTabinv.current?.classList.remove("active");
+    anchorTabinv.current?.classList.remove("active");
+  };
+  ////////////////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////////////////
   //cosas iniciales
 
@@ -109,8 +119,10 @@ export const EditarAcuerdo = (props: Props) => {
     categoria: activeAcuerdo?.categoria._id,
     ambito: activeAcuerdo?.ambito._id,
     lugar: activeAcuerdo?.lugar,
+    intervensores: activeAcuerdo?.intervensores
   };
   const initialValues = useRef(valoresIniciales);
+  const [dataIntervensores, setDataIntervensores] = useState<string[]>([]);
   //Saca la información de los select
   useEffect(() => {
     const load = async () => {
@@ -119,6 +131,13 @@ export const EditarAcuerdo = (props: Props) => {
         dispatch(startGetAmbitos()),
       ]);
     };
+    if (activeAcuerdo && activeAcuerdo.intervensores) {
+      setDataIntervensores(
+        activeAcuerdo.intervensores.map((intervensor) => {
+          return intervensor._id;
+        })
+      );
+    }
     load();
   }, [dispatch]);
   //Esto se utiliza para llenar el primer campo del formik en ambitos y categorias
@@ -157,6 +176,7 @@ export const EditarAcuerdo = (props: Props) => {
     const { values } = useFormikContext();
     let valores = values as any;
     useEffect(() => {
+      
       if (
         valores.nombre !== activeAcuerdo?.nombre ||
         valores.descripcion !== activeAcuerdo?.descripcion ||
@@ -165,7 +185,8 @@ export const EditarAcuerdo = (props: Props) => {
         valores.lugar !== activeAcuerdo?.lugar ||
         valores.prioridad !== activeAcuerdo?.prioridad ||
         valores.categoria !== activeAcuerdo?.categoria._id ||
-        valores.ambito !== activeAcuerdo?.ambito._id
+        valores.ambito !== activeAcuerdo?.ambito._id ||
+        valores.intervensores.sort().toString() !== dataIntervensores.sort().toString()
       ) {
         setShowDialog(true);
       } else {
@@ -485,7 +506,22 @@ export const EditarAcuerdo = (props: Props) => {
                   role="tabpanel"
                   ref={divTabinv}
                 >
-                  <p>Content for tab 2.</p>
+                  <br />
+                  <div className="mb-3">
+                    <label className="form-label">
+                      <TiContacts />
+                       Contactos
+                    </label>
+                    <MultiSelectEditar
+                      onChange={form.setFieldValue}
+                      onBlur={form.setFieldTouched}
+                      error={form.errors.intervensores}
+                      touched={form.touched.intervensores}
+                    />
+                    <div style={{ color: "red" }}>
+                      <ErrorMessage name="intervensores" component="div" />
+                    </div>
+                  </div>
                   {
                     //if form is not valid
                     !form.isValid && (
@@ -495,6 +531,13 @@ export const EditarAcuerdo = (props: Props) => {
                       </div>
                     )
                   }
+
+                  <div className="mb-3 flechaIzquierda">
+                    <i
+                      className="far fa-arrow-alt-circle-left"
+                      onClick={gotoPrevTab}
+                    ></i>
+                  </div>
                 </div>
               </div>
             </div>

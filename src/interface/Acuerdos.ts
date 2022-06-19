@@ -1,3 +1,4 @@
+import { Contacto } from './Contacto';
 export interface Acuerdo {
     _id: string;
     folio: string;
@@ -10,6 +11,7 @@ export interface Acuerdo {
     ambito: CategoriaOrAmbito;
     responsable: Usuarios;
     area: Area;
+    intervensores?: Contacto[] | null; 
     uIntervensores?: Usuarios[] | null;
     lugar: string;
     fechaCreacion: Date;
