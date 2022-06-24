@@ -139,7 +139,7 @@ export const EditarAcuerdo = (props: Props) => {
       );
     }
     load();
-  }, [dispatch]);
+  }, [dispatch, activeAcuerdo]);
   //Esto se utiliza para llenar el primer campo del formik en ambitos y categorias
   useEffect(() => {
     initialValues.current.ambito = activeAcuerdo?.ambito._id;

@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import {
   ColumnDirective,
   ColumnsDirective,
@@ -26,7 +27,8 @@ import * as timeZoneNames from "../../data/es-MX/timeZoneNames.json";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import { styleModalInfo } from "../../helpers/stylesModal";
+import { IoIosContacts, IoMdContacts } from "react-icons/io";
+import { styleModalContactoVacuerdo, styleModalInfo } from "../../helpers/stylesModal";
 import {
   clearActiveAcuerdo,
   setActiveAcuerdo,
@@ -41,6 +43,7 @@ import React from "react";
 import { Finalizado } from "./Finalizado";
 import { CambiarFAcuerdo } from "./CambiarFAcuerdo";
 import { startRenew } from "../../actions/auth";
+import { ContactosAcuerdo } from "./ContactosAcuerdo";
 
 //GridRecientes
 
@@ -104,6 +107,7 @@ const prioTemplate = (props: any) => {
   );
 };
 const style = styleModalInfo;
+const styleModalContactos = styleModalContactoVacuerdo;
 export const Vacuerdos = React.memo(() => {
   //////////////////////////////////////////
   //información de los acuerdos y generales iniciales
@@ -112,6 +116,7 @@ export const Vacuerdos = React.memo(() => {
   );
   const [data, setData] = useState({});
   const [openModal, setOpenModal] = useState(false);
+  const [openModalContactos, setOpenModalContactos] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const hoy = useRef(new Date());
@@ -165,7 +170,7 @@ export const Vacuerdos = React.memo(() => {
         acuerdo.fechaCreacion = acuerdo.fechaCreacion
           ? new Date(acuerdo.fechaCreacion as any)
           : (null as any);
-        
+
         //vencido: que se ha pasa la fecha programada de cierre
         //fuera de tiempo: que se ha pasado la fecha de instruccion y el estado no es en proceso
 
@@ -186,7 +191,7 @@ export const Vacuerdos = React.memo(() => {
             acuerdo.fechaInstruccion <= manana.current
           ) {
             acuerdo.estatus = "Para hoy";
-            if(acuerdo.fechaInstruccion <= hoy.current){
+            if (acuerdo.fechaInstruccion <= hoy.current) {
               acuerdo.estatus = "Fuera de tiempo";
             }
           }
@@ -229,6 +234,9 @@ export const Vacuerdos = React.memo(() => {
     setOpenModal(false);
     dispatch(clearActiveAcuerdo());
   };
+  const handleOnCloseContactos = () => {
+    setOpenModalContactos(false);
+  }
 
   ////////////////////////////////////////////
   //botones---------------------------------- cambiar estado
@@ -459,6 +467,35 @@ export const Vacuerdos = React.memo(() => {
                   </div>
                 </div>
                 {/*---------------------------Datos septima fila----------------------* */}
+                <div className="row container justify-content-between">
+                  {activeAcuerdo?.intervensores &&
+                    activeAcuerdo.intervensores.length > 0 && (
+                      <div className="col-auto row">
+                        <div className="col-auto fuente-subtitulo">
+                          <a id="aContacto" onClick={()=>setOpenModalContactos(true)}>
+                            <IoIosContacts className="mlogo" />
+                            <p className="d-inline mt-4">
+                              <u>Contactos</u>
+                            </p>
+                          </a>
+                        </div>
+                      </div>
+                    )}
+                  {activeAcuerdo?.uIntervensores &&
+                    activeAcuerdo.uIntervensores.length > 0 && (
+                      <div className="col-auto row">
+                        <div className="col-auto fuente-subtitulo">
+                          <a id="aContacto">
+                            <IoMdContacts className="mlogo" />
+                            <p className="d-inline mt-4">
+                              <u>Personal Asociado</u>
+                            </p>
+                          </a>
+                        </div>
+                      </div>
+                    )}
+                </div>
+                {/*---------------------------Datos octava fila----------------------* */}
                 {activeAcuerdo?.resultado && activeAcuerdo?.resultado !== "" && (
                   <div className="row container justify-content-start">
                     <div className="col-auto row">
@@ -469,8 +506,8 @@ export const Vacuerdos = React.memo(() => {
                     </div>
                   </div>
                 )}
-                {/*--------------------------- Datos octava fila-------------------------- */}
-                <div className="row container justify-content-between mt-3">
+                {/*--------------------------- Datos novena fila-------------------------- */}
+                <div className="row container justify-content-between mt-4">
                   <button
                     className=" col-auto btn btn-primary"
                     onClick={() => {
@@ -492,43 +529,75 @@ export const Vacuerdos = React.memo(() => {
                   {(activeAcuerdo?.estatus.includes("En proceso") ||
                     activeAcuerdo?.estatus === "Vence hoy") &&
                     activeAcuerdo?.fechaIEjecucion !== null && <Finalizado />}
-                  <button
-                    className="col-auto btn btn-danger"
-                    onClick={() => cambiarEstado("Cancelado")}
-                    hidden={
-                      activeAcuerdo?.estatus === "Cancelado" ||
-                      activeAcuerdo?.estatus === "Finalizado" ||
-                      activeAcuerdo?.compromiso === (null || undefined) ||
-                      activeAcuerdo?.compromiso?.length !== 0
-                    }
-                  >
-                    Cancelar Acuerdo
-                  </button>
-                  <button
-                    className="col-auto btn btn-success"
-                    onClick={() => cambiarEstado("Registrado")}
-                    hidden={
-                      activeAcuerdo?.estatus !== "Cancelado" ||
-                      activeAcuerdo?.compromiso?.length !== 0
-                    }
-                  >
-                    Cambiar a "Registrado"
-                  </button>
-                  <button
-                    className="col-auto btn btn-agregar"
-                    hidden={activeAcuerdo?.estatus !== "Finalizado"}
-                    onClick={() => {
-                      navigate("../agregarCompromiso", { replace: true });
-                    }}
-                  >
-                    Agregar compromiso
-                  </button>
+
+                  {activeAcuerdo?.estatus !== "Cancelado" &&
+                    activeAcuerdo?.estatus !== "Finalizado" &&
+                    activeAcuerdo?.compromiso !== (null || undefined) &&
+                    activeAcuerdo?.compromiso?.length === 0 && (
+                      <button
+                        className="col-auto btn btn-danger"
+                        onClick={() => cambiarEstado("Cancelado")}
+                      >
+                        Cancelar Acuerdo
+                      </button>
+                    )}
+
+                  {activeAcuerdo?.estatus === "Cancelado" &&
+                    activeAcuerdo?.compromiso?.length === 0 && (
+                      <button
+                        className="col-auto btn btn-success"
+                        onClick={() => cambiarEstado("Registrado")}
+                      >
+                        Cambiar a "Registrado"
+                      </button>
+                    )}
+                  {activeAcuerdo?.estatus === "Finalizado" && (
+                    <button
+                      className="col-auto btn btn-agregar"
+                      onClick={() => {
+                        navigate("../agregarCompromiso", { replace: true });
+                      }}
+                    >
+                      Agregar compromiso
+                    </button>
+                  )}
                 </div>
               </div>
             </Typography>
           </div>
         </Box>
       </Modal>
+
+      <Modal
+        open={openModalContactos}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+        onClose={handleOnCloseContactos}
+      >
+        <Box sx={styleModalContactos}>
+          <Typography
+            variant="h4"
+            id="modal-modal-title"
+            style={{
+              textAlign: "center",
+              fontWeight: "bold",
+            }}
+          >
+            <div className="titulo">Contactos del acuerdo</div>
+            <hr />
+          </Typography>
+          <Typography variant="subtitle1" id="modal-modal-description">
+            <div className="container">
+              {
+               activeAcuerdo?.intervensores &&  activeAcuerdo?.intervensores.map((intervensor) => (
+                <ContactosAcuerdo contacto={intervensor} key={intervensor._id}/>
+              ))
+              }
+            </div>
+          </Typography>
+        </Box>
+      </Modal>
+
       <TreeGridComponent
         ref={(treegrid) => (treegridInstance = treegrid)}
         dataSource={data}
@@ -538,9 +607,14 @@ export const Vacuerdos = React.memo(() => {
         width="100%"
         allowFiltering={true}
         allowSorting={true}
-        pageSettings={{ pageSizes: true, pageSize: 12, pageCount: 8 , pageSizeMode : 'Root'}}
+        pageSettings={{
+          pageSizes: true,
+          pageSize: 12,
+          pageCount: 8,
+          pageSizeMode: "Root",
+        }}
         allowPaging={true}
-       // enableInfiniteScrolling={true}
+        // enableInfiniteScrolling={true}
         filterSettings={filterOptions}
         toolbar={toolbarOptions}
         editSettings={editSettings}

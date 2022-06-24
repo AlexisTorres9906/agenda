@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState } from "react";
 import { MultiSelectComponent } from "@syncfusion/ej2-react-dropdowns";
 import usuario from "../../assets/usuario.png";
@@ -29,7 +30,7 @@ export const MultiSelectEditar = (props: any) => {
         })
       );
     }
-  }, []);
+  }, [activeAcuerdo]);
 
   /*
   const headerTemplate = (data: any) => {

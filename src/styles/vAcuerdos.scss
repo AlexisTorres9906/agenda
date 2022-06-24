@@ -72,7 +72,7 @@
     --bs-gutter-x: 0.5rem;
   }
   .btn-primary{
-    width: 20%;
+    width: auto;
     height: 3.5rem;
     border-radius: 0.25rem;
     border: 1px solid #00aeef;
@@ -81,7 +81,7 @@
     font-family: "Roboto", sans-serif;
   }
   .btn-danger{
-    width: 20%;
+    width: auto;
     height: 3.5rem;
     border-radius: 0.25rem;
     border: 1px solid #ff0000;
@@ -93,7 +93,7 @@
     }
   }
   .btn-success{
-    width: 20%;
+    width: auto;
     height: 3.5rem;
     border-radius: 0.25rem;
     border: 1px solid #00d512;
@@ -105,7 +105,7 @@
     }
   }
   .btn-agregar{
-    width: 20%;
+    width: auto;
     height: 3.5rem;
     border-radius: 0.25rem;
     border: 1px solid #6213ff;
@@ -120,7 +120,7 @@
   }
 
   .btn-finalizar{
-    width: 20%;
+    width: auto;
     height: 3.5rem;
     border-radius: 0.25rem;
     border: 1px solid #006f0974;
@@ -134,7 +134,7 @@
     }
   }
   .btn-cambiarInfo{
-    width: 20%;
+    width: auto;
     height: 3.5rem;
     border-radius: 0.25rem;
     border: 1px solid #0067cf;
@@ -147,6 +147,12 @@
       background-color: #02386f;
       color: #fff;
     }
+  }
+  #aContacto{
+    cursor: pointer;
+  }
+  .mlogo{
+    margin-bottom: .2rem;
   }
 }
 /* purgecss end ignore */

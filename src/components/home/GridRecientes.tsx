@@ -1,8 +1,6 @@
-import { Browser } from "@syncfusion/ej2-base";
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import {
   GridComponent,
-  ColumnsDirective,
-  ColumnDirective,
   Inject,
   Page,
   ColumnModel,
@@ -27,8 +25,9 @@ import { Finalizado } from "../verAcuerdos/Finalizado";
 import { updateAcuerdo } from "../../Api/sendAcuerdo";
 import { startRenew } from "../../actions/auth";
 import Swal from "sweetalert2";
-import { styleModalInfo } from "../../helpers/stylesModal";
-
+import { styleModalContactoVacuerdo, styleModalInfo } from "../../helpers/stylesModal";
+import { IoIosContacts, IoMdContacts } from "react-icons/io";
+import { ContactosAcuerdo } from "../verAcuerdos/ContactosAcuerdo";
 export const GridRecientes = () => {
   const { acuerdosImportantes, activeAcuerdo } = useSelector(
     (state: RootState) => state.acuerdos
@@ -37,14 +36,16 @@ export const GridRecientes = () => {
   const hoy = useRef(new Date());
   const hoysh = useRef(new Date());
   const [openModal, setOpenModal] = useState(false);
+  const [openModalContactos, setOpenModalContactos] = useState(false);
   const navigate = useNavigate();
-  let gridInstance: GridComponent | null;
+  const styleModalContactos = styleModalContactoVacuerdo;
+  let gridInstance: GridComponent | null = null;
   //manana
   const manana = useRef(new Date());
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(startGetAcuerdosImportantes());
-  }, []);
+  }, [dispatch]);
 
   ////////////////////////////////////////
   const style = styleModalInfo;
@@ -75,7 +76,8 @@ export const GridRecientes = () => {
     {
       field: "nombre",
       headerText: "Nombre",
-      width: "25%",
+      width: "20%",
+      minWidth: "120",
     },
     {
       field: "fechaInstruccion",
@@ -178,7 +180,7 @@ export const GridRecientes = () => {
       } catch {}
       gridInstance?.refresh();
     },
-    [acuerdosImportantes]
+    [acuerdosImportantes, gridInstance]
   );
   ////////////////////////////////
   const cambiarEstado = (estatus: String) => {
@@ -232,6 +234,9 @@ export const GridRecientes = () => {
     setOpenModal(false);
     dispatch(clearActiveAcuerdo());
   };
+  const handleOnCloseContactos = () => {
+    setOpenModalContactos(false);
+  }
   ///////////////////////////////////////////////////////////
   const onSelect = ({ data }: { data: any }) => {
     dispatch(setActiveAcuerdo(data));
@@ -242,11 +247,11 @@ export const GridRecientes = () => {
 
   useEffect(() => {
     cambiarDatos();
-  }, [acuerdosImportantes]);
+  }, [acuerdosImportantes,cambiarDatos]);
 
   return (
     <>
-      <Modal
+       <Modal
         open={openModal}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
@@ -425,6 +430,35 @@ export const GridRecientes = () => {
                   </div>
                 </div>
                 {/*---------------------------Datos septima fila----------------------* */}
+                <div className="row container justify-content-between">
+                  {activeAcuerdo?.intervensores &&
+                    activeAcuerdo.intervensores.length > 0 && (
+                      <div className="col-auto row">
+                        <div className="col-auto fuente-subtitulo">
+                          <a id="aContacto" onClick={()=>setOpenModalContactos(true)}>
+                            <IoIosContacts className="mlogo" />
+                            <p className="d-inline mt-4">
+                              <u>Contactos</u>
+                            </p>
+                          </a>
+                        </div>
+                      </div>
+                    )}
+                  {activeAcuerdo?.uIntervensores &&
+                    activeAcuerdo.uIntervensores.length > 0 && (
+                      <div className="col-auto row">
+                        <div className="col-auto fuente-subtitulo">
+                          <a id="aContacto">
+                            <IoMdContacts className="mlogo" />
+                            <p className="d-inline mt-4">
+                              <u>Personal Asociado</u>
+                            </p>
+                          </a>
+                        </div>
+                      </div>
+                    )}
+                </div>
+                {/*---------------------------Datos octava fila----------------------* */}
                 {activeAcuerdo?.resultado && activeAcuerdo?.resultado !== "" && (
                   <div className="row container justify-content-start">
                     <div className="col-auto row">
@@ -435,12 +469,12 @@ export const GridRecientes = () => {
                     </div>
                   </div>
                 )}
-                {/*--------------------------- Datos octava fila-------------------------- */}
-                <div className="row container justify-content-between mt-3">
+                {/*--------------------------- Datos novena fila-------------------------- */}
+                <div className="row container justify-content-between mt-4">
                   <button
                     className=" col-auto btn btn-primary"
                     onClick={() => {
-                      navigate("../editarAcuerdo/home", { replace: true });
+                      navigate("../editarAcuerdo", { replace: true });
                     }}
                   >
                     Editar Acuerdo
@@ -458,41 +492,72 @@ export const GridRecientes = () => {
                   {(activeAcuerdo?.estatus.includes("En proceso") ||
                     activeAcuerdo?.estatus === "Vence hoy") &&
                     activeAcuerdo?.fechaIEjecucion !== null && <Finalizado />}
-                  <button
-                    className="col-auto btn btn-danger"
-                    onClick={() => cambiarEstado("Cancelado")}
-                    hidden={
-                      activeAcuerdo?.estatus === "Cancelado" ||
-                      activeAcuerdo?.estatus === "Finalizado" ||
-                      activeAcuerdo?.compromiso === (null || undefined) ||
-                      activeAcuerdo?.compromiso?.length !== 0
-                    }
-                  >
-                    Cancelar Acuerdo
-                  </button>
-                  <button
-                    className="col-auto btn btn-success"
-                    onClick={() => cambiarEstado("Registrado")}
-                    hidden={
-                      activeAcuerdo?.estatus !== "Cancelado" ||
-                      activeAcuerdo?.compromiso?.length !== 0
-                    }
-                  >
-                    Cambiar a "Registrado"
-                  </button>
-                  <button
-                    className="col-auto btn btn-agregar"
-                    hidden={activeAcuerdo?.estatus !== "Finalizado"}
-                    onClick={() => {
-                      navigate("../agregarCompromiso", { replace: true });
-                    }}
-                  >
-                    Agregar compromiso
-                  </button>
+
+                  {activeAcuerdo?.estatus !== "Cancelado" &&
+                    activeAcuerdo?.estatus !== "Finalizado" &&
+                    activeAcuerdo?.compromiso !== (null || undefined) &&
+                    activeAcuerdo?.compromiso?.length === 0 && (
+                      <button
+                        className="col-auto btn btn-danger"
+                        onClick={() => cambiarEstado("Cancelado")}
+                      >
+                        Cancelar Acuerdo
+                      </button>
+                    )}
+
+                  {activeAcuerdo?.estatus === "Cancelado" &&
+                    activeAcuerdo?.compromiso?.length === 0 && (
+                      <button
+                        className="col-auto btn btn-success"
+                        onClick={() => cambiarEstado("Registrado")}
+                      >
+                        Cambiar a "Registrado"
+                      </button>
+                    )}
+                  {activeAcuerdo?.estatus === "Finalizado" && (
+                    <button
+                      className="col-auto btn btn-agregar"
+                      onClick={() => {
+                        navigate("../agregarCompromiso", { replace: true });
+                      }}
+                    >
+                      Agregar compromiso
+                    </button>
+                  )}
                 </div>
               </div>
             </Typography>
           </div>
+        </Box>
+      </Modal>
+
+      <Modal
+        open={openModalContactos}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+        onClose={handleOnCloseContactos}
+      >
+        <Box sx={styleModalContactos}>
+          <Typography
+            variant="h4"
+            id="modal-modal-title"
+            style={{
+              textAlign: "center",
+              fontWeight: "bold",
+            }}
+          >
+            <div className="titulo">Contactos del acuerdo</div>
+            <hr />
+          </Typography>
+          <Typography variant="subtitle1" id="modal-modal-description">
+            <div className="container">
+              {
+               activeAcuerdo?.intervensores &&  activeAcuerdo?.intervensores.map((intervensor) => (
+                <ContactosAcuerdo contacto={intervensor} key={intervensor._id}/>
+              ))
+              }
+            </div>
+          </Typography>
         </Box>
       </Modal>
 
