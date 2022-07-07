@@ -4,7 +4,8 @@ import { types } from '../types/types';
 const InitialState: Info = {
     Categorias: [],
     Ambitos: [],
-    FolioA: ''
+    FolioA: '',
+    Usuarios: []
 }
 
 export const infoReducer = (state = InitialState, action: types): Info => {
@@ -29,7 +30,11 @@ export const infoReducer = (state = InitialState, action: types): Info => {
             return {
                 ...InitialState
             }
-            
+        case "[info] getUsuarios":
+            return {
+                ...state,
+                Usuarios: action.payload
+            }
         default:
             return state;
     }

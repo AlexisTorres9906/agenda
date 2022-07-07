@@ -132,7 +132,9 @@ export const CategoriasAdm = () => {
             getRowId={(row: any) => row._id}
             localeText={esES.components.MuiDataGrid.defaultProps.localeText}
             columns={columns}
-            rows={Categorias as []}
+            rows={Categorias.filter(
+              categoria => categoria.nombre !== "Sin Categoria"
+            )}
             onRowClick={(p) => handleClick(p)}
             rowsPerPageOptions={[100, 50, 25, 10]}
             componentsProps={{

@@ -28,10 +28,11 @@ import {
 } from "../../actions/info";
 import { RootState } from "../../store/store";
 import { sendAcuerdo } from "../../Api/sendAcuerdo";
-import { addAcuerdo, clearActiveAcuerdo } from '../../actions/acuerdo';
+import { addAcuerdo, clearActiveAcuerdo } from "../../actions/acuerdo";
 import { startRenew } from "../../actions/auth";
 import { MultiSelect } from "../multiSelect/MultiSelect";
 import { TiContacts } from "react-icons/ti";
+import { MultiSelectU } from "../multiSelect/MultiSelectU";
 registerLocale("es", es);
 setDefaultLocale("es");
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -51,7 +52,7 @@ const DatePickerField = ({ ...props }) => {
       }}
       minDate={new Date()}
       selected={(field.value && new Date(field.value)) || null}
-      showTimeSelect = {true}
+      showTimeSelect={true}
       onChange={(val) => {
         setFieldValue(field.name, val);
       }}
@@ -59,8 +60,6 @@ const DatePickerField = ({ ...props }) => {
     />
   );
 };
-
-
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -86,7 +85,7 @@ export const AgregarAcuerdoForm = () => {
       anchorTabinv.current?.classList.add("active");
     }
   };
-////////////////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////////////////
   const goToNextTab = (e: any) => {
     e.preventDefault();
     divTabinv.current?.classList.add("active");
@@ -94,13 +93,13 @@ export const AgregarAcuerdoForm = () => {
     divTabcon.current?.classList.remove("active");
     anchorTabcon.current?.classList.remove("active");
   };
-const gotoPrevTab = (e: any) => {
-  e.preventDefault();
-  divTabcon.current?.classList.add("active");
-  anchorTabcon.current?.classList.add("active");
-  divTabinv.current?.classList.remove("active");
-  anchorTabinv.current?.classList.remove("active");
-};
+  const gotoPrevTab = (e: any) => {
+    e.preventDefault();
+    divTabcon.current?.classList.add("active");
+    anchorTabcon.current?.classList.add("active");
+    divTabinv.current?.classList.remove("active");
+    anchorTabinv.current?.classList.remove("active");
+  };
 
   ////////////////////////////////////////////////////////////////////////////////////////////////
   //cosas iniciales
@@ -122,6 +121,7 @@ const gotoPrevTab = (e: any) => {
     ambito: Ambitos[0] ? Ambitos[0]._id : "",
     lugar: "",
     intervensores: [],
+    peticiones: [],
   };
   const initialValues = useRef(valoresIniciales);
   //Saca la información de los select
@@ -153,7 +153,9 @@ const gotoPrevTab = (e: any) => {
         valores.descripcion !== "" ||
         valores.fechaInstruccion !== "" ||
         valores.fechaPCierre !== "" ||
-        valores.lugar !== ""
+        valores.lugar !== "" ||
+        valores.intervensores.length !== 0 ||
+        valores.peticiones.length !== 0
       ) {
         setShowDialog(true);
       } else {
@@ -199,28 +201,24 @@ const gotoPrevTab = (e: any) => {
       values: FormikValues,
       { resetForm }: FormikHelpers<FormikValues>
     ): void | Promise<any> {
-      
       //eliminate nulls
       const valores = { ...values };
       Object.keys(valores).forEach((key) => {
         if (valores[key] === "") {
           delete valores[key];
         }
-      }
-      );
-      
+      });
+
       sendAcuerdo(valores)
         .then((res) => {
           if (Object.entries(res).length !== 0) {
             resetForm();
             dispatch(startGetFolioA());
-            dispatch(startRenew())
+            dispatch(startRenew());
             dispatch(addAcuerdo(res));
           }
         })
         .catch((err) => {});
-
-       
     },
   };
 
@@ -458,20 +456,39 @@ const gotoPrevTab = (e: any) => {
                   role="tabpanel"
                   ref={divTabinv}
                 >
-                    <br />
+                  <br />
                   <div className="mb-3">
                     <label className="form-label">
-                    <TiContacts/> Contactos
+                      <TiContacts />
+                       Contactos
                     </label>
-                    <MultiSelect 
-                    value={form.values.intervensores}   
-                    onChange={form.setFieldValue}   
-                    onBlur={form.setFieldTouched}   
-                    error={form.errors.intervensores}   
-                    touched={form.touched.intervensores}
+                    <MultiSelect
+                      value={form.values.intervensores}
+                      onChange={form.setFieldValue}
+                      onBlur={form.setFieldTouched}
+                      error={form.errors.intervensores}
+                      touched={form.touched.intervensores}
                     />
                     <div style={{ color: "red" }}>
                       <ErrorMessage name="intervensores" component="div" />
+                    </div>
+                  </div>
+
+
+                  <div className="mb-3">
+                    <label className="form-label">
+                      <TiContacts />
+                       Agregar Personal
+                    </label>
+                    <MultiSelectU
+                      value={form.values.peticiones}
+                      onChange={form.setFieldValue}
+                      onBlur={form.setFieldTouched}
+                      error={form.errors.peticiones}
+                      touched={form.touched.peticiones}
+                    />
+                    <div style={{ color: "red" }}>
+                      <ErrorMessage name="peticiones" component="div" />
                     </div>
                   </div>
 
@@ -485,13 +502,12 @@ const gotoPrevTab = (e: any) => {
                     )
                   }
 
-                <div className="mb-3 flechaIzquierda">
+                  <div className="mb-3 flechaIzquierda">
                     <i
                       className="far fa-arrow-alt-circle-left"
                       onClick={gotoPrevTab}
                     ></i>
                   </div>
-
                 </div>
               </div>
             </div>

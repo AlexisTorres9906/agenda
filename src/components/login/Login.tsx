@@ -2,7 +2,7 @@ import { Formik, Form, Field } from "formik";
 import { useDispatch } from "react-redux";
 import { startLogin } from "../../actions/auth";
 import "../../styles/Login.scss";
-import { startLoading, stopLoading } from '../../actions/ui';
+import { startLoading, stopLoading } from "../../actions/ui";
 //interface of the form
 interface FormValues {
   usuario: string;
@@ -24,13 +24,29 @@ export const Login = () => {
     contrasena: "",
   };
 
-  const onSubmit = async({usuario,contrasena}: FormValues, resetForm: any) => {
+  const onSubmit = async (
+    { usuario, contrasena }: FormValues,
+    resetForm: any
+  ) => {
     resetForm();
     dispatch(startLoading());
     await dispatch(startLogin(usuario, contrasena));
     dispatch(stopLoading());
-    
   };
+  
+  // const otherMode = () => {
+  //   let de = document.documentElement;
+  //   if (de.requestFullscreen) {
+  //     de.requestFullscreen();
+  //   } else if (de.webkitRequestFullscreen) {
+  //     de.webkitRequestFullscreen();
+  //   } else if (de.mozRequestFullScreen) {
+  //     de.mozRequestFullScreen();
+  //   } else if (de.msRequestFullscreen) {
+  //     de.msRequestFullscreen();
+  //   }
+  //   window.screen.orientation.lock("landscape");
+  // };
 
   return (
     <div className="login">
@@ -41,7 +57,7 @@ export const Login = () => {
         validate={validaciones}
         initialValues={initialValues}
       >
-        {({ errors,touched }) => (
+        {({ errors, touched }) => (
           <div className="login-container">
             <div className="container-login100">
               <div className="wrap-login100 p-t-50 p-b-90 p-1-50 p-r-50">
@@ -64,7 +80,7 @@ export const Login = () => {
                   </div>
                   {errors.usuario && touched.usuario && (
                     <div className="alert alert-danger alerta" role="alert">
-                    {errors.usuario}
+                      {errors.usuario}
                     </div>
                   )}
                   <div className="wrap-input100 m-b-16">
@@ -78,13 +94,11 @@ export const Login = () => {
                     />
                     <span className="focus-input100"></span>
                   </div>
-                  {
-                    errors.contrasena && touched.contrasena && (
-                      <div className="alert alert-danger alerta" role="alert">
+                  {errors.contrasena && touched.contrasena && (
+                    <div className="alert alert-danger alerta" role="alert">
                       {errors.contrasena}
-                      </div>
-                    )
-                  }
+                    </div>
+                  )}
                   <div className="container-login100-form-btn m-t-17">
                     <div className="w-full beforeNone text-center">
                       <input

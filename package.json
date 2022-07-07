@@ -10,6 +10,7 @@
     "@mui/x-data-grid": "^5.8.0",
     "@syncfusion/ej2-base": "^19.4.52",
     "@syncfusion/ej2-locale": "^19.4.41",
+    "@syncfusion/ej2-notifications": "^19.4.52",
     "@syncfusion/ej2-react-base": "^19.4.56",
     "@syncfusion/ej2-react-calendars": "^19.4.56",
     "@syncfusion/ej2-react-dropdowns": "^19.4.56",

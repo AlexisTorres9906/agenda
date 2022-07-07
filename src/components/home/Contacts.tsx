@@ -63,7 +63,7 @@ export const Contacts = ({ contacto }: ContactsProps) => {
                 <div className="col-auto ">
                   <strong>Nombre:  </strong>
                 </div>
-                <div className="col">{contacto.nombre}</div>
+                <div className="col-auto">{contacto.nombre}</div>
               </div>
               <div className="col-auto container row justify-content-start">
                 <div className="col-auto ">
@@ -72,10 +72,10 @@ export const Contacts = ({ contacto }: ContactsProps) => {
                 <div className="col">{contacto.descripcion}</div>
               </div>
               <div className="col-auto container row justify-content-start">
-                <div className="col-auto ">
+                <div className="col-auto">
                   <strong>Telefono:</strong>
                 </div>
-                <div className="col"><a href={`tel:${contacto.telefono}`}>{contacto.telefono}</a></div>
+                <div className="col-auto"><a href={`tel:${contacto.telefono}`}>{contacto.telefono}</a></div>
               </div>
               <div className="col-auto container row justify-content-start">
                 <div className="col-auto ">

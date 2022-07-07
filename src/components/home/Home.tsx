@@ -3,13 +3,20 @@ import { Head } from "./Head";
 import { GridRecientes } from "./GridRecientes";
 import { Contacts } from "./Contacts";
 import { NavLink, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store/store";
 import { Contacto } from "../../interface/Contacto";
+import { useEffect } from "react";
+import { clearActiveAcuerdo } from "../../actions/acuerdo";
 
 export const Home = () => {
   const { contactos } = useSelector((state: RootState) => state.contactos);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(clearActiveAcuerdo());
+  }, [dispatch])
+  
   const onTodos = () => {
     navigate("../contactos", { replace: true });
   }

@@ -4,24 +4,25 @@ import { persistor, store } from "./store/store";
 import { PersistGate } from 'redux-persist/integration/react'
 import { useEffect } from "react";
 
+type ExitFullscreen = typeof document.exitFullscreen
+type RequestFullscreen = typeof document.documentElement.requestFullscreen
+
+declare global {
+  interface Document {
+    webkitExitFullscreen: ExitFullscreen;
+    mozCancelFullScreen: ExitFullscreen;
+    msExitFullscreen: ExitFullscreen;
+  }
+
+  interface HTMLElement {
+    webkitRequestFullscreen: RequestFullscreen;
+    mozRequestFullScreen: RequestFullscreen;
+    msRequestFullscreen: RequestFullscreen;
+  }
+}
 
 
 function App() {
-  useEffect(() => {
-  try{
-    window.screen.orientation.lock('portrait').then(
-      () => {
-        console.log('success');
-      }
-    ).catch(
-      () => {
-        return null
-      }
-    )
-  }catch(e){
-  }
-
-  }, [])
   
   return (
     <Provider store={store}>

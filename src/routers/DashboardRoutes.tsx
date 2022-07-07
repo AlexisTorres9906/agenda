@@ -16,6 +16,8 @@ import { AgregarCompromiso } from "../components/agregarAcuerdo/AgregarCompromis
 import { Calendario } from '../components/calendario/Calendario';
 import { Contactos } from "../components/contactos/Contactos";
 import { startGetContactos } from "../actions/contactos";
+import { VerSolicitudes } from "../components/solicitudes/VerSolicitudes";
+import { startGetSolicitudes } from "../actions/solicitud";
 export const DashboardRoutes = () => {
   //logica necesaria para el dashboard
   UseDashboard();
@@ -43,6 +45,7 @@ export const DashboardRoutes = () => {
   useEffect(() => {
     dispatch(startGetAcuerdos());
     dispatch(startGetContactos());
+    dispatch(startGetSolicitudes());
   }, [dispatch])
   
 
@@ -63,6 +66,8 @@ export const DashboardRoutes = () => {
               <Route path="/agregarCompromiso" element={<AgregarCompromiso/>} />
               <Route path="/calendario" element={<Calendario/>} />
               <Route path="/contactos" element={<Contactos/>} />
+              <Route path="/solicitudes" element={<VerSolicitudes/>} />
+
               <Route path="/*" element={<Home />} />
             </Routes>
           </div>

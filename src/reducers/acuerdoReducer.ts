@@ -67,6 +67,7 @@ export const acuerdoReducer = (
         ...state,
         acuerdos: [],
         acuerdoAgenda: [],
+        acuerdosImportantes: [],
       };
     case "[Acuerdo] addAcuerdo":
       return {

@@ -56,3 +56,19 @@ export const startGetFolioA = ()=> {
   });
 
 ///////////////////////////////////////////////////////////////////////////////
+
+export const startGetUsuarios = ()=> {
+    return async (dispatch: any) => {
+      await reqInsConToken
+        .get("/info/users")
+        .then((res) => {
+          dispatch(getUsuarios(res.data.usuarios));
+        })
+        .catch((err) => {ErrorSwall.fire();});
+    };
+  }
+
+  const getUsuarios = (usuarios:any): types => ({
+    type: "[info] getUsuarios",
+    payload: usuarios,
+  });

@@ -27,8 +27,11 @@ import * as timeZoneNames from "../../data/es-MX/timeZoneNames.json";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import { IoIosContacts, IoMdContacts } from "react-icons/io";
-import { styleModalContactoVacuerdo, styleModalInfo } from "../../helpers/stylesModal";
+import { IoIosContacts, IoIosPeople, IoMdContacts } from "react-icons/io";
+import {
+  styleModalContactoVacuerdo,
+  styleModalInfo,
+} from "../../helpers/stylesModal";
 import {
   clearActiveAcuerdo,
   setActiveAcuerdo,
@@ -44,6 +47,7 @@ import { Finalizado } from "./Finalizado";
 import { CambiarFAcuerdo } from "./CambiarFAcuerdo";
 import { startRenew } from "../../actions/auth";
 import { ContactosAcuerdo } from "./ContactosAcuerdo";
+import { AgregarPersonal } from "./AgregarPersonal";
 
 //GridRecientes
 
@@ -114,6 +118,7 @@ export const Vacuerdos = React.memo(() => {
   const { acuerdos, activeAcuerdo } = useSelector(
     (state: RootState) => state.acuerdos
   );
+  const { uid } = useSelector((state: RootState) => state.auth);
   const [data, setData] = useState({});
   const [openModal, setOpenModal] = useState(false);
   const [openModalContactos, setOpenModalContactos] = useState(false);
@@ -202,7 +207,7 @@ export const Vacuerdos = React.memo(() => {
             acuerdo.fechaPCierre.getTime() >= hoysh.current.getTime() &&
             !acuerdo.estatus.includes("Vencido")
           ) {
-            acuerdo.estatus = "Vence hoy";
+            acuerdo.estatus = `Vence hoy`;
           }
         }
         //seguir leyendo en caso de que haya mas sub acuerdos(compromisos)
@@ -236,7 +241,7 @@ export const Vacuerdos = React.memo(() => {
   };
   const handleOnCloseContactos = () => {
     setOpenModalContactos(false);
-  }
+  };
 
   ////////////////////////////////////////////
   //botones---------------------------------- cambiar estado
@@ -309,7 +314,19 @@ export const Vacuerdos = React.memo(() => {
                     </div>
                     <div className="col q-auto">{activeAcuerdo?.nombre}</div>
                   </div>
-                  <div className={`col-auto container row justify-content-end`}>
+                  <div className="col-auto container row justify-content-start">
+                    <div className="col-auto fuente-subtitulo">
+                      Dueño del acuerdo:
+                    </div>
+                    <div className="col q-auto">
+                      {activeAcuerdo?.responsable._id === uid
+                        ? "Tú"
+                        : activeAcuerdo?.responsable.name}
+                    </div>
+                  </div>
+                  <div
+                    className={`col-auto container row justify-content-start`}
+                  >
                     <div className="col-auto fuente-subtitulo">
                       Estado del acuerdo:
                     </div>
@@ -472,7 +489,10 @@ export const Vacuerdos = React.memo(() => {
                     activeAcuerdo.intervensores.length > 0 && (
                       <div className="col-auto row">
                         <div className="col-auto fuente-subtitulo">
-                          <a id="aContacto" onClick={()=>setOpenModalContactos(true)}>
+                          <a
+                            id="aContacto"
+                            onClick={() => setOpenModalContactos(true)}
+                          >
                             <IoIosContacts className="mlogo" />
                             <p className="d-inline mt-4">
                               <u>Contactos</u>
@@ -481,6 +501,7 @@ export const Vacuerdos = React.memo(() => {
                         </div>
                       </div>
                     )}
+                    <AgregarPersonal/>
                   {activeAcuerdo?.uIntervensores &&
                     activeAcuerdo.uIntervensores.length > 0 && (
                       <div className="col-auto row">
@@ -524,7 +545,8 @@ export const Vacuerdos = React.memo(() => {
 
                   {(activeAcuerdo?.estatus.includes("Registrado") ||
                     activeAcuerdo?.estatus === "Fuera de tiempo" ||
-                    activeAcuerdo?.estatus === "Para hoy") && <EnProceso />}
+                    activeAcuerdo?.estatus === "Para hoy" ||
+                    !activeAcuerdo?.fechaIEjecucion) && <EnProceso />}
 
                   {(activeAcuerdo?.estatus.includes("En proceso") ||
                     activeAcuerdo?.estatus === "Vence hoy") &&
@@ -588,11 +610,13 @@ export const Vacuerdos = React.memo(() => {
           </Typography>
           <Typography variant="subtitle1" id="modal-modal-description">
             <div className="container">
-              {
-               activeAcuerdo?.intervensores &&  activeAcuerdo?.intervensores.map((intervensor) => (
-                <ContactosAcuerdo contacto={intervensor} key={intervensor._id}/>
-              ))
-              }
+              {activeAcuerdo?.intervensores &&
+                activeAcuerdo?.intervensores.map((intervensor) => (
+                  <ContactosAcuerdo
+                    contacto={intervensor}
+                    key={intervensor._id}
+                  />
+                ))}
             </div>
           </Typography>
         </Box>

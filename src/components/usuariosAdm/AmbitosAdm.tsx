@@ -138,7 +138,7 @@ export const AmbitosAdm = () => {
             getRowId={(row: any) => row._id}
             localeText={esES.components.MuiDataGrid.defaultProps.localeText}
             columns={columns}
-            rows={Ambitos as []}
+            rows={Ambitos.filter((ambito: Ambito) => ambito.nombre !== "Sin Ambito")}
             onRowClick={(p) => handleClick(p)}
             rowsPerPageOptions={[100, 50, 25, 10]}
             componentsProps={{

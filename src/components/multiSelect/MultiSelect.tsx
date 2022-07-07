@@ -1,6 +1,5 @@
 import React from "react";
 import { MultiSelectComponent } from "@syncfusion/ej2-react-dropdowns";
-import usuario from "../../assets/usuario.png";
 
 import "../../styles/Multiselect.scss";
 import { RootState } from '../../store/store';
@@ -18,7 +17,10 @@ export const MultiSelect = (props: any) => {
     props.onBlur("intervensores", true);
   };
 
+
   const {contactos} = useSelector( (state:RootState) => state.contactos );
+
+
 /*
   const headerTemplate = (data: any) => {
     return (
@@ -31,18 +33,13 @@ export const MultiSelect = (props: any) => {
   };
   */
   //set the value to item template
+  
   const itemTemplate = (data: any) => {
     return (
-      <div className="container row contenedorItem">
-        <div className="col-2 imagen">
-        <img src={usuario} alt="employee" className="imagenItem" />
-        </div>
-        <div className="col-6 container data">
-          <div className="row">{data.nombre} - {data.descripcion} </div>
-        </div>
-      </div>
+          data.nombre + ' - '+ data.descripcion
     );
   };
+  /*
   //set the value to value template
   const valueTemplate = (data: any) => {
     return (
@@ -52,7 +49,7 @@ export const MultiSelect = (props: any) => {
       </div>
     );
   };
-
+*/
   const fields = { text: "nombre", value: "_id" };
 
   return (
@@ -71,7 +68,7 @@ export const MultiSelect = (props: any) => {
               popupHeight="220px"
               //headerTemplate={headerTemplate}
               itemTemplate={itemTemplate}
-              valueTemplate={valueTemplate}
+              //valueTemplate={valueTemplate}
             />
           </div>
         </div>

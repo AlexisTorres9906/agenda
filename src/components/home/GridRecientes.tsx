@@ -32,6 +32,7 @@ export const GridRecientes = () => {
   const { acuerdosImportantes, activeAcuerdo } = useSelector(
     (state: RootState) => state.acuerdos
   );
+  const { uid } = useSelector((state: RootState) => state.auth);
   const [data, setData] = useState({});
   const hoy = useRef(new Date());
   const hoysh = useRef(new Date());
@@ -40,6 +41,7 @@ export const GridRecientes = () => {
   const navigate = useNavigate();
   const styleModalContactos = styleModalContactoVacuerdo;
   let gridInstance: GridComponent | null = null;
+  const filterOptions: any = { type: "Excel" };
   //manana
   const manana = useRef(new Date());
   const dispatch = useDispatch();
@@ -72,6 +74,12 @@ export const GridRecientes = () => {
       field: "id",
       headerText: "ID",
       visible: false,
+    },
+    {
+      field: "folio",
+      headerText: "Folio",
+      width: "20%",
+      minWidth: "150",
     },
     {
       field: "nombre",
@@ -272,7 +280,17 @@ export const GridRecientes = () => {
                     </div>
                     <div className="col q-auto">{activeAcuerdo?.nombre}</div>
                   </div>
-                  <div className={`col-auto container row justify-content-end`}>
+                  <div className="col-auto container row justify-content-start">
+                    <div className="col-auto fuente-subtitulo">
+                      Dueño del acuerdo:
+                    </div>
+                    <div className="col q-auto">
+                      {activeAcuerdo?.responsable._id === uid
+                        ? "Tú"
+                        : activeAcuerdo?.responsable.name}
+                    </div>
+                  </div>
+                  <div className={`col-auto container row justify-content-start`}>
                     <div className="col-auto fuente-subtitulo">
                       Estado del acuerdo:
                     </div>
@@ -577,6 +595,10 @@ export const GridRecientes = () => {
             rowSelected={onSelect}
             ref={(grid) => (gridInstance = grid)}
             columns = {columns}
+            allowFiltering={true}
+            allowSorting={true}
+            filterSettings={filterOptions}
+
           >
             <Inject services={[Page]} />
           </GridComponent>

@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState } from "react";
 import { MultiSelectComponent } from "@syncfusion/ej2-react-dropdowns";
-import usuario from "../../assets/usuario.png";
+
 
 import "../../styles/Multiselect.scss";
 import { RootState } from "../../store/store";
@@ -44,6 +44,7 @@ export const MultiSelectEditar = (props: any) => {
   };
   */
   //set the value to item template
+  /*
   const itemTemplate = (data: any) => {
     return (
       <div className="container row contenedorItem">
@@ -67,6 +68,13 @@ export const MultiSelectEditar = (props: any) => {
       </div>
     );
   };
+  */
+
+  const itemTemplate = (data: any) => {
+    return (
+          data.nombre + ' - '+ data.descripcion
+    );
+  };
 
   const fields = { text: "nombre", value: "_id" };
 
@@ -87,7 +95,7 @@ export const MultiSelectEditar = (props: any) => {
             popupHeight="220px"
             //headerTemplate={headerTemplate}
             itemTemplate={itemTemplate}
-            valueTemplate={valueTemplate}
+            //valueTemplate={valueTemplate}
           />
         </div>
       </div>

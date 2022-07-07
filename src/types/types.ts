@@ -56,6 +56,7 @@ export type types =
   | { type: "[info] getAmbitos"; payload: any }
   | { type: "[info] getFolioA"; payload: any }
   | { type: "[info] reset" }
+  | { type: "[info] getUsuarios"; payload: any }
   | { type: "[ui] startLoading" }
   | { type: "[ui] stopLoading" }
   | { type: "[Contacto] getContactos"; payload: any }
@@ -66,3 +67,6 @@ export type types =
   | { type: "[Contacto] cleanActiveContacto" }
   | { type: "[Contacto] clearContactos" }
   | { type: "[Contacto] setResponseOk"; payload: boolean }
+  | { type: "[Solicitud] getSolicitudes"; payload: any }
+  | { type: "[Solicitud] aceptarSolicitud"; payload: any }
+  | { type: "[Solicitud] clearSolicitudes" }

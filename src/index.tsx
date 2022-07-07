@@ -9,6 +9,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 //registerLicense('License Key');
 
 ReactDOM.render(
+
   <React.StrictMode>
    <App/>
   </React.StrictMode>,

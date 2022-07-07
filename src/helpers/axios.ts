@@ -5,7 +5,7 @@ const baseUrl = process.env.REACT_APP_API_URL;
 
 export const reqInsSinToken: AxiosInstance = axios.create({
   baseURL: baseUrl,
-  timeout: 5000,
+  timeout: 10000,
   headers: {
     "Content-Type": "application/json",
   },
@@ -16,7 +16,7 @@ export const reqInsSinToken: AxiosInstance = axios.create({
 
 export const reqInsConToken: AxiosInstance = axios.create({
   baseURL: baseUrl,
-  timeout: 15000,
+  timeout: 30000,
   headers: {
     "Content-Type": "application/json",
   },

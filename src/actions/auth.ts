@@ -112,6 +112,7 @@ export const startLogout = () => {
     dispatch(deleteInfo());
     dispatch(deleteAcuerdos());
     dispatch(clearContactos());
+    dispatch(clearSolicitudes());
   };
 };
 
@@ -134,4 +135,7 @@ const login = (user: User): types => ({
 
 const clearContactos = (): types => ({
   type: "[Contacto] clearContactos",
+});
+const clearSolicitudes = (): types => ({
+  type: "[Solicitud] clearSolicitudes",
 });

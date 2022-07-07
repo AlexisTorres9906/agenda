@@ -5,7 +5,7 @@ import {
   AiOutlineFileAdd,
   AiOutlineCalendar,
 } from "react-icons/ai";
- import { RiContactsBookLine } from "react-icons/ri";
+import { RiContactsBookLine } from "react-icons/ri";
 import { TiDocumentText } from "react-icons/ti";
 import { IconContext } from "react-icons";
 import { useEffect } from "react";
@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { startLogout } from "../../actions/auth";
 import nayaritC from "../../assets/nayaritC.svg";
 import { RootState } from "../../store/store";
+import { BiMessageRoundedAdd } from "react-icons/bi";
 
 export const Sidebar = () => {
   const dispatch = useDispatch();
@@ -31,6 +32,8 @@ export const Sidebar = () => {
   }, []);
 
   const { name } = useSelector((state: RootState) => state.auth);
+  const solicitudes = useSelector((state: RootState) => state.solicitudes);
+  
 
   const handleLogOut = () => {
     dispatch(startLogout());
@@ -96,6 +99,22 @@ export const Sidebar = () => {
                 <span className="title">Contactos</span>
               </NavLink>
             </li>
+
+            <li>
+              <NavLink to={"/agenda/solicitudes"}>
+                <span className="icon">
+                  <BiMessageRoundedAdd/>
+                  <span className="e-badge e-badge-warning e-badge-notification e-badge-overlap">
+                    {solicitudes.length}
+                  </span>
+                </span>
+                <span className="title">
+                  Solicitudes
+                  
+                </span>
+              </NavLink>
+            </li>
+
             <li>
               <NavLink to={"/agenda"} onClick={handleLogOut}>
                 <span className="icon">

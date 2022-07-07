@@ -20,12 +20,19 @@ import DatePicker, { registerLocale, setDefaultLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import es from "date-fns/locale/es";
 import { useDispatch, useSelector } from "react-redux";
-import { startGetAmbitos, startGetCategorias, startGetFolioA } from "../../actions/info";
+import {
+  startGetAmbitos,
+  startGetCategorias,
+  startGetFolioA,
+} from "../../actions/info";
 import { RootState } from "../../store/store";
-import { addCompromiso } from '../../Api/sendAcuerdo';
+import { addCompromiso } from "../../Api/sendAcuerdo";
 import { clearActiveAcuerdo, updateAcuerdoL } from "../../actions/acuerdo";
 import { useNavigate } from "react-router";
 import { startRenew } from "../../actions/auth";
+import { MultiSelectU } from "../multiSelect/MultiSelectU";
+import { TiContacts } from "react-icons/ti";
+import { MultiSelect } from "../multiSelect/MultiSelect";
 registerLocale("es", es);
 setDefaultLocale("es");
 
@@ -45,7 +52,7 @@ const DatePickerField = ({ ...props }) => {
         e.preventDefault();
       }}
       minDate={new Date()}
-      showTimeSelect = {true}
+      showTimeSelect={true}
       selected={(field.value && new Date(field.value)) || null}
       onChange={(val) => {
         setFieldValue(field.name, val);
@@ -93,7 +100,9 @@ export const AgregarCompromiso = () => {
   const dispatch = useDispatch();
   const [showPrompt, confirmNavigation, cancelNavigation] =
     useCallbackPrompt(showDialog);
-  const { Ambitos, Categorias,FolioA } = useSelector((state: RootState) => state.info);
+  const { Ambitos, Categorias, FolioA } = useSelector(
+    (state: RootState) => state.info
+  );
   const { activeAcuerdo } = useSelector((state: RootState) => state.acuerdos);
   const navigate = useNavigate();
   const envio = useRef(0);
@@ -106,6 +115,8 @@ export const AgregarCompromiso = () => {
     categoria: Categorias[0] ? Categorias[0]._id : "",
     ambito: Ambitos[0] ? Ambitos[0]._id : "",
     lugar: "",
+    intervensores: [],
+    peticiones: [],
   };
   const initialValues = useRef(valoresIniciales);
   //Saca la información de los select
@@ -123,12 +134,8 @@ export const AgregarCompromiso = () => {
   useEffect(() => {
     initialValues.current.ambito = Ambitos[0] ? Ambitos[0]._id : "";
     initialValues.current.categoria = Categorias[0] ? Categorias[0]._id : "";
-  }, [
-    Categorias,
-    Ambitos,
-    initialValues,
-  ]);
-//referente para hacer cambios de pagina y quitar acuerdos activos y continuar con el correcto funcionamiento de la app
+  }, [Categorias, Ambitos, initialValues]);
+  //referente para hacer cambios de pagina y quitar acuerdos activos y continuar con el correcto funcionamiento de la app
   useEffect(() => {
     return () => {
       const func = () => {
@@ -158,7 +165,9 @@ export const AgregarCompromiso = () => {
         valores.descripcion !== "" ||
         valores.fechaInstruccion !== "" ||
         valores.fechaPCierre !== "" ||
-        valores.lugar !== ""
+        valores.lugar !== "" ||
+        valores.intervensores.length !== 0 ||
+        valores.peticiones.length !== 0
       ) {
         setShowDialog(true);
       } else {
@@ -167,7 +176,7 @@ export const AgregarCompromiso = () => {
     }, [values, valores]);
     return null;
   };
-///esto solo es para cambios especificos cuando hay cambios y es valido el formulario
+  ///esto solo es para cambios especificos cuando hay cambios y es valido el formulario
   const enviar = (isValid: boolean) => {
     if (isValid) {
       setShowDialog(false);
@@ -219,7 +228,9 @@ export const AgregarCompromiso = () => {
           delete valores[key];
         }
       });
-      valores.acuerdoMayor = activeAcuerdo?.acuerdoMayor ? activeAcuerdo.acuerdoMayor : activeAcuerdo?._id;
+      valores.acuerdoMayor = activeAcuerdo?.acuerdoMayor
+        ? activeAcuerdo.acuerdoMayor
+        : activeAcuerdo?._id;
       addCompromiso(valores, activeAcuerdo?._id as string)
         .then((res: any) => {
           if (Object.entries(res).length !== 0) {
@@ -294,7 +305,10 @@ export const AgregarCompromiso = () => {
                   ref={divTabcon}
                 >
                   <h6>{FolioA}</h6>
-                  <p>Se esta creando un compromiso a partir del acuerdo <strong> {activeAcuerdo?.folio}</strong></p>
+                  <p>
+                    Se esta creando un compromiso a partir del acuerdo{" "}
+                    <strong> {activeAcuerdo?.folio}</strong>
+                  </p>
 
                   <div className="mb-3">
                     <label className="form-label">
@@ -477,7 +491,42 @@ export const AgregarCompromiso = () => {
                   role="tabpanel"
                   ref={divTabinv}
                 >
-                  <p>Content for tab 2.</p>
+                  <br />
+                  <div className="mb-3">
+                    <label className="form-label">
+                      <TiContacts />
+                       Contactos
+                    </label>
+                    <MultiSelect
+                      value={form.values.intervensores}
+                      onChange={form.setFieldValue}
+                      onBlur={form.setFieldTouched}
+                      error={form.errors.intervensores}
+                      touched={form.touched.intervensores}
+                    />
+                    <div style={{ color: "red" }}>
+                      <ErrorMessage name="intervensores" component="div" />
+                    </div>
+                  </div>
+
+
+                  <div className="mb-3">
+                    <label className="form-label">
+                      <TiContacts />
+                       Agregar Personal
+                    </label>
+                    <MultiSelectU
+                      value={form.values.peticiones}
+                      onChange={form.setFieldValue}
+                      onBlur={form.setFieldTouched}
+                      error={form.errors.peticiones}
+                      touched={form.touched.peticiones}
+                    />
+                    <div style={{ color: "red" }}>
+                      <ErrorMessage name="peticiones" component="div" />
+                    </div>
+                  </div>
+                  
                   {
                     //if form is not valid
                     !form.isValid && (
