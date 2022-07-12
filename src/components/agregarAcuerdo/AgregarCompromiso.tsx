@@ -27,7 +27,7 @@ import {
 } from "../../actions/info";
 import { RootState } from "../../store/store";
 import { addCompromiso } from "../../Api/sendAcuerdo";
-import { clearActiveAcuerdo, updateAcuerdoL } from "../../actions/acuerdo";
+import { addAcuerdo, clearActiveAcuerdo, updateAcuerdoL } from "../../actions/acuerdo";
 import { useNavigate } from "react-router";
 import { startRenew } from "../../actions/auth";
 import { MultiSelectU } from "../multiSelect/MultiSelectU";
@@ -104,6 +104,7 @@ export const AgregarCompromiso = () => {
     (state: RootState) => state.info
   );
   const { activeAcuerdo } = useSelector((state: RootState) => state.acuerdos);
+  const { uid } = useSelector((state: RootState) => state.auth);
   const navigate = useNavigate();
   const envio = useRef(0);
   const valoresIniciales = {
@@ -221,13 +222,14 @@ export const AgregarCompromiso = () => {
       values: FormikValues,
       { resetForm }: FormikHelpers<FormikValues>
     ): void | Promise<any> {
-      //eliminate nulls
-      const valores = { ...values };
+      const compromisoAjeno = activeAcuerdo?.responsable._id !== uid ? true : false;
+      let valores = { ...values};
       Object.keys(valores).forEach((key) => {
         if (valores[key] === "") {
           delete valores[key];
         }
       });
+      valores = { ...valores, compromisoAjeno };
       valores.acuerdoMayor = activeAcuerdo?.acuerdoMayor
         ? activeAcuerdo.acuerdoMayor
         : activeAcuerdo?._id;
@@ -244,7 +246,9 @@ export const AgregarCompromiso = () => {
                   acuerdoP: res.acuerdo,
                   acuerdo: res.acuerdo,
                 };
-            dispatch(updateAcuerdoL(resp, activeAcuerdo?._id as string));
+                console.log(res)
+              compromisoAjeno ? dispatch(addAcuerdo(res.acuerdoG)) : dispatch(updateAcuerdoL(resp, activeAcuerdo?._id as string));
+            //dispatch(updateAcuerdoL(resp, activeAcuerdo?._id as string));
             dispatch(startRenew());
             navigate("../vAcuerdos", { replace: true });
           }

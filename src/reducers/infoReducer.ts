@@ -5,7 +5,13 @@ const InitialState: Info = {
     Categorias: [],
     Ambitos: [],
     FolioA: '',
-    Usuarios: []
+    Usuarios: [],
+    conteo: {
+        bajos: 0,
+        medios: 0,
+        altos: 0
+    }
+    
 }
 
 export const infoReducer = (state = InitialState, action: types): Info => {
@@ -34,6 +40,11 @@ export const infoReducer = (state = InitialState, action: types): Info => {
             return {
                 ...state,
                 Usuarios: action.payload
+            }
+        case "[Info] getConteo":
+            return {
+                ...state,
+                conteo: action.payload
             }
         default:
             return state;

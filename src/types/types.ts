@@ -56,6 +56,7 @@ export type types =
   | { type: "[info] getCategorias"; payload: any }
   | { type: "[info] getAmbitos"; payload: any }
   | { type: "[info] getFolioA"; payload: any }
+  | { type: "[Info] getConteo"; payload: any }
   | { type: "[info] reset" }
   | { type: "[info] getUsuarios"; payload: any }
   | { type: "[ui] startLoading" }
@@ -72,3 +73,4 @@ export type types =
   | { type: "[Solicitud] aceptarSolicitud"; payload: any }
   | { type: "[Solicitud] rechazarSolicitud"; payload: Solicitud }
   | { type: "[Solicitud] clearSolicitudes" }
+  

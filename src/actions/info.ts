@@ -72,3 +72,20 @@ export const startGetUsuarios = ()=> {
     type: "[info] getUsuarios",
     payload: usuarios,
   });
+
+  /////////////////////////////////////////////////////////////////////////////
+  export const startGetConteo = ()=> {
+    return async (dispatch: any) => {
+      await reqInsConToken
+        .get("/info/count")
+        .then((res) => {
+          dispatch(getConteo(res.data.conteo));
+        })
+        .catch((err) => {ErrorSwall.fire();});
+    };
+  }
+
+  const getConteo = (conteo:any): types => ({ 
+    type: "[Info] getConteo",
+    payload: conteo,
+  });

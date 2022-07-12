@@ -6,14 +6,14 @@ import "../styles/Dashboard.scss";
 import { Home } from "../components/home/Home";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { startRenew, tokenIsValid } from '../actions/auth';
+import { startRenew, tokenIsValid } from "../actions/auth";
 import { RootState } from "../store/store";
-import { AgregarAcuerdoForm } from '../components/agregarAcuerdo/AgregarAcuerdoForm';
-import { Vacuerdos } from '../components/verAcuerdos/Vacuerdos';
-import { startGetAcuerdos } from '../actions/acuerdo';
-import { EditarAcuerdo } from '../components/editarAcuerdo/EditarAcuerdo';
+import { AgregarAcuerdoForm } from "../components/agregarAcuerdo/AgregarAcuerdoForm";
+import { Vacuerdos } from "../components/verAcuerdos/Vacuerdos";
+import { startGetAcuerdos } from "../actions/acuerdo";
+import { EditarAcuerdo } from "../components/editarAcuerdo/EditarAcuerdo";
 import { AgregarCompromiso } from "../components/agregarAcuerdo/AgregarCompromiso";
-import { Calendario } from '../components/calendario/Calendario';
+import { Calendario } from "../components/calendario/Calendario";
 import { Contactos } from "../components/contactos/Contactos";
 import { startGetContactos } from "../actions/contactos";
 import { VerSolicitudes } from "../components/solicitudes/VerSolicitudes";
@@ -24,31 +24,100 @@ export const DashboardRoutes = () => {
 
   const MINUTE_MS = 30000;
   const dispatch = useDispatch();
-  const {uid} = useSelector( (state:RootState) => state.auth );
+  const { uid } = useSelector((state: RootState) => state.auth);
 
   //revisar si el usuario esta logueado cada cierto tiempo
   useEffect(() => {
     const interval = setInterval(() => {
       dispatch(tokenIsValid());
-      !uid && <Navigate to="/" />
+      !uid && <Navigate to="/" />;
     }, MINUTE_MS);
     return () => clearInterval(interval);
-  }, [dispatch,uid])
-  
+  }, [dispatch, uid]);
+
   const location = useLocation();
 
   useEffect(() => {
     dispatch(startRenew());
-  }, [location,dispatch]);
-  
+  }, [location, dispatch]);
+
   //acuerdos del usuario
   useEffect(() => {
     dispatch(startGetAcuerdos());
     dispatch(startGetContactos());
     dispatch(startGetSolicitudes());
-  }, [dispatch])
-  
+  }, [dispatch]);
 
+  const acuerdosBajos = [
+    {
+      field: "prioridad",
+      matchCase: false,
+      operator: "equal",
+      predicate: "and",
+      value: "Baja",
+    },
+    {
+      field: "estatus",
+      matchCase: false,
+      operator: "notequal",
+      predicate: "and",
+      value: "Finalizado",
+    },
+    {
+      field: "estatus",
+      matchCase: false,
+      operator: "notequal",
+      predicate: "and",
+      value: "Cancelado",
+    },
+    
+  ];
+  const acuerdosMedia = [
+    {
+      field: "prioridad",
+      matchCase: false,
+      operator: "equal",
+      predicate: "and",
+      value: "Media",
+    },
+    {
+      field: "estatus",
+      matchCase: false,
+      operator: "notequal",
+      predicate: "and",
+      value: "Finalizado",
+    },
+    {
+      field: "estatus",
+      matchCase: false,
+      operator: "notequal",
+      predicate: "and",
+      value: "Cancelado",
+    },
+  ];
+  const acuerdosAlta = [
+    {
+      field: "prioridad",
+      matchCase: false,
+      operator: "equal",
+      predicate: "and",
+      value: "Alta",
+    },
+    {
+      field: "estatus",
+      matchCase: false,
+      operator: "notequal",
+      predicate: "and",
+      value: "Finalizado",
+    },
+    {
+      field: "estatus",
+      matchCase: false,
+      operator: "notequal",
+      predicate: "and",
+      value: "Cancelado",
+    },
+  ];
 
   return (
     <div className="dashboard">
@@ -59,14 +128,35 @@ export const DashboardRoutes = () => {
           <div className="content">
             <Routes>
               <Route path="/" element={<Home />} />
-              <Route path="/FAcuerdos" element={<AgregarAcuerdoForm/>} />
-              <Route path="/vAcuerdos" element={<Vacuerdos/>} />
-              <Route path="/editarAcuerdo" element={<EditarAcuerdo direccion={""} />} />
-              <Route path="/editarAcuerdo/home" element={<EditarAcuerdo direccion={"home"} />} />
-              <Route path="/agregarCompromiso" element={<AgregarCompromiso/>} />
-              <Route path="/calendario" element={<Calendario/>} />
-              <Route path="/contactos" element={<Contactos/>} />
-              <Route path="/solicitudes" element={<VerSolicitudes/>} />
+              <Route path="/FAcuerdos" element={<AgregarAcuerdoForm />} />
+              <Route path="/vAcuerdos" element={<Vacuerdos columns={[]} />} />
+              <Route
+                path="/vAcuerdos/bajos"
+                element={<Vacuerdos columns={acuerdosBajos} />}
+              />
+              <Route
+                path="/vAcuerdos/media"
+                element={<Vacuerdos columns={acuerdosMedia} />}
+              />
+              <Route
+                path="/vAcuerdos/altos"
+                element={<Vacuerdos columns={acuerdosAlta} />}
+              />
+              <Route
+                path="/editarAcuerdo"
+                element={<EditarAcuerdo direccion={""} />}
+              />
+              <Route
+                path="/editarAcuerdo/home"
+                element={<EditarAcuerdo direccion={"home"} />}
+              />
+              <Route
+                path="/agregarCompromiso"
+                element={<AgregarCompromiso />}
+              />
+              <Route path="/calendario" element={<Calendario />} />
+              <Route path="/contactos" element={<Contactos />} />
+              <Route path="/solicitudes" element={<VerSolicitudes />} />
 
               <Route path="/*" element={<Home />} />
             </Routes>

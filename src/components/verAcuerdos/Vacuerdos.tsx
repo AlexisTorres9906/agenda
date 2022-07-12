@@ -69,7 +69,7 @@ L10n.load(data);
 ///tree grid
 const toolbarOptions: any = ["Search", "ExcelExport", "PdfExport", "CsvExport"];
 const editSettings: any = { mode: "Dialog" };
-const filterOptions: any = { type: "Excel" };
+
 let treegridInstance: TreeGridComponent | null;
 const collapsedStatePersist: boolean = true;
 
@@ -113,7 +113,10 @@ const prioTemplate = (props: any) => {
 };
 const style = styleModalInfo;
 const styleModalContactos = styleModalContactoVacuerdo;
-export const Vacuerdos = React.memo(() => {
+interface Props {
+  columns:Object[];
+}
+export const Vacuerdos = React.memo((Props:Props) => {
   //////////////////////////////////////////
   //información de los acuerdos y generales iniciales
   const { acuerdos, activeAcuerdo } = useSelector(
@@ -127,6 +130,7 @@ export const Vacuerdos = React.memo(() => {
   const navigate = useNavigate();
   const hoy = useRef(new Date());
   const hoysh = useRef(new Date());
+  const filterOptions: any = { type: "Excel", columns : Props.columns};
   //manana
   const manana = useRef(new Date());
   useMemo(() => {
@@ -135,6 +139,8 @@ export const Vacuerdos = React.memo(() => {
   }, []);
   //hoy
 
+
+  
   const sortOptions: SortSettingsModel = {
     columns: [{ field: "fechaCreacion", direction: "Descending" }],
   };

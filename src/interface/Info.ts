@@ -5,4 +5,9 @@ export interface Info {
     Ambitos: Ambito[];
     FolioA: String;
     Usuarios: UsuariosP[]
+    conteo: {
+        bajos: number,
+        medios: number,
+        altos: number
+    }
 }
