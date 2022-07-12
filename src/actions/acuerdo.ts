@@ -1,5 +1,5 @@
 import { reqInsConToken } from "../helpers/axios";
-import { ErrorSwall } from "../helpers/swalls";
+import { ErrorSwall, LoadingSwall, toastMixin } from "../helpers/swalls";
 import { types } from "../types/types";
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -94,3 +94,6 @@ export const getAcuerdosImportantes = (acuerdos: any): types => ({
   type: "[Acuerdo] getAcuerdosImportantes",
   payload: acuerdos,
 });
+
+
+////////////////////////////////////////////////////////////////////////////////

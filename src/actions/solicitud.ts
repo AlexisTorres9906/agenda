@@ -3,6 +3,7 @@ import { ErrorSwall, LoadingSwall, toastMixin } from "../helpers/swalls";
 import { types } from "../types/types";
 import { addAcuerdo } from "./acuerdo";
 
+////////////////////////////////////////////////////////////////////////////////
 export const startGetSolicitudes = () => {
   return async (dispatch: any) => {
     await reqInsConToken
@@ -19,7 +20,7 @@ const getSolicitudes = (solicitudes: any): types => ({
   type: "[Solicitud] getSolicitudes",
   payload: solicitudes,
 });
-
+////////////////////////////////////////////////////////////////////////////////
 export const startAceptarSolicitud = (id: string) => {
   return async (dispatch: any) => {
     LoadingSwall.fire();
@@ -69,5 +70,57 @@ export const startAceptarSolicitud = (id: string) => {
 };
 const aceptarSolicitud = (solicitud: any): types => ({
   type: "[Solicitud] aceptarSolicitud",
+  payload: solicitud,
+});
+////////////////////////////////////////////////////////////////////////////////
+export const startRechazarSolicitud = (id: string) => {
+  return async (dispatch: any) => {
+    LoadingSwall.fire();
+    let error = false;
+    let errorMsg = "";
+    await reqInsConToken
+      .delete("/solicitud",{params:{id}})
+      .then((res) => {
+        if (res.data.ok) {
+          dispatch(rechazarSolicitud(res.data.solicitud));
+        }
+        else {
+            error = true;
+            errorMsg = res.data.msg;
+            }
+      })
+      .catch((err) => {
+        ErrorSwall.fire(
+            {
+                title: "Error",
+                text: "No se pudo rechazar la solicitud inténtelo nuevamente",
+                icon: "error",
+                confirmButtonText: "Cerrar",
+            }
+        );
+      });
+    LoadingSwall.close();
+    if (error) {
+        ErrorSwall.fire({
+            title: "Error",
+            text: errorMsg,
+            icon: "error",
+            confirmButtonText: "Cerrar",
+        });
+        }
+        else{
+            toastMixin.fire({
+                text: "Solicitud rechazada",
+                icon: "success",
+                position: "top-right",
+                showConfirmButton: false,
+                timer: 3000,
+            });
+        }
+  };
+}
+
+const rechazarSolicitud = (solicitud: any): types => ({
+  type: "[Solicitud] rechazarSolicitud",
   payload: solicitud,
 });

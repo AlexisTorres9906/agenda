@@ -2,6 +2,7 @@ import { User } from "../interface/User";
 import { Area } from "../interface/Areas";
 import { Categorias, Ambito } from "../interface/Admin";
 import { Acuerdo, AcuerdoAgenda } from "../interface/Acuerdos";
+import { Solicitud } from '../interface/Solicitud';
 
 export type types =
   | { type: "[Acuerdo] getAcuerdos"; payload: Acuerdo[] }
@@ -69,4 +70,5 @@ export type types =
   | { type: "[Contacto] setResponseOk"; payload: boolean }
   | { type: "[Solicitud] getSolicitudes"; payload: any }
   | { type: "[Solicitud] aceptarSolicitud"; payload: any }
+  | { type: "[Solicitud] rechazarSolicitud"; payload: Solicitud }
   | { type: "[Solicitud] clearSolicitudes" }

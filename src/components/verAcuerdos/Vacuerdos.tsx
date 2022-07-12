@@ -27,7 +27,7 @@ import * as timeZoneNames from "../../data/es-MX/timeZoneNames.json";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import { IoIosContacts, IoIosPeople, IoMdContacts } from "react-icons/io";
+import { IoIosContacts} from "react-icons/io";
 import {
   styleModalContactoVacuerdo,
   styleModalInfo,
@@ -48,6 +48,7 @@ import { CambiarFAcuerdo } from "./CambiarFAcuerdo";
 import { startRenew } from "../../actions/auth";
 import { ContactosAcuerdo } from "./ContactosAcuerdo";
 import { AgregarPersonal } from "./AgregarPersonal";
+import { PersonalAcuerdo } from "./PersonalAcuerdo";
 
 //GridRecientes
 
@@ -289,6 +290,21 @@ export const Vacuerdos = React.memo(() => {
       })
       .catch((err) => {});
   };
+  const rowDataBound = (args: any) => {
+    if (args.data.level !== 0) {
+      const level = 1 - args.data.level*.20
+      args.row.style.backgroundColor = `rgba(155, 155, 155, ${level})`; // highlight the child rows
+    }
+  };
+
+  ////////////////////////////////////////////
+  const queryCellInfo = (args: any) => {
+    if (args.column.field === "folio") {
+      if (args.data.level !== 0) {
+        args.cell.classList.add("child"); // add class to differentiate childrows
+      }
+    }
+  };
 
   ////////////////////////////////////////////
   return (
@@ -501,20 +517,10 @@ export const Vacuerdos = React.memo(() => {
                         </div>
                       </div>
                     )}
-                    <AgregarPersonal/>
-                  {activeAcuerdo?.uIntervensores &&
-                    activeAcuerdo.uIntervensores.length > 0 && (
-                      <div className="col-auto row">
-                        <div className="col-auto fuente-subtitulo">
-                          <a id="aContacto">
-                            <IoMdContacts className="mlogo" />
-                            <p className="d-inline mt-4">
-                              <u>Personal Asociado</u>
-                            </p>
-                          </a>
-                        </div>
-                      </div>
-                    )}
+                  {activeAcuerdo?.responsable._id === uid && (
+                    <AgregarPersonal />
+                  )}
+                 <PersonalAcuerdo />
                 </div>
                 {/*---------------------------Datos octava fila----------------------* */}
                 {activeAcuerdo?.resultado && activeAcuerdo?.resultado !== "" && (
@@ -651,10 +657,17 @@ export const Vacuerdos = React.memo(() => {
         sortSettings={sortOptions}
         enableCollapseAll={true}
         //enableAdaptiveUI={true}
+        queryCellInfo={queryCellInfo}
+        rowDataBound={rowDataBound}
       >
         <ColumnsDirective>
           <ColumnDirective field="_id" visible={false} />
-          <ColumnDirective field="folio" headerText="Folio" width="190" />
+          <ColumnDirective
+            field="folio"
+            headerText="Folio"
+            width="220"
+            minWidth="200px"
+          />
           <ColumnDirective field="nombre" headerText="Nombre" width="120" />
           <ColumnDirective field="estatus" headerText="Estatus" width="120" />
           <ColumnDirective

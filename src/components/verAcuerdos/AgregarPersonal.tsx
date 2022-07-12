@@ -10,14 +10,15 @@ import {
   FormikValues,
 } from "formik";
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import {useSelector } from "react-redux";
 import { styleModalChildren } from "../../helpers/stylesModal";
-import { RootState } from "../../store/store";
+import { RootState } from '../../store/store';
 import * as Yup from "yup";
 import "react-datepicker/dist/react-datepicker.css";
 import { IoIosPeople } from "react-icons/io";
 import { TiContacts } from "react-icons/ti";
 import { MultiSelectU } from "../multiSelect/MultiSelectU";
+import { sendSolicitudes } from "../../Api/sendSolicitudes";
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -26,7 +27,7 @@ export const AgregarPersonal = () => {
   ////////////////////////////////////////////////////////////////////////////////////////////////
   const [openChildren, setOpenChildren] = useState(false);
   const styleChildren = styleModalChildren;
-  const dispatch = useDispatch();
+  const {activeAcuerdo} = useSelector( (state:RootState) => state.acuerdos );
   //modal child para cambiar estado a en proceso
   const handleOpen = () => {
     setOpenChildren(true);
@@ -49,7 +50,12 @@ export const AgregarPersonal = () => {
     },
     validationSchema: schema,
     onSubmit: async (values) => {
-        console.log(values);
+        sendSolicitudes({
+            acuerdo: activeAcuerdo?._id as string,
+            peticiones: values.peticiones,
+        }).then((res) => {
+            handleClose();
+        });
     },
   };
   ////////////////////////////////////////////////////////////////////////////////

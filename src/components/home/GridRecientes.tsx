@@ -28,6 +28,8 @@ import Swal from "sweetalert2";
 import { styleModalContactoVacuerdo, styleModalInfo } from "../../helpers/stylesModal";
 import { IoIosContacts, IoMdContacts } from "react-icons/io";
 import { ContactosAcuerdo } from "../verAcuerdos/ContactosAcuerdo";
+import { PersonalAcuerdo } from "../verAcuerdos/PersonalAcuerdo";
+import { AgregarPersonal } from "../verAcuerdos/AgregarPersonal";
 export const GridRecientes = () => {
   const { acuerdosImportantes, activeAcuerdo } = useSelector(
     (state: RootState) => state.acuerdos
@@ -453,7 +455,10 @@ export const GridRecientes = () => {
                     activeAcuerdo.intervensores.length > 0 && (
                       <div className="col-auto row">
                         <div className="col-auto fuente-subtitulo">
-                          <a id="aContacto" onClick={()=>setOpenModalContactos(true)}>
+                          <a
+                            id="aContacto"
+                            onClick={() => setOpenModalContactos(true)}
+                          >
                             <IoIosContacts className="mlogo" />
                             <p className="d-inline mt-4">
                               <u>Contactos</u>
@@ -462,19 +467,10 @@ export const GridRecientes = () => {
                         </div>
                       </div>
                     )}
-                  {activeAcuerdo?.uIntervensores &&
-                    activeAcuerdo.uIntervensores.length > 0 && (
-                      <div className="col-auto row">
-                        <div className="col-auto fuente-subtitulo">
-                          <a id="aContacto">
-                            <IoMdContacts className="mlogo" />
-                            <p className="d-inline mt-4">
-                              <u>Personal Asociado</u>
-                            </p>
-                          </a>
-                        </div>
-                      </div>
-                    )}
+                  {activeAcuerdo?.responsable._id === uid && (
+                    <AgregarPersonal />
+                  )}
+                 <PersonalAcuerdo />
                 </div>
                 {/*---------------------------Datos octava fila----------------------* */}
                 {activeAcuerdo?.resultado && activeAcuerdo?.resultado !== "" && (

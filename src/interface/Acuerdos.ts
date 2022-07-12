@@ -31,7 +31,7 @@ export interface Acuerdo {
     name: string;
     userName: string;
     password: string;
-    area: string;
+    area: Area;
   }
   export interface Area {
     _id: string;

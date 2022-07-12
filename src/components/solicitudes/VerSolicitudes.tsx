@@ -10,7 +10,7 @@ import {
 } from "@syncfusion/ej2-react-grids";
 import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
-import { startAceptarSolicitud } from "../../actions/solicitud";
+import { startAceptarSolicitud, startRechazarSolicitud } from "../../actions/solicitud";
 import { RootState } from "../../store/store";
 
 export const VerSolicitudes = () => {
@@ -36,12 +36,28 @@ export const VerSolicitudes = () => {
         }
       });
     }
+    const rechazar = (data:any) =>{
+      Swal.fire({
+        title: "¿Estas seguro?",
+        text: "Esta solicitud sera rechazada",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Si, rechazar",
+        cancelButtonText: "No, cancelar",
+      }).then((result:any) => {
+        if (result.value) {
+          dispatch(startRechazarSolicitud(data._id));
+        }
+      });
+    }
     return (
       <div className="mx-auto">
         <button className="btn btn-success" onClick={()=>aceptar(data)}>
           <i className="fa fa-check"></i>
         </button>ㅤㅤ
-        <button className="btn btn-danger">
+        <button className="btn btn-danger" onClick={()=>rechazar(data)}>
           <i className="fa fa-trash"></i>
         </button>
         </div>

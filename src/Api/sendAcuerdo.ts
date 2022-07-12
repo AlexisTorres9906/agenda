@@ -47,11 +47,24 @@ export const updateAcuerdo = async (acuerdo: object,id:String) => {
           timer: 5000,
         });
       } else {
-        ErrorSwall.fire();
+        ErrorSwall.fire(
+          {
+            title: "Error",
+            text: `${res.data.msg}`,
+            icon: "error",
+            confirmButtonText: "Cerrar",
+          }
+
+        );
       }
     })
     .catch((err) => {
-      ErrorSwall.fire();
+      ErrorSwall.fire({
+        title: "Error",
+        text: "No se pudo actualizar el acuerdo, si el acuerdo no te pertenece posiblemente ya no tengas permisos para actualizarlo.",
+        icon: "error",
+        confirmButtonText: "Cerrar",
+      });
     });
   return data;
 }
@@ -84,4 +97,50 @@ export const addCompromiso = async (acuerdo: object,id:String) => {
       ErrorSwall.fire();
     });
   return data;
+}
+
+export const desasociarUsuarioAcuerdo = async(id: string, usuario:string) => {
+    LoadingSwall.fire();
+    let error = false;
+    let errorMsg = "";
+    let data:object = {};
+    await reqInsConToken
+      .put("/acuerdo/desasociar",{},{params:{id,usuario}})
+      .then((res) => {
+        if (res.data.ok) {
+          data = {
+            acuerdo:res.data.acuerdo,
+            acuerdoP:res.data.acuerdoP,
+          }
+        }
+        else {
+            error = true;
+            errorMsg = res.data.msg;
+            }
+      })
+      .catch((err) => {
+        ErrorSwall.fire(
+            {
+                title: "Error",
+                text: "No se pudo desasociar el usuario del acuerdo",
+                icon: "error",
+                confirmButtonText: "Cerrar",
+            }
+        );
+      });
+    LoadingSwall.close();
+    if (error) {
+        ErrorSwall.fire({
+            title: "Error",
+            text: errorMsg,
+            icon: "error",
+            confirmButtonText: "Cerrar",
+        });
+        }
+        else{
+            toastMixin.fire({
+                text: "Usuario desasociado del acuerdo",
+            });
+            }
+    return data;
 }

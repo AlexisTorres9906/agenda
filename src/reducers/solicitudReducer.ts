@@ -19,6 +19,10 @@ export const solicitudReducer = (
         return solicitud._id !== action.payload._id;
       }
       );
+    case "[Solicitud] rechazarSolicitud":
+      return state.filter((solicitud: Solicitud) => {
+        return solicitud._id !== action.payload._id;
+      });
 
     default:
       return state;
