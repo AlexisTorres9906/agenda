@@ -1,18 +1,18 @@
 {
   "files": {
-    "main.css": "/agenda/static/css/main.b9a5ad5c.css",
-    "main.js": "/agenda/static/js/main.6677d5bd.js",
+    "main.css": "/agenda/static/css/main.429b7beb.css",
+    "main.js": "/agenda/static/js/main.c07eb2e5.js",
     "static/js/787.5be0b290.chunk.js": "/agenda/static/js/787.5be0b290.chunk.js",
     "static/media/nayaritC.svg": "/agenda/static/media/nayaritC.39513b46fdfa8ba4b994aa879f344e7e.svg",
     "static/media/estrella.png": "/agenda/static/media/estrella.a9f3a58be6330ff892e1.png",
     "static/media/estrella1.png": "/agenda/static/media/estrella1.0fd28a6ea8f1655111f3.png",
     "index.html": "/agenda/index.html",
-    "main.b9a5ad5c.css.map": "/agenda/static/css/main.b9a5ad5c.css.map",
-    "main.6677d5bd.js.map": "/agenda/static/js/main.6677d5bd.js.map",
+    "main.429b7beb.css.map": "/agenda/static/css/main.429b7beb.css.map",
+    "main.c07eb2e5.js.map": "/agenda/static/js/main.c07eb2e5.js.map",
     "787.5be0b290.chunk.js.map": "/agenda/static/js/787.5be0b290.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.b9a5ad5c.css",
-    "static/js/main.6677d5bd.js"
+    "static/css/main.429b7beb.css",
+    "static/js/main.c07eb2e5.js"
   ]
 }
