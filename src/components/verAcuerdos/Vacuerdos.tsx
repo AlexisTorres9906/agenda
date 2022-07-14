@@ -550,8 +550,7 @@ export const Vacuerdos = React.memo((Props:Props) => {
                     Editar Acuerdo
                   </button>
                   {(activeAcuerdo?.estatus.includes("En proceso") ||
-                    activeAcuerdo?.estatus === "Finalizado" ||
-                    activeAcuerdo?.estatus === "Vence hoy") && (
+                    activeAcuerdo?.estatus === "Finalizado" || activeAcuerdo?.fechaIEjecucion) && (
                     <CambiarFAcuerdo />
                   )}
 
